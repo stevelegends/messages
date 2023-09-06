@@ -6,7 +6,8 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "lint": "eslint . --fix"
   },
   "dependencies": {
     "expo": "~49.0.8",
@@ -22,6 +23,9 @@
     "@types/jest": "^29.5.4",
     "@types/react": "^18.2.21",
     "@types/react-test-renderer": "^18.0.1",
+    "eslint": "^8.48.0",
+    "eslint-config-universe": "^12.0.0",
+    "prettier": "3.0.3",
     "typescript": "^5.2.2"
   },
   "private": true

@@ -1,9 +1,9 @@
 // react
-import {FC, Fragment, useCallback, useEffect, useState} from 'react';
+import * as SplashScreen from "expo-splash-screen";
+import { FC, useCallback, useEffect, useState } from "react";
 
 // modules
-import {View, ViewProps} from 'react-native';
-import * as SplashScreen from 'expo-splash-screen';
+import { View, ViewProps } from "react-native";
 
 // hooks
 import useLoadFonts from "../hooks/use-load-fonts";
@@ -13,34 +13,31 @@ import wait from "../utils/wait";
 
 SplashScreen.preventAutoHideAsync();
 
-type AppLoaderProps = {
-} & ViewProps
+type AppLoaderProps = object & ViewProps;
 
 const AppLoader: FC<AppLoaderProps> = (props) => {
-    useLoadFonts()
+  useLoadFonts();
 
-    const [isAppReady, setIsAppReady] = useState(false);
+  const [isAppReady, setIsAppReady] = useState(false);
 
-    async function prepare(): Promise<void> {
-        await wait(2000)
-        setIsAppReady(true);
-    }
+  async function prepare(): Promise<void> {
+    await wait(2000);
+    setIsAppReady(true);
+  }
 
-    const onLayoutRootView = useCallback(async () => {
-        await SplashScreen.hideAsync();
-    }, []);
+  const onLayoutRootView = useCallback(async () => {
+    await SplashScreen.hideAsync();
+  }, []);
 
-    useEffect(() => {
-        prepare();
-    }, []);
+  useEffect(() => {
+    prepare();
+  }, []);
 
-    if (!isAppReady) {
-        return <Fragment />;
-    }
+  if (!isAppReady) {
+    return <></>;
+  }
 
-    return (
-        <View onLayout={onLayoutRootView} {...props} />
-    );
-}
+  return <View onLayout={onLayoutRootView} {...props} />;
+};
 
-export default AppLoader
+export default AppLoader;
