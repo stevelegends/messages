@@ -9,6 +9,9 @@
     "web": "expo start --web",
     "lint": "eslint . --fix"
   },
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  },
   "dependencies": {
     "expo": "~49.0.8",
     "expo-font": "~11.4.0",
