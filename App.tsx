@@ -1,21 +1,16 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+// modules
+import {Text} from "react-native";
+import Entypo from "@expo/vector-icons/Entypo";
+
+// hoc
+import AppLoader from "./src/HOC/AppLoader";
 
 const App = () => {
   return (
-    <View style={styles.container}>
-      <StatusBar style="auto" />
-    </View>
+      <AppLoader style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Text style={{fontSize: 20, fontFamily: 'Roboto-Light',}}>let's get started! <Entypo name="rocket" size={30} /></Text>
+      </AppLoader>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
 
 export default App
