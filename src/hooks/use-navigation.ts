@@ -1,6 +1,8 @@
 // modules
-import { StackNavigatorParams } from "@navigation/navigation";
 import { NavigationProp, useNavigation as useRNavigation } from "@react-navigation/native";
+
+// navigation
+import { StackNavigatorParams } from "@navigation/main-navigation";
 
 const useNavigation = () => useRNavigation<NavigationProp<StackNavigatorParams>>();
 

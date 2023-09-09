@@ -10,6 +10,8 @@ import React, {
     useMemo,
     useState
 } from "react";
+
+// modules
 import { ColorSchemeName, useColorScheme } from "react-native";
 
 type ThemeContextType = {
