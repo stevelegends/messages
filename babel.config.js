@@ -15,10 +15,13 @@ module.exports = function (api) {
                         "@constants": "./src/constants",
                         "@hoc": "./src/hoc",
                         "@hooks": "./src/hooks",
+                        "@navigation": "./src/navigation",
+                        "@theme": "./src/theme",
                         "@assets": "./assets"
                     }
                 }
-            ]
+            ],
+            "react-native-reanimated/plugin"
         ]
     };
 };

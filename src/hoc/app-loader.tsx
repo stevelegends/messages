@@ -1,19 +1,20 @@
 // react
-import React, { FC, Fragment, useCallback, useEffect, useState } from "react";
+import React, { FC, Fragment, PropsWithChildren, useCallback, useEffect, useState } from "react";
 
 // modules
-import { View, ViewProps } from "react-native";
+import { ViewProps } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 // hooks
-import useLoadFonts from "@hooks/use-load-fonts";
+import { useLoadFonts } from "@hooks/index";
 
 // utils
 import { wait } from "@utils";
 
 SplashScreen.preventAutoHideAsync();
 
-type AppLoaderProps = object & ViewProps;
+interface AppLoaderProps extends PropsWithChildren<ViewProps> {}
 
 const AppLoader: FC<AppLoaderProps> = props => {
     useLoadFonts();
@@ -37,7 +38,7 @@ const AppLoader: FC<AppLoaderProps> = props => {
         return <Fragment />;
     }
 
-    return <View onLayout={onLayoutRootView} {...props} />;
+    return <GestureHandlerRootView onLayout={onLayoutRootView} {...props} />;
 };
 
 export default AppLoader;
