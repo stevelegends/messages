@@ -7,11 +7,12 @@ import { createStackNavigator } from "@react-navigation/stack";
 import BottomTabNavigation from "@navigation/bottom-tab-navigation";
 
 // screens
-import { SettingsScreen } from "@screens";
+import { ChatScreen, SettingsScreen } from "@screens";
 
 export type StackNavigatorParams = {
     BottomTab: undefined;
     SettingsScreen: undefined;
+    ChatScreen: undefined;
 };
 
 const Stack = createStackNavigator<StackNavigatorParams>();
@@ -29,6 +30,14 @@ const MainNavigation = () => {
             <Stack.Screen
                 options={{
                     title: "Chat",
+                    headerBackTitle: "Back"
+                }}
+                name="ChatScreen"
+                component={ChatScreen}
+            />
+            <Stack.Screen
+                options={{
+                    title: "Settings",
                     headerBackTitle: "Back"
                 }}
                 name="SettingsScreen"

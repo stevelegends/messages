@@ -31,7 +31,7 @@ const BottomTabNavigation: FC<BottomTabNavigationProps> = () => {
         <Tab.Navigator>
             <Tab.Screen
                 options={{
-                    title: "Chat",
+                    title: "Chats",
                     tabBarLabel: "Chats",
                     tabBarIcon: ({ size, color }) => (
                         <Ionicons name="chatbubble-outline" size={size} color={color} />
