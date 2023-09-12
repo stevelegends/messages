@@ -42,6 +42,15 @@ export const globalStyles = StyleSheet.create({
     "marginR-15": {
         marginRight: 15
     },
+    "marginT-5": {
+        marginTop: 5
+    },
+    "marginT-10": {
+        marginTop: 10
+    },
+    "marginT-20": {
+        marginTop: 20
+    },
     "paddingL-5": {
         paddingRight: 5
     },
@@ -59,6 +68,9 @@ export const globalStyles = StyleSheet.create({
     },
     "paddingR-15": {
         paddingRight: 15
+    },
+    "paddingH-20": {
+        paddingHorizontal: 20
     }
     // TODO add more
 });

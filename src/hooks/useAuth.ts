@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
 const useAuth = () => {
-    const isAuth = useMemo(() => true, []);
+    const isAuth = useMemo(() => false, []);
 
     return { isAuth };
 };
