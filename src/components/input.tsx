@@ -3,9 +3,11 @@ import React, { FC, ReactElement } from "react";
 
 // modules
 import { StyleSheet, TextInput, TextInputProps, View, Text } from "react-native";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 // hooks
 import { useTheme } from "@react-navigation/native";
+import { useController } from "react-hook-form";
 
 type InputProps = {
     label?: string | ReactElement;
@@ -13,11 +15,18 @@ type InputProps = {
     iconPack?: any;
     iconSize?: number;
     errorText?: string;
+    control: any;
+    name: string;
 } & TextInputProps;
 
 const Input: FC<InputProps> = props => {
     const { label, icon, iconPack, iconSize, errorText } = props;
     const theme = useTheme();
+    const { field } = useController({
+        control: props.control,
+        name: props.name,
+        defaultValue: ""
+    });
     return (
         <View style={styles.container}>
             <Text style={[{ color: theme.colors.text }, styles.label]}>{label}</Text>
@@ -34,16 +43,18 @@ const Input: FC<InputProps> = props => {
                 )}
                 <TextInput
                     {...props}
+                    value={field.value}
+                    onChangeText={field.onChange}
                     style={[{ color: theme.colors.text }, styles.input, props.style]}
                 />
             </View>
 
             {errorText ? (
-                <View style={styles.errorContainer}>
+                <Animated.View entering={FadeIn} exiting={FadeOut} style={styles.errorContainer}>
                     <Text style={[styles.errorText, { color: theme.colors.notification }]}>
                         {errorText}
                     </Text>
-                </View>
+                </Animated.View>
             ) : (
                 <></>
             )}

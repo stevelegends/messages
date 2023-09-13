@@ -16,6 +16,9 @@ export const globalStyles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center"
     },
+    "flex-jc-center": {
+        justifyContent: "center"
+    },
     horizontal: {
         flexDirection: "row"
     },
@@ -50,6 +53,15 @@ export const globalStyles = StyleSheet.create({
     },
     "marginT-20": {
         marginTop: 20
+    },
+    "marginB-5": {
+        marginBottom: 5
+    },
+    "marginB-10": {
+        marginBottom: 10
+    },
+    "marginB-20": {
+        marginBottom: 20
     },
     "paddingL-5": {
         paddingRight: 5

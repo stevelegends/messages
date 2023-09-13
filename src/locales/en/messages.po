@@ -36,15 +36,25 @@ msgstr "Settings"
 msgid "Chat"
 msgstr "Chat"
 
-#: src/screens/sign-in-screen/sign-in-screen.tsx
 #: src/screens/sign-up-screen/sign-up-screen.tsx
-msgid "Email"
-msgstr "Email"
+msgid "First name is a required"
+msgstr "First name is a required"
 
-#: src/screens/sign-in-screen/sign-in-screen.tsx
 #: src/screens/sign-up-screen/sign-up-screen.tsx
-msgid "Password"
-msgstr "Password"
+msgid "Last name is a required"
+msgstr "Last name is a required"
+
+#: src/screens/sign-up-screen/sign-up-screen.tsx
+msgid "Email is a required"
+msgstr "Email is a required"
+
+#: src/screens/sign-up-screen/sign-up-screen.tsx
+msgid "Email must be a valid email"
+msgstr "Email must be a valid email"
+
+#: src/screens/sign-up-screen/sign-up-screen.tsx
+msgid "Password is a required"
+msgstr "Password is a required"
 
 #: src/screens/sign-up-screen/sign-up-screen.tsx
 msgid "First name"
@@ -53,3 +63,11 @@ msgstr "First name"
 #: src/screens/sign-up-screen/sign-up-screen.tsx
 msgid "Last name"
 msgstr "Last name"
+
+#: src/screens/sign-up-screen/sign-up-screen.tsx
+msgid "Email"
+msgstr "Email"
+
+#: src/screens/sign-up-screen/sign-up-screen.tsx
+msgid "Password"
+msgstr "Password"
