@@ -1,5 +1,5 @@
 // react
-import React, { FC } from "react";
+import React, { FC, ReactElement } from "react";
 
 // modules
 import { StyleSheet, Text, TextStyle, TouchableOpacity, TouchableOpacityProps } from "react-native";
@@ -8,7 +8,7 @@ import { StyleSheet, Text, TextStyle, TouchableOpacity, TouchableOpacityProps } 
 import { useTheme } from "@react-navigation/native";
 
 type SubmitButtonProps = {
-    title?: string;
+    title?: string | ReactElement;
     titleStyle?: TextStyle;
 } & TouchableOpacityProps;
 

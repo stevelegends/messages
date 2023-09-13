@@ -1,5 +1,5 @@
 // react
-import React, { FC } from "react";
+import React, { FC, ReactElement } from "react";
 
 // modules
 import { StyleSheet, TextInput, TextInputProps, View, Text } from "react-native";
@@ -8,7 +8,7 @@ import { StyleSheet, TextInput, TextInputProps, View, Text } from "react-native"
 import { useTheme } from "@react-navigation/native";
 
 type InputProps = {
-    label?: string;
+    label?: string | ReactElement;
     icon?: any;
     iconPack?: any;
     iconSize?: number;

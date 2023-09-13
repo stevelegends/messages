@@ -1,0 +1,55 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2023-09-13 15:08+0700\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: ru\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
+
+#: src/navigation/auth-navigation.tsx
+#: src/screens/sign-in-screen/sign-in-screen.tsx
+msgid "Sign Up"
+msgstr ""
+
+#: src/navigation/auth-navigation.tsx
+#: src/screens/sign-in-screen/sign-in-screen.tsx
+msgid "Sign in"
+msgstr ""
+
+#: src/navigation/bottom-tab-navigation.tsx
+msgid "Chats"
+msgstr ""
+
+#: src/navigation/bottom-tab-navigation.tsx
+#: src/navigation/main-navigation.tsx
+msgid "Settings"
+msgstr ""
+
+#: src/navigation/main-navigation.tsx
+msgid "Chat"
+msgstr ""
+
+#: src/screens/sign-in-screen/sign-in-screen.tsx
+#: src/screens/sign-up-screen/sign-up-screen.tsx
+msgid "Email"
+msgstr ""
+
+#: src/screens/sign-in-screen/sign-in-screen.tsx
+#: src/screens/sign-up-screen/sign-up-screen.tsx
+msgid "Password"
+msgstr ""
+
+#: src/screens/sign-up-screen/sign-up-screen.tsx
+msgid "First name"
+msgstr ""
+
+#: src/screens/sign-up-screen/sign-up-screen.tsx
+msgid "Last name"
+msgstr ""

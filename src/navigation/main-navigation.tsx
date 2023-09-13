@@ -2,12 +2,16 @@ import React from "react";
 
 // modules
 import { createStackNavigator } from "@react-navigation/stack";
+import { t } from "@lingui/macro";
 
 // navigation
 import BottomTabNavigation from "@navigation/bottom-tab-navigation";
 
 // screens
 import { ChatScreen, SettingsScreen } from "@screens";
+
+// hooks
+import { useLingui } from "@lingui/react";
 
 export type StackNavigatorParams = {
     BottomTab: undefined;
@@ -18,6 +22,7 @@ export type StackNavigatorParams = {
 const Stack = createStackNavigator<StackNavigatorParams>();
 
 const MainNavigation = () => {
+    const { i18n } = useLingui();
     return (
         <Stack.Navigator>
             <Stack.Screen
@@ -29,7 +34,7 @@ const MainNavigation = () => {
             />
             <Stack.Screen
                 options={{
-                    title: "Chat",
+                    title: t(i18n)`Chat`,
                     headerBackTitle: "Back"
                 }}
                 name="ChatScreen"
@@ -37,7 +42,7 @@ const MainNavigation = () => {
             />
             <Stack.Screen
                 options={{
-                    title: "Settings",
+                    title: t(i18n)`Settings`,
                     headerBackTitle: "Back"
                 }}
                 name="SettingsScreen"

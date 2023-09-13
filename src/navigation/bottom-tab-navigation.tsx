@@ -5,6 +5,7 @@ import React, { FC } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { Ionicons } from "@expo/vector-icons";
+import { t } from "@lingui/macro";
 
 // screens
 import { ChatListScreen, ChatSettingsScreen } from "@screens";
@@ -14,6 +15,9 @@ import ToggleThemeButton from "../components/toggle-theme-button";
 
 // navigation
 import { StackNavigatorParams } from "@navigation/main-navigation";
+
+// hooks
+import { useLingui } from "@lingui/react";
 
 export type BottomTabStackNavigatorParams = {
     ChatListScreen: undefined;
@@ -27,11 +31,13 @@ type BottomTabNavigationProps = {
 };
 
 const BottomTabNavigation: FC<BottomTabNavigationProps> = () => {
+    const { i18n } = useLingui();
+
     return (
         <Tab.Navigator>
             <Tab.Screen
                 options={{
-                    title: "Chats",
+                    title: t(i18n)`Chats`,
                     tabBarLabel: "Chats",
                     tabBarIcon: ({ size, color }) => (
                         <Ionicons name="chatbubble-outline" size={size} color={color} />
@@ -42,7 +48,7 @@ const BottomTabNavigation: FC<BottomTabNavigationProps> = () => {
             />
             <Tab.Screen
                 options={{
-                    title: "Settings",
+                    title: t(i18n)`Settings`,
                     tabBarLabel: "Settings",
                     tabBarIcon: ({ size, color }) => (
                         <Ionicons name="settings-outline" size={size} color={color} />

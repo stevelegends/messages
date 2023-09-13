@@ -4,6 +4,7 @@ import React, { FC } from "react";
 // modules
 import { StackNavigationProp } from "@react-navigation/stack";
 import { Feather, FontAwesome } from "@expo/vector-icons";
+import { Trans } from "@lingui/macro";
 
 // navigation
 import { AuthStackNavigatorParams } from "@navigation/auth-navigation";
@@ -24,10 +25,26 @@ type SignUpScreenProps = {
 const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
     return (
         <PageContainer>
-            <Input label="First name" iconPack={FontAwesome} icon="user-o" iconSize={20} />
-            <Input label="Last name" iconPack={FontAwesome} icon="user-o" iconSize={20} />
-            <Input label="Email" iconPack={Feather} icon="mail" iconSize={20} />
-            <Input label="Password" iconPack={Feather} icon="lock" iconSize={20} secureTextEntry />
+            <Input
+                label={<Trans>First name</Trans>}
+                iconPack={FontAwesome}
+                icon="user-o"
+                iconSize={20}
+            />
+            <Input
+                label={<Trans>Last name</Trans>}
+                iconPack={FontAwesome}
+                icon="user-o"
+                iconSize={20}
+            />
+            <Input label={<Trans>Email</Trans>} iconPack={Feather} icon="mail" iconSize={20} />
+            <Input
+                label={<Trans>Password</Trans>}
+                iconPack={Feather}
+                icon="lock"
+                iconSize={20}
+                secureTextEntry
+            />
             <SubmitButton
                 style={globalStyles["marginT-20"]}
                 title="Sign up"

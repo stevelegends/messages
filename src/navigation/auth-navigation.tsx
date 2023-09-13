@@ -4,12 +4,16 @@ import React from "react";
 // modules
 import { createStackNavigator } from "@react-navigation/stack";
 import { useTheme } from "@react-navigation/native";
+import { t } from "@lingui/macro";
 
 // screens
 import { SignInScreen, SignUpScreen } from "@screens";
 
 // components
 import ToggleThemeButton from "../components/toggle-theme-button";
+
+// hooks
+import { useLingui } from "@lingui/react";
 
 export type AuthStackNavigatorParams = {
     SignInScreen: undefined;
@@ -20,11 +24,13 @@ const Stack = createStackNavigator<AuthStackNavigatorParams>();
 
 const AuthNavigation = () => {
     const theme = useTheme();
+    const { i18n } = useLingui();
+
     return (
         <Stack.Navigator initialRouteName="SignInScreen">
             <Stack.Screen
                 options={{
-                    title: "Sign Up",
+                    title: t(i18n)`Sign Up`,
                     headerShown: true,
                     headerStyle: {
                         backgroundColor: theme.colors.background
@@ -37,7 +43,7 @@ const AuthNavigation = () => {
             />
             <Stack.Screen
                 options={{
-                    title: "Sign In",
+                    title: t(i18n)`Sign in`,
                     headerShown: true,
                     headerStyle: {
                         backgroundColor: theme.colors.background
