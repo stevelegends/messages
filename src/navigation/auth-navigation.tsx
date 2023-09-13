@@ -2,9 +2,9 @@
 import React from "react";
 
 // modules
-import { createStackNavigator } from "@react-navigation/stack";
 import { useTheme } from "@react-navigation/native";
 import { t } from "@lingui/macro";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 // screens
 import { SignInScreen, SignUpScreen } from "@screens";
@@ -20,7 +20,7 @@ export type AuthStackNavigatorParams = {
     SignUpScreen: undefined;
 };
 
-const Stack = createStackNavigator<AuthStackNavigatorParams>();
+const Stack = createNativeStackNavigator<AuthStackNavigatorParams>();
 
 const AuthNavigation = () => {
     const theme = useTheme();
@@ -35,8 +35,8 @@ const AuthNavigation = () => {
                     headerStyle: {
                         backgroundColor: theme.colors.background
                     },
-                    headerShadowVisible: false,
-                    headerRight: () => <ToggleThemeButton />
+                    headerRight: () => <ToggleThemeButton />,
+                    gestureEnabled: false
                 }}
                 name="SignUpScreen"
                 component={SignUpScreen}
@@ -48,8 +48,8 @@ const AuthNavigation = () => {
                     headerStyle: {
                         backgroundColor: theme.colors.background
                     },
-                    headerShadowVisible: false,
-                    headerRight: () => <ToggleThemeButton />
+                    headerRight: () => <ToggleThemeButton />,
+                    gestureEnabled: false
                 }}
                 name="SignInScreen"
                 component={SignInScreen}

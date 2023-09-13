@@ -9,6 +9,7 @@ import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { i18n } from "@lingui/core";
+import Animated from "react-native-reanimated";
 
 // navigation
 import { AuthStackNavigatorParams } from "@navigation/auth-navigation";
@@ -72,13 +73,16 @@ const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
                     behavior={Platform.select({ ios: "height" })}
                     keyboardVerticalOffset={100}
                 >
-                    <View style={[globalStyles["flex-center"]]}>
+                    <Animated.View
+                        sharedTransitionTag="appLogo"
+                        style={[globalStyles["flex-center"]]}
+                    >
                         <Feather
                             name="message-circle"
                             size={globalSize.screenWidth / 3}
                             color={theme.colors.primary}
                         />
-                    </View>
+                    </Animated.View>
                     <Input
                         label={<Trans>First name</Trans>}
                         iconPack={FontAwesome}

@@ -1,7 +1,7 @@
 import React from "react";
 
 // modules
-import { createStackNavigator } from "@react-navigation/stack";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { t } from "@lingui/macro";
 
 // navigation
@@ -19,7 +19,7 @@ export type StackNavigatorParams = {
     ChatScreen: undefined;
 };
 
-const Stack = createStackNavigator<StackNavigatorParams>();
+const Stack = createNativeStackNavigator<StackNavigatorParams>();
 
 const MainNavigation = () => {
     const { i18n } = useLingui();
