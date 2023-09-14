@@ -18,7 +18,7 @@
     },
     "husky": {
         "hooks": {
-            "pre-commit": "lingui extract $(git diff --name-only --staged)"
+            "pre-commit": "lingui extract && lingui compile"
         }
     },
     "dependencies": {
