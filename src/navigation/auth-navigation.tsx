@@ -35,7 +35,8 @@ const AuthNavigation = () => {
                     headerStyle: {
                         backgroundColor: theme.colors.background
                     },
-                    gestureEnabled: false
+                    gestureEnabled: false,
+                    animation: "slide_from_left"
                 }}
                 name="SignUpScreen"
                 component={SignUpScreen}

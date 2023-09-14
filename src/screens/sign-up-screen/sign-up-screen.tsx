@@ -1,5 +1,5 @@
 // react
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 
 // modules
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -21,7 +21,7 @@ import styles from "./sign-up-screen.styles";
 import { globalSize, globalStyles } from "@theme/theme";
 
 // components
-import { Input, PageContainer, SubmitButton } from "@components";
+import { Input, PageContainer, SubmitButton, ToggleEyeButton } from "@components";
 
 // hooks
 import { useTheme } from "@react-navigation/native";
@@ -40,13 +40,29 @@ type SignUpFormData = {
 
 const schema = yup
     .object({
-        firstName: yup.string().required(i18n._(msg`First name is a required`)),
-        lastName: yup.string().required(i18n._(msg`Last name is a required`)),
+        firstName: yup
+            .string()
+            .matches(/^[A-Za-z 0-9]*$/, i18n._(msg`Please enter valid first name`))
+            .max(40, i18n._(msg`First name must be at most 40 characters`))
+            .required(i18n._(msg`First name is a required`)),
+        lastName: yup
+            .string()
+            .matches(/^[A-Za-z 0-9]*$/, i18n._(msg`Please enter valid last name`))
+            .max(40, i18n._(msg`Last name must be at most 40 characters`))
+            .required(i18n._(msg`Last name is a required`)),
         email: yup
             .string()
             .required(i18n._(msg`Email is a required`))
-            .email(i18n._(msg`Email must be a valid email`)),
-        password: yup.string().required(i18n._(msg`Password is a required`))
+            .email(i18n._(msg`Email must be a vali email`)),
+        password: yup
+            .string()
+            .required(i18n._(msg`Password is a required`))
+            .matches(
+                /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{6,})/,
+                i18n._(
+                    msg`Password must Contain 6 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character`
+                )
+            )
     })
     .required();
 
@@ -60,6 +76,8 @@ const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
     } = useForm<SignUpFormData>({
         resolver: yupResolver(schema)
     });
+
+    const [isHidePassword, setIsHidePassword] = useState<boolean>(true);
 
     const onSubmit = (data: SignUpFormData) => {
         console.log(JSON.stringify(data, "", "\t"));
@@ -88,6 +106,7 @@ const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
                         iconPack={FontAwesome}
                         icon="user-o"
                         iconSize={20}
+                        autoCapitalize="none"
                         control={control}
                         name="firstName"
                         errorText={errors.firstName?.message}
@@ -97,6 +116,7 @@ const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
                         iconPack={FontAwesome}
                         icon="user-o"
                         iconSize={20}
+                        autoCapitalize="none"
                         control={control}
                         name="lastName"
                         errorText={errors.lastName?.message}
@@ -106,6 +126,7 @@ const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
                         iconPack={Feather}
                         icon="mail"
                         iconSize={20}
+                        autoCapitalize="none"
                         control={control}
                         name="email"
                         errorText={errors.email?.message}
@@ -115,10 +136,14 @@ const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
                         iconPack={Feather}
                         icon="lock"
                         iconSize={20}
-                        secureTextEntry
+                        autoCapitalize="none"
+                        secureTextEntry={isHidePassword}
                         control={control}
                         name="password"
                         errorText={errors.password?.message}
+                        rightView={
+                            <ToggleEyeButton isOff={isHidePassword} onPress={setIsHidePassword} />
+                        }
                     />
                     <SubmitButton
                         style={globalStyles["marginT-20"]}

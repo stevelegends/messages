@@ -2,10 +2,9 @@
 import React from "react";
 
 // modules
-import { Switch, View } from "react-native";
-
-// components
-import { Text } from "./index";
+import { Pressable, View } from "react-native";
+import { Feather } from "@expo/vector-icons";
+import Animated, { FlipInEasyY, FlipOutEasyY } from "react-native-reanimated";
 
 // contexts
 import { useThemeProvider } from "@contexts/theme-context";
@@ -13,18 +12,27 @@ import { useThemeProvider } from "@contexts/theme-context";
 // theme
 import { globalStyles } from "@theme/theme";
 
-// utils
-import { capitalizeFirstLetter } from "@utils";
+// hooks
+import { useTheme } from "@react-navigation/native";
 
 const ToggleThemeButton = () => {
-    const { isDark, setToggleScheme, scheme } = useThemeProvider();
+    const { isDark, setToggleScheme } = useThemeProvider();
+    const theme = useTheme();
 
     return (
         <View style={[globalStyles["paddingR-10"], globalStyles["horizontal-center"]]}>
-            <Text style={{ fontFamily: "Roboto-Bold", ...globalStyles["marginR-5"] }}>
-                {capitalizeFirstLetter(scheme as string)}
-            </Text>
-            <Switch value={isDark} onValueChange={setToggleScheme} />
+            <Pressable onPress={() => setToggleScheme()}>
+                {isDark && (
+                    <Animated.View entering={FlipInEasyY} exiting={FlipOutEasyY}>
+                        <Feather name="sun" size={24} color={theme.colors.text} />
+                    </Animated.View>
+                )}
+                {!isDark && (
+                    <Animated.View entering={FlipInEasyY} exiting={FlipOutEasyY}>
+                        <Feather name="moon" size={24} color={theme.colors.text} />
+                    </Animated.View>
+                )}
+            </Pressable>
         </View>
     );
 };

@@ -1,5 +1,5 @@
 // react
-import React, { FC, ReactElement } from "react";
+import React, { FC, Fragment, ReactElement } from "react";
 
 // modules
 import { StyleSheet, TextInput, TextInputProps, View, Text } from "react-native";
@@ -17,6 +17,7 @@ type InputProps = {
     errorText?: string;
     control: any;
     name: string;
+    rightView?: ReactElement;
 } & TextInputProps;
 
 const Input: FC<InputProps> = props => {
@@ -47,16 +48,22 @@ const Input: FC<InputProps> = props => {
                     onChangeText={field.onChange}
                     style={[{ color: theme.colors.text }, styles.input, props.style]}
                 />
+                <View
+                    style={[
+                        styles.inputRightView,
+                        props.rightView ? {} : { width: 0, marginLeft: 0 }
+                    ]}
+                >
+                    {props.rightView ? <Fragment>{props.rightView}</Fragment> : null}
+                </View>
             </View>
 
-            {errorText ? (
+            {errorText && (
                 <Animated.View entering={FadeIn} exiting={FadeOut} style={styles.errorContainer}>
                     <Text style={[styles.errorText, { color: theme.colors.notification }]}>
                         {errorText}
                     </Text>
                 </Animated.View>
-            ) : (
-                <></>
             )}
         </View>
     );
@@ -69,9 +76,15 @@ const styles = StyleSheet.create({
     inputContainer: {
         width: "100%",
         paddingHorizontal: 10,
-        paddingVertical: 15,
         borderRadius: 2,
         flexDirection: "row",
+        alignItems: "center"
+    },
+    inputRightView: {
+        width: 25,
+        height: 45,
+        marginLeft: 10,
+        justifyContent: "center",
         alignItems: "center"
     },
     icon: {
