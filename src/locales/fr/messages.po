@@ -14,7 +14,6 @@ msgstr ""
 "Plural-Forms: \n"
 
 #: src/navigation/auth-navigation.tsx
-#: src/screens/sign-in-screen/sign-in-screen.tsx
 msgid "Sign Up"
 msgstr ""
 
@@ -36,6 +35,35 @@ msgstr ""
 msgid "Chat"
 msgstr ""
 
+#: src/screens/sign-in-screen/sign-in-screen.tsx
+#: src/screens/sign-up-screen/sign-up-screen.tsx
+msgid "Email is a required"
+msgstr ""
+
+#: src/screens/sign-in-screen/sign-in-screen.tsx
+#: src/screens/sign-up-screen/sign-up-screen.tsx
+msgid "Email must be a valid email"
+msgstr ""
+
+#: src/screens/sign-in-screen/sign-in-screen.tsx
+#: src/screens/sign-up-screen/sign-up-screen.tsx
+msgid "Password is a required"
+msgstr ""
+
+#: src/screens/sign-in-screen/sign-in-screen.tsx
+#: src/screens/sign-up-screen/sign-up-screen.tsx
+msgid "Email"
+msgstr ""
+
+#: src/screens/sign-in-screen/sign-in-screen.tsx
+#: src/screens/sign-up-screen/sign-up-screen.tsx
+msgid "Password"
+msgstr ""
+
+#: src/screens/sign-in-screen/sign-in-screen.tsx
+msgid "Switch to sign up"
+msgstr ""
+
 #: src/screens/sign-up-screen/sign-up-screen.tsx
 msgid "First name is a required"
 msgstr ""
@@ -45,29 +73,9 @@ msgid "Last name is a required"
 msgstr ""
 
 #: src/screens/sign-up-screen/sign-up-screen.tsx
-msgid "Email is a required"
-msgstr ""
-
-#: src/screens/sign-up-screen/sign-up-screen.tsx
-msgid "Email must be a valid email"
-msgstr ""
-
-#: src/screens/sign-up-screen/sign-up-screen.tsx
-msgid "Password is a required"
-msgstr ""
-
-#: src/screens/sign-up-screen/sign-up-screen.tsx
 msgid "First name"
 msgstr ""
 
 #: src/screens/sign-up-screen/sign-up-screen.tsx
 msgid "Last name"
-msgstr ""
-
-#: src/screens/sign-up-screen/sign-up-screen.tsx
-msgid "Email"
-msgstr ""
-
-#: src/screens/sign-up-screen/sign-up-screen.tsx
-msgid "Password"
 msgstr ""

@@ -2,6 +2,95 @@
 
 # Translation
 
+## I. configuration
+
+1. Install
+
+```shell
+yarn add --dev @lingui/cli @babel/core
+yarn add --dev @lingui/macro babel-plugin-macros
+yarn add @lingui/react
+```
+
+2. Add plugin to Babel config
+
+```json
+{
+    "plugins": ["macros"]
+}
+```
+
+3. Create lingui.config.js
+
+```shell
+# in root project
+mkdir "lingui.config.js"
+vi "lingui.config.js"
+# copy & paste configs below & ESC
+:wq
+```
+
+```js
+module.exports = {
+    format: "po",
+    orderBy: "origin",
+    locales: ["en"], // add your lang .eg: locales: ["en", "zh", "fr", "ru", "ta"],
+    sourceLocale: "en",
+    catalogs: [
+        {
+            path: "src/locales/{locale}/messages",
+            include: ["src"]
+        }
+    ],
+    fallbackLocales: {
+        default: "en"
+    },
+    formatOptions: {
+        origins: true,
+        lineNumbers: false
+    }
+};
+```
+
+4. script package.json
+
+```json
+"lang:extract": "lingui extract",
+"lang:compile": "lingui compile"
+```
+
+5. Check the installation by running:
+
+```shell
+yarn lang:extract
+yarn lang:compile
+```
+
+```html
+Catalog statistics: ┌──────────┬─────────────┬─────────┐ │ Language │ Total count │ Missing │
+├──────────┼─────────────┼─────────┤ │ cs │ 0 │ 0 │ │ en │ 0 │ 0 │ │ fr │ 0 │ 0 │
+└──────────┴─────────────┴─────────┘ (use "lingui extract" to update catalogs with new messages)
+(use "lingui compile" to compile catalogs for production)
+```
+
+6. husky (optional)
+
+```json
+"husky": {
+    "hooks": {
+        "pre-commit": "lingui extract $(git diff --name-only --staged)"
+    }
+},
+```
+
+Filters source paths to only extract messages from passed files
+
+```shell
+lingui extract src/components
+```
+
+## II. How to use?
+
 ### 1. Translating:
 
 ```ts

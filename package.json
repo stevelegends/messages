@@ -16,6 +16,11 @@
     "lint-staged": {
         "**/*": "prettier --write --ignore-unknown"
     },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lingui extract $(git diff --name-only --staged)"
+        }
+    },
     "dependencies": {
         "@hookform/resolvers": "^3.3.1",
         "@lingui/react": "^4.4.2",

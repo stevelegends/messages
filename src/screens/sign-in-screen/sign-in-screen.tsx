@@ -3,7 +3,7 @@ import React, { FC } from "react";
 
 // modules
 import { StackNavigationProp } from "@react-navigation/stack";
-import { Feather } from "@expo/vector-icons";
+import { Feather, AntDesign } from "@expo/vector-icons";
 import { msg, Trans } from "@lingui/macro";
 import { KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -71,11 +71,11 @@ const SignInScreen: FC<SignInScreenProps> = ({ navigation }) => {
                 >
                     <Animated.View
                         sharedTransitionTag="appLogo"
-                        style={[globalStyles["flex-center"]]}
+                        style={[globalStyles["flex-center"], globalStyles["paddingV-20"]]}
                     >
-                        <Feather
-                            name="message-circle"
-                            size={globalSize.screenWidth / 3}
+                        <AntDesign
+                            name="message1"
+                            size={globalSize.screenWidth / 4}
                             color={theme.colors.primary}
                         />
                     </Animated.View>
@@ -87,6 +87,7 @@ const SignInScreen: FC<SignInScreenProps> = ({ navigation }) => {
                         control={control}
                         name="email"
                         errorText={errors.email?.message}
+                        keyboardType="email-address"
                     />
                     <Input
                         label={<Trans>Password</Trans>}
@@ -109,7 +110,7 @@ const SignInScreen: FC<SignInScreenProps> = ({ navigation }) => {
                             backgroundColor: theme.colors.background
                         }}
                         titleStyle={{ color: theme.colors.primary }}
-                        title={<Trans>Sign Up</Trans>}
+                        title={<Trans>Switch to sign up</Trans>}
                         onPress={() => {
                             navigation.navigate("SignUpScreen");
                         }}

@@ -3,7 +3,7 @@ import React, { FC } from "react";
 
 // modules
 import { StackNavigationProp } from "@react-navigation/stack";
-import { Feather, FontAwesome } from "@expo/vector-icons";
+import { AntDesign, Feather, FontAwesome } from "@expo/vector-icons";
 import { msg, Trans } from "@lingui/macro";
 import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 import * as yup from "yup";
@@ -67,7 +67,7 @@ const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
 
     return (
         <PageContainer>
-            <ScrollView>
+            <ScrollView showsVerticalScrollIndicator={false}>
                 <KeyboardAvoidingView
                     style={[globalStyles["flex-1"], globalStyles["flex-jc-center"]]}
                     behavior={Platform.select({ ios: "height" })}
@@ -75,11 +75,11 @@ const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
                 >
                     <Animated.View
                         sharedTransitionTag="appLogo"
-                        style={[globalStyles["flex-center"]]}
+                        style={[globalStyles["flex-center"], globalStyles["paddingV-20"]]}
                     >
-                        <Feather
-                            name="message-circle"
-                            size={globalSize.screenWidth / 3}
+                        <AntDesign
+                            name="message1"
+                            size={globalSize.screenWidth / 4}
                             color={theme.colors.primary}
                         />
                     </Animated.View>

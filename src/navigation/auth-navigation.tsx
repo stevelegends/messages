@@ -35,7 +35,6 @@ const AuthNavigation = () => {
                     headerStyle: {
                         backgroundColor: theme.colors.background
                     },
-                    headerRight: () => <ToggleThemeButton />,
                     gestureEnabled: false
                 }}
                 name="SignUpScreen"

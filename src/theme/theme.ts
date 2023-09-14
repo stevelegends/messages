@@ -83,6 +83,9 @@ export const globalStyles = StyleSheet.create({
     },
     "paddingH-20": {
         paddingHorizontal: 20
+    },
+    "paddingV-20": {
+        paddingVertical: 20
     }
     // TODO add more
 });
