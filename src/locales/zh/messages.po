@@ -41,13 +41,17 @@ msgid "Email is a required"
 msgstr ""
 
 #: src/screens/sign-in-screen/sign-in-screen.tsx
-#: src/screens/sign-up-screen/sign-up-screen.tsx
 msgid "Email must be a valid email"
 msgstr ""
 
 #: src/screens/sign-in-screen/sign-in-screen.tsx
 #: src/screens/sign-up-screen/sign-up-screen.tsx
 msgid "Password is a required"
+msgstr ""
+
+#: src/screens/sign-in-screen/sign-in-screen.tsx
+#: src/screens/sign-up-screen/sign-up-screen.tsx
+msgid "Password must Contain 6 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
 msgstr ""
 
 #: src/screens/sign-in-screen/sign-in-screen.tsx
@@ -65,11 +69,31 @@ msgid "Switch to sign up"
 msgstr ""
 
 #: src/screens/sign-up-screen/sign-up-screen.tsx
+msgid "Please enter valid first name"
+msgstr ""
+
+#: src/screens/sign-up-screen/sign-up-screen.tsx
+msgid "First name must be at most 40 characters"
+msgstr ""
+
+#: src/screens/sign-up-screen/sign-up-screen.tsx
 msgid "First name is a required"
 msgstr ""
 
 #: src/screens/sign-up-screen/sign-up-screen.tsx
+msgid "Please enter valid last name"
+msgstr ""
+
+#: src/screens/sign-up-screen/sign-up-screen.tsx
+msgid "Last name must be at most 40 characters"
+msgstr ""
+
+#: src/screens/sign-up-screen/sign-up-screen.tsx
 msgid "Last name is a required"
+msgstr ""
+
+#: src/screens/sign-up-screen/sign-up-screen.tsx
+msgid "Email must be a vali email"
 msgstr ""
 
 #: src/screens/sign-up-screen/sign-up-screen.tsx
