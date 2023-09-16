@@ -5,11 +5,11 @@ import React, { FC, useState } from "react";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { Feather, AntDesign } from "@expo/vector-icons";
 import { msg, Trans } from "@lingui/macro";
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from "react-native";
+import { KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { i18n } from "@lingui/core";
-import Animated, { SlideInDown, SlideOutDown } from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 
 // navigation
 import { AuthStackNavigatorParams } from "@navigation/auth-navigation";
@@ -72,13 +72,6 @@ const SignInScreen: FC<SignInScreenProps> = ({ navigation }) => {
 
     return (
         <PageContainer>
-            {theme.dark ? (
-                <Animated.View
-                    entering={SlideInDown}
-                    exiting={SlideOutDown}
-                    style={[StyleSheet.absoluteFill, { backgroundColor: theme.colors.background }]}
-                />
-            ) : null}
             <ScrollView>
                 <KeyboardAvoidingView
                     style={[globalStyles["flex-1"], globalStyles["flex-jc-center"]]}

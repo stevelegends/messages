@@ -16,6 +16,7 @@ module.exports = function (api) {
                         "@hoc": "./src/hoc",
                         "@hooks": "./src/hooks",
                         "@navigation": "./src/navigation",
+                        "@services": "./src/services",
                         "@theme": "./src/theme",
                         "@assets": "./assets"
                     }

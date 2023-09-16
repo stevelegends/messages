@@ -26,6 +26,7 @@ import { Input, PageContainer, SubmitButton, ToggleEyeButton } from "@components
 // hooks
 import { useTheme } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
+import { useFirebase } from "@hooks/index";
 
 type SignUpScreenProps = {
     navigation: StackNavigationProp<AuthStackNavigatorParams, "SignUpScreen">;
@@ -69,6 +70,8 @@ const schema = yup
 const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
     const theme = useTheme();
 
+    const firebase = useFirebase();
+
     const {
         control,
         handleSubmit,
@@ -80,7 +83,7 @@ const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
     const [isHidePassword, setIsHidePassword] = useState<boolean>(true);
 
     const onSubmit = (data: SignUpFormData) => {
-        console.log(JSON.stringify(data, "", "\t"));
+        firebase.onSignUp(data);
     };
 
     return (
@@ -149,6 +152,7 @@ const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
                         style={globalStyles["marginT-20"]}
                         title="Sign up"
                         onPress={handleSubmit(onSubmit)}
+                        loading={false}
                     />
                 </KeyboardAvoidingView>
             </ScrollView>

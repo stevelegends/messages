@@ -11,7 +11,9 @@ import { useThemeProvider } from "@contexts/theme-context";
 // navigation
 import MainNavigation from "@navigation/main-navigation";
 import AuthNavigation from "@navigation/auth-navigation";
-import useAuth from "@hooks/useAuth";
+
+// hooks
+import { useAuth } from "@hooks/index";
 
 const AppTheme = {
     ...DefaultTheme,

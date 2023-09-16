@@ -103,3 +103,11 @@ msgstr ""
 #: src/screens/sign-up-screen/sign-up-screen.tsx
 msgid "Last name"
 msgstr ""
+
+#: src/utils/error-message.ts
+msgid "This email already in use"
+msgstr ""
+
+#: src/utils/error-message.ts
+msgid "Something went wrong."
+msgstr ""

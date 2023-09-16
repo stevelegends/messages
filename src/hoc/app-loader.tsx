@@ -13,12 +13,12 @@ import { useLoadFonts } from "@hooks/index";
 // utils
 import { wait } from "@utils";
 
-SplashScreen.preventAutoHideAsync();
-
 // language config
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { messages } from "../locales/en/messages";
+
+SplashScreen.preventAutoHideAsync();
 
 i18n.load("en", messages);
 i18n.activate("en");

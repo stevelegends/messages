@@ -2,7 +2,14 @@
 import React, { FC, ReactElement } from "react";
 
 // modules
-import { StyleSheet, Text, TextStyle, TouchableOpacity, TouchableOpacityProps } from "react-native";
+import {
+    ActivityIndicator,
+    StyleSheet,
+    Text,
+    TextStyle,
+    TouchableOpacity,
+    TouchableOpacityProps
+} from "react-native";
 
 // hooks
 import { useTheme } from "@react-navigation/native";
@@ -10,6 +17,7 @@ import { useTheme } from "@react-navigation/native";
 type SubmitButtonProps = {
     title?: string | ReactElement;
     titleStyle?: TextStyle;
+    loading?: boolean;
 } & TouchableOpacityProps;
 
 const SubmitButton: FC<SubmitButtonProps> = props => {
@@ -23,6 +31,7 @@ const SubmitButton: FC<SubmitButtonProps> = props => {
                 { backgroundColor: theme.colors.primary, opacity: props.disabled ? 0.5 : 1 },
                 props.style
             ]}
+            disabled={props.disabled || props.loading}
         >
             <Text
                 style={[
@@ -30,8 +39,11 @@ const SubmitButton: FC<SubmitButtonProps> = props => {
                     props.titleStyle
                 ]}
             >
-                {props.title}
+                {props.loading ? " " : props.title}
             </Text>
+            {props.loading ? (
+                <ActivityIndicator color={theme.colors.text} style={[StyleSheet.absoluteFill]} />
+            ) : null}
         </TouchableOpacity>
     );
 };

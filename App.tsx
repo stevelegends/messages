@@ -1,6 +1,9 @@
 // import initialize
 import "react-native-gesture-handler";
 
+// services
+import "@services/firebase-app";
+
 // react
 import React from "react";
 
