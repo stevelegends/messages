@@ -7,16 +7,20 @@ import * as SplashScreen from "expo-splash-screen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-// hooks
-import { useLoadFonts } from "@hooks/index";
-
 // utils
 import { wait } from "@utils";
+
+// load font config
+import { useLoadFonts } from "@hooks/index";
 
 // language config
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { messages } from "../locales/en/messages";
+
+// store config
+import { Provider } from "react-redux";
+import { store } from "@store/store";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -47,11 +51,13 @@ const AppLoader: FC<AppLoaderProps> = props => {
         return <Fragment />;
     }
     return (
-        <I18nProvider i18n={i18n}>
-            <SafeAreaProvider>
-                <GestureHandlerRootView onLayout={onLayoutRootView} {...props} />
-            </SafeAreaProvider>
-        </I18nProvider>
+        <Provider store={store}>
+            <I18nProvider i18n={i18n}>
+                <SafeAreaProvider>
+                    <GestureHandlerRootView onLayout={onLayoutRootView} {...props} />
+                </SafeAreaProvider>
+            </I18nProvider>
+        </Provider>
     );
 };
 

@@ -28,25 +28,32 @@ type CreateUser = {
 };
 
 const useFirebase = () => {
-    const auth = getFirebaseAuth();
+    const firebaseAuth = getFirebaseAuth();
 
-    const onSignUp = async (payload: AuthSignUp, onLoading: (isLoading: boolean) => void) => {
+    const onSignUp = async (
+        payload: AuthSignUp,
+        onLoading: (isLoading: boolean) => void,
+        onAuthResult: (payload: { token: string; userData: any }) => void
+    ) => {
         onLoading(true);
         try {
             const result = await createUserWithEmailAndPassword(
-                auth,
+                firebaseAuth,
                 payload.email,
                 payload.password
             );
-            const uid = result.user.uid;
+            const user: any = result.user;
+            const {
+                uid,
+                stsTokenManager: { accessToken }
+            } = user;
             const userData = await createUser({
                 firstName: payload.firstName,
                 lastName: payload.lastName,
                 email: payload.email,
                 userId: uid
             });
-
-            __DEV__ && console.log("SignUp result", result, userData);
+            onAuthResult({ token: accessToken, userData });
         } catch (e: any) {
             const message = e.code
                 ? i18n._(ErrorMessage[e.code as keyof typeof ErrorMessage])

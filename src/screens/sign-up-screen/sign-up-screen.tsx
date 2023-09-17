@@ -28,6 +28,9 @@ import { useTheme } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
 import { useFirebase } from "@hooks/index";
 
+// store
+import useAuth from "@store/features/auth/use-auth";
+
 type SignUpScreenProps = {
     navigation: StackNavigationProp<AuthStackNavigatorParams, "SignUpScreen">;
 };
@@ -71,6 +74,8 @@ const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
     const theme = useTheme();
 
     const firebase = useFirebase();
+    const auth = useAuth();
+
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const {
@@ -84,7 +89,7 @@ const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
     const [isHidePassword, setIsHidePassword] = useState<boolean>(true);
 
     const onSubmit = (data: SignUpFormData) => {
-        firebase.onSignUp(data, setIsLoading);
+        firebase.onSignUp(data, setIsLoading, auth.setAuthenticate);
     };
 
     return (

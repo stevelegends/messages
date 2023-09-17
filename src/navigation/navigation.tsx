@@ -12,8 +12,8 @@ import { useThemeProvider } from "@contexts/theme-context";
 import MainNavigation from "@navigation/main-navigation";
 import AuthNavigation from "@navigation/auth-navigation";
 
-// hooks
-import { useAuth } from "@hooks/index";
+// store
+import useAuth from "@store/features/auth/use-auth";
 
 const AppTheme = {
     ...DefaultTheme,
@@ -24,6 +24,7 @@ const AppTheme = {
 
 const Navigation = () => {
     const { isDark } = useThemeProvider();
+
     const { isAuth } = useAuth();
 
     return (
