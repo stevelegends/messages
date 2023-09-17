@@ -71,6 +71,7 @@ const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
     const theme = useTheme();
 
     const firebase = useFirebase();
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const {
         control,
@@ -83,7 +84,7 @@ const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
     const [isHidePassword, setIsHidePassword] = useState<boolean>(true);
 
     const onSubmit = (data: SignUpFormData) => {
-        firebase.onSignUp(data);
+        firebase.onSignUp(data, setIsLoading);
     };
 
     return (
@@ -152,7 +153,7 @@ const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
                         style={globalStyles["marginT-20"]}
                         title="Sign up"
                         onPress={handleSubmit(onSubmit)}
-                        loading={false}
+                        loading={isLoading}
                     />
                 </KeyboardAvoidingView>
             </ScrollView>
