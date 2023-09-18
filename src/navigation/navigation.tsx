@@ -1,5 +1,5 @@
 // react
-import React, { Fragment } from "react";
+import React from "react";
 
 // modules
 import { DefaultTheme, DarkTheme, NavigationContainer } from "@react-navigation/native";
@@ -15,6 +15,9 @@ import AuthNavigation from "@navigation/auth-navigation";
 // store
 import useAuth from "@store/features/auth/use-auth";
 
+// hoc
+import AppLogin from "@hoc/app-login";
+
 const AppTheme = {
     ...DefaultTheme,
     colors: {
@@ -24,17 +27,16 @@ const AppTheme = {
 
 const Navigation = () => {
     const { isDark } = useThemeProvider();
-
-    const { isAuth } = useAuth();
+    const auth = useAuth();
 
     return (
-        <Fragment>
+        <AppLogin>
             <StatusBar style={isDark ? "light" : "dark"} />
             <NavigationContainer theme={isDark ? DarkTheme : AppTheme}>
-                {isAuth ? <MainNavigation /> : undefined}
-                {!isAuth ? <AuthNavigation /> : undefined}
+                {auth.isAuth ? <MainNavigation /> : undefined}
+                {!auth.isAuth ? <AuthNavigation /> : undefined}
             </NavigationContainer>
-        </Fragment>
+        </AppLogin>
     );
 };
 

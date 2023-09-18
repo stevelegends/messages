@@ -26,6 +26,10 @@ import { globalSize, globalStyles } from "@theme/theme";
 // hooks
 import { useTheme } from "@react-navigation/native";
 import { useForm } from "react-hook-form";
+import { useFirebase } from "@hooks/index";
+
+// store
+import useAuth from "@store/features/auth/use-auth";
 
 type SignInScreenProps = {
     navigation: StackNavigationProp<AuthStackNavigatorParams, "SignInScreen">;
@@ -56,6 +60,13 @@ const schema = yup
 
 const SignInScreen: FC<SignInScreenProps> = ({ navigation }) => {
     const theme = useTheme();
+
+    const firebase = useFirebase();
+
+    const auth = useAuth();
+
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
     const [isHidePassword, setIsHidePassword] = useState<boolean>(true);
 
     const {
@@ -67,7 +78,7 @@ const SignInScreen: FC<SignInScreenProps> = ({ navigation }) => {
     });
 
     const onSubmit = (data: SignInFormData) => {
-        console.log(JSON.stringify(data, "", "\t"));
+        firebase.onSignIn(data, setIsLoading, auth.setAuthenticate);
     };
 
     return (
@@ -117,6 +128,7 @@ const SignInScreen: FC<SignInScreenProps> = ({ navigation }) => {
                         style={globalStyles["marginT-20"]}
                         title={<Trans>Sign in</Trans>}
                         onPress={handleSubmit(onSubmit)}
+                        loading={isLoading}
                     />
                     <SubmitButton
                         style={{
@@ -128,6 +140,7 @@ const SignInScreen: FC<SignInScreenProps> = ({ navigation }) => {
                         onPress={() => {
                             navigation.navigate("SignUpScreen");
                         }}
+                        disabled={isLoading}
                     />
                 </KeyboardAvoidingView>
             </ScrollView>

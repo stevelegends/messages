@@ -7,6 +7,9 @@ import { useAppSelector, useAppDispatch } from "@hooks/index";
 // store
 import { setToken, setUserData } from "@store/features/auth/auth-slice";
 
+// utils
+import { clearAllData } from "@utils";
+
 const useAuth = () => {
     const dispatch = useAppDispatch();
 
@@ -15,7 +18,7 @@ const useAuth = () => {
 
     const isAuth = useMemo(() => token !== null && token !== "" && token !== undefined, [token]);
 
-    const setTokenAction = useCallback((payload: { token: string }) => {
+    const setTokenAction = useCallback((payload: { token: string | null }) => {
         dispatch(setToken(payload));
     }, []);
 
@@ -23,9 +26,14 @@ const useAuth = () => {
         dispatch(setUserData(payload));
     }, []);
 
-    const setAuthenticate = useCallback((payload: { token: string; userData: any }) => {
+    const setAuthenticate = useCallback((payload: { token: string | null; userData: any }) => {
         dispatch(setToken({ token: payload.token }));
         dispatch(setUserData({ userData: payload.userData }));
+    }, []);
+
+    const onLogout = useCallback(() => {
+        setAuthenticate({ token: null, userData: null });
+        clearAllData();
     }, []);
 
     return {
@@ -34,7 +42,8 @@ const useAuth = () => {
         setUserDataAction,
         token,
         userData,
-        isAuth
+        isAuth,
+        onLogout
     };
 };
 

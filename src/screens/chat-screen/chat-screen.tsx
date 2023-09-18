@@ -1,5 +1,5 @@
 // react
-import React, { FC, useCallback, useState } from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 
 // modules
 import {
@@ -42,6 +42,8 @@ const ChatScreen: FC<ChatScreenProps> = () => {
     const sendMessageOnPress = useCallback(() => {
         setMessageText("");
     }, [messageText]);
+
+    useEffect(() => {}, []);
 
     return (
         <SafeAreaView edges={["left", "right", "bottom"]} style={styles.container}>

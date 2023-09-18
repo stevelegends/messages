@@ -4,18 +4,23 @@ import { Alert } from "react-native";
 import { msg } from "@lingui/macro";
 
 // utils
-import { ErrorMessage } from "@utils";
+import { ErrorMessage, storeData } from "@utils";
 
 // services
 import { getFirebaseAuth } from "@services/firebase-app";
 
 // firebase
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { getDatabase, set, ref, child } from "firebase/database";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { getDatabase, set, get, ref, child } from "firebase/database";
 
 type AuthSignUp = {
     firstName: string;
     lastName: string;
+    email: string;
+    password: string;
+};
+
+type AuthSignIp = {
     email: string;
     password: string;
 };
@@ -45,17 +50,68 @@ const useFirebase = () => {
             const user: any = result.user;
             const {
                 uid,
-                stsTokenManager: { accessToken }
+                stsTokenManager: { accessToken, expirationTime }
             } = user;
+            const expiryDate = new Date(expirationTime);
+
             const userData = await createUser({
                 firstName: payload.firstName,
                 lastName: payload.lastName,
                 email: payload.email,
                 userId: uid
             });
+
+            storeData(
+                "userData",
+                JSON.stringify({
+                    token: accessToken,
+                    userId: uid,
+                    expiryDate: expiryDate.toISOString()
+                })
+            );
+
             onAuthResult({ token: accessToken, userData });
         } catch (e: any) {
-            const message = e.code
+            const message = ErrorMessage[e.code as keyof typeof ErrorMessage]
+                ? i18n._(ErrorMessage[e.code as keyof typeof ErrorMessage])
+                : e.message;
+            Alert.alert(i18n._(msg`An error occurred`), message, [{ text: i18n._(msg`Ok`) }]);
+        }
+        onLoading(false);
+    };
+
+    const onSignIn = async (
+        payload: AuthSignIp,
+        onLoading: (isLoading: boolean) => void,
+        onAuthResult: (payload: { token: string; userData: any }) => void
+    ) => {
+        onLoading(true);
+        try {
+            const result = await signInWithEmailAndPassword(
+                firebaseAuth,
+                payload.email,
+                payload.password
+            );
+            const user: any = result.user;
+            const {
+                uid,
+                stsTokenManager: { accessToken, expirationTime }
+            } = user;
+            const expiryDate = new Date(expirationTime);
+
+            const userData = await getUserData({ userId: uid });
+
+            storeData(
+                "userData",
+                JSON.stringify({
+                    token: accessToken,
+                    userId: uid,
+                    expiryDate: expiryDate.toISOString()
+                })
+            );
+            onAuthResult({ token: accessToken, userData });
+        } catch (e: any) {
+            const message = ErrorMessage[e.code as keyof typeof ErrorMessage]
                 ? i18n._(ErrorMessage[e.code as keyof typeof ErrorMessage])
                 : e.message;
             Alert.alert(i18n._(msg`An error occurred`), message, [{ text: i18n._(msg`Ok`) }]);
@@ -80,8 +136,21 @@ const useFirebase = () => {
         return userData;
     };
 
+    const getUserData = async (payload: { userId: string }) => {
+        try {
+            const dbRef = ref(getDatabase());
+            const userRef = child(dbRef, `users/${payload.userId}`);
+            const snapshot = await get(userRef);
+            return snapshot.val();
+        } catch (error) {
+            __DEV__ && console.log("getUserData", error);
+        }
+    };
+
     return {
-        onSignUp
+        onSignUp,
+        onSignIn,
+        getUserData
     };
 };
 
