@@ -13,6 +13,27 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: src/hooks/use-firebase.ts
+#: src/hooks/use-firebase.ts
+#: src/hooks/use-login.ts
+msgid "An error occurred"
+msgstr ""
+
+#: src/hooks/use-firebase.ts
+#: src/hooks/use-firebase.ts
+#: src/hooks/use-login.ts
+#: src/hooks/use-login.ts
+msgid "Ok"
+msgstr ""
+
+#: src/hooks/use-login.ts
+msgid "Session Expired"
+msgstr ""
+
+#: src/hooks/use-login.ts
+msgid "Please sign in again."
+msgstr ""
+
 #: src/navigation/auth-navigation.tsx
 msgid "Sign Up"
 msgstr ""
@@ -106,6 +127,14 @@ msgstr ""
 
 #: src/utils/error-message.ts
 msgid "This email already in use"
+msgstr ""
+
+#: src/utils/error-message.ts
+msgid "Invalid login credentials"
+msgstr ""
+
+#: src/utils/error-message.ts
+msgid "Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later."
 msgstr ""
 
 #: src/utils/error-message.ts
