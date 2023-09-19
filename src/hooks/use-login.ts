@@ -1,5 +1,10 @@
 // react
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
+
+// modules
+import { Alert } from "react-native";
+import { i18n } from "@lingui/core";
+import { msg } from "@lingui/macro";
 
 // utils
 import { ErrorMessage, getData } from "@utils";
@@ -9,17 +14,12 @@ import { useFirebase } from "@hooks/index";
 
 // store
 import useAuth from "@store/features/auth/use-auth";
-import { Alert } from "react-native";
-import { i18n } from "@lingui/core";
-import { msg } from "@lingui/macro";
 
 const useLogin = () => {
     const auth = useAuth();
     const firebase = useFirebase();
 
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-
-    const onCheckLogin = useCallback(async () => {
+    const onCheckLogin = useCallback(async (): Promise<boolean> => {
         const userData = await getData("userData");
 
         if (userData) {
@@ -45,14 +45,10 @@ const useLogin = () => {
             }
         }
 
-        setIsLoading(false);
+        return true;
     }, []);
 
-    useEffect(() => {
-        onCheckLogin();
-    }, []);
-
-    return { isLoading };
+    return { onCheckLogin };
 };
 
 export default useLogin;

@@ -1,3 +1,6 @@
+// react
+import { useCallback } from "react";
+
 // modules
 import { i18n } from "@lingui/core";
 import { Alert } from "react-native";
@@ -33,93 +36,97 @@ type CreateUser = {
 };
 
 const useFirebase = () => {
-    const firebaseAuth = getFirebaseAuth();
+    const onSignUp = useCallback(
+        async (
+            payload: AuthSignUp,
+            onLoading: (isLoading: boolean) => void,
+            onAuthResult: (payload: { token: string; userData: any }) => void
+        ) => {
+            onLoading(true);
+            try {
+                const result = await createUserWithEmailAndPassword(
+                    getFirebaseAuth(),
+                    payload.email,
+                    payload.password
+                );
+                const user: any = result.user;
+                const {
+                    uid,
+                    stsTokenManager: { accessToken, expirationTime }
+                } = user;
+                const expiryDate = new Date(expirationTime);
 
-    const onSignUp = async (
-        payload: AuthSignUp,
-        onLoading: (isLoading: boolean) => void,
-        onAuthResult: (payload: { token: string; userData: any }) => void
-    ) => {
-        onLoading(true);
-        try {
-            const result = await createUserWithEmailAndPassword(
-                firebaseAuth,
-                payload.email,
-                payload.password
-            );
-            const user: any = result.user;
-            const {
-                uid,
-                stsTokenManager: { accessToken, expirationTime }
-            } = user;
-            const expiryDate = new Date(expirationTime);
+                const userData = await createUser({
+                    firstName: payload.firstName,
+                    lastName: payload.lastName,
+                    email: payload.email,
+                    userId: uid
+                });
 
-            const userData = await createUser({
-                firstName: payload.firstName,
-                lastName: payload.lastName,
-                email: payload.email,
-                userId: uid
-            });
+                storeData(
+                    "userData",
+                    JSON.stringify({
+                        token: accessToken,
+                        userId: uid,
+                        expiryDate: expiryDate.toISOString()
+                    })
+                );
 
-            storeData(
-                "userData",
-                JSON.stringify({
-                    token: accessToken,
-                    userId: uid,
-                    expiryDate: expiryDate.toISOString()
-                })
-            );
+                onAuthResult({ token: accessToken, userData });
+            } catch (e: any) {
+                const message = ErrorMessage[e.code as keyof typeof ErrorMessage]
+                    ? i18n._(ErrorMessage[e.code as keyof typeof ErrorMessage])
+                    : e.message;
+                Alert.alert(i18n._(msg`An error occurred`), message, [{ text: i18n._(msg`Ok`) }]);
+            }
+            onLoading(false);
+        },
+        []
+    );
 
-            onAuthResult({ token: accessToken, userData });
-        } catch (e: any) {
-            const message = ErrorMessage[e.code as keyof typeof ErrorMessage]
-                ? i18n._(ErrorMessage[e.code as keyof typeof ErrorMessage])
-                : e.message;
-            Alert.alert(i18n._(msg`An error occurred`), message, [{ text: i18n._(msg`Ok`) }]);
-        }
-        onLoading(false);
-    };
+    const onSignIn = useCallback(
+        async (
+            payload: AuthSignIp,
+            onLoading: (isLoading: boolean) => void,
+            onAuthResult: (payload: { token: string; userData: any }) => void
+        ) => {
+            onLoading(true);
+            try {
+                const result = await signInWithEmailAndPassword(
+                    getFirebaseAuth(),
+                    payload.email,
+                    payload.password
+                );
+                const user: any = result.user;
+                const {
+                    uid,
+                    stsTokenManager: { accessToken, expirationTime }
+                } = user;
+                const expiryDate = new Date(expirationTime);
 
-    const onSignIn = async (
-        payload: AuthSignIp,
-        onLoading: (isLoading: boolean) => void,
-        onAuthResult: (payload: { token: string; userData: any }) => void
-    ) => {
-        onLoading(true);
-        try {
-            const result = await signInWithEmailAndPassword(
-                firebaseAuth,
-                payload.email,
-                payload.password
-            );
-            const user: any = result.user;
-            const {
-                uid,
-                stsTokenManager: { accessToken, expirationTime }
-            } = user;
-            const expiryDate = new Date(expirationTime);
+                const userData = await getUserData({ userId: uid });
 
-            const userData = await getUserData({ userId: uid });
+                storeData(
+                    "userData",
+                    JSON.stringify({
+                        token: accessToken,
+                        userId: uid,
+                        expiryDate: expiryDate.toISOString()
+                    })
+                );
+                onAuthResult({ token: accessToken, userData });
+            } catch (e: any) {
+                const message = ErrorMessage[e.code as keyof typeof ErrorMessage]
+                    ? i18n._(ErrorMessage[e.code as keyof typeof ErrorMessage])
+                    : e.message;
+                Alert.alert(i18n._(msg`An error occurred`), message, [{ text: i18n._(msg`Ok`) }]);
+            }
+            onLoading(false);
+        },
+        []
+    );
 
-            storeData(
-                "userData",
-                JSON.stringify({
-                    token: accessToken,
-                    userId: uid,
-                    expiryDate: expiryDate.toISOString()
-                })
-            );
-            onAuthResult({ token: accessToken, userData });
-        } catch (e: any) {
-            const message = ErrorMessage[e.code as keyof typeof ErrorMessage]
-                ? i18n._(ErrorMessage[e.code as keyof typeof ErrorMessage])
-                : e.message;
-            Alert.alert(i18n._(msg`An error occurred`), message, [{ text: i18n._(msg`Ok`) }]);
-        }
-        onLoading(false);
-    };
-
-    const createUser = async ({ firstName, lastName, email, userId }: CreateUser) => {
+    const createUser = useCallback(async ({ firstName, lastName, email, userId }: CreateUser) => {
         const firstLast = `${firstName} ${lastName}`.toLowerCase();
         const userData = {
             firstName,
@@ -134,9 +141,9 @@ const useFirebase = () => {
         const childRef = child(dbRef, `users/${userId}`);
         await set(childRef, userData);
         return userData;
-    };
+    }, []);
 
-    const getUserData = async (payload: { userId: string }) => {
+    const getUserData = useCallback(async (payload: { userId: string }) => {
         try {
             const dbRef = ref(getDatabase());
             const userRef = child(dbRef, `users/${payload.userId}`);
@@ -145,7 +152,7 @@ const useFirebase = () => {
         } catch (error) {
             __DEV__ && console.log("getUserData", error);
         }
-    };
+    }, []);
 
     return {
         onSignUp,

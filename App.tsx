@@ -19,6 +19,11 @@ import { globalStyles } from "@theme/theme";
 // contexts
 import { ThemeProvider } from "@contexts/theme-context";
 
+// utils
+import { splashScreenPreventAutoHideAsync } from "@utils";
+
+splashScreenPreventAutoHideAsync();
+
 const App = () => {
     return (
         <AppLoader style={globalStyles["flex-1"]}>

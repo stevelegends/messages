@@ -1,5 +1,5 @@
 // react
-import React, { FC, Fragment, ReactNode } from "react";
+import React, { FC, Fragment, ReactNode, useEffect } from "react";
 
 // modules
 import { ActivityIndicator, StyleSheet } from "react-native";
@@ -15,17 +15,31 @@ import { useThemeProvider } from "@contexts/theme-context";
 // theme
 import { globalStyles } from "@theme/theme";
 
+// utils
+import { splashScreenHideAsync } from "@utils";
+
 type AppLoginProps = {
     children: ReactNode;
 };
 
-const AppLogin: FC<AppLoginProps> = ({ children }) => {
+const AppLoading: FC<AppLoginProps> = ({ children }) => {
     const { isDark } = useThemeProvider();
-    const { isLoading } = useLogin();
+    const { onCheckLogin } = useLogin();
+
+    useEffect(() => {
+        async function handleOnCheckLogin() {
+            const isChecked = await onCheckLogin();
+            if (isChecked) {
+                splashScreenHideAsync();
+            }
+        }
+        handleOnCheckLogin();
+    }, []);
+
     return (
         <Fragment>
             {children}
-            {isLoading && (
+            {false && (
                 <Animated.View
                     style={[
                         StyleSheet.absoluteFill,
@@ -46,4 +60,4 @@ const AppLogin: FC<AppLoginProps> = ({ children }) => {
     );
 };
 
-export default AppLogin;
+export default AppLoading;

@@ -16,7 +16,7 @@ import AuthNavigation from "@navigation/auth-navigation";
 import useAuth from "@store/features/auth/use-auth";
 
 // hoc
-import AppLogin from "@hoc/app-login";
+import AppLoading from "@hoc/app-loading";
 
 const AppTheme = {
     ...DefaultTheme,
@@ -30,13 +30,13 @@ const Navigation = () => {
     const auth = useAuth();
 
     return (
-        <AppLogin>
+        <AppLoading>
             <StatusBar style={isDark ? "light" : "dark"} />
             <NavigationContainer theme={isDark ? DarkTheme : AppTheme}>
                 {auth.isAuth ? <MainNavigation /> : undefined}
                 {!auth.isAuth ? <AuthNavigation /> : undefined}
             </NavigationContainer>
-        </AppLogin>
+        </AppLoading>
     );
 };
 

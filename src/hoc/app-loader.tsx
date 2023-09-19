@@ -3,7 +3,6 @@ import React, { FC, Fragment, PropsWithChildren, useCallback, useEffect, useStat
 
 // modules
 import { ViewProps } from "react-native";
-import * as SplashScreen from "expo-splash-screen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
@@ -22,8 +21,6 @@ import { messages } from "../locales/en/messages";
 import { Provider } from "react-redux";
 import { store } from "@store/store";
 
-SplashScreen.preventAutoHideAsync();
-
 i18n.load("en", messages);
 i18n.activate("en");
 
@@ -40,7 +37,10 @@ const AppLoader: FC<AppLoaderProps> = props => {
     }
 
     const onLayoutRootView = useCallback(async () => {
-        await SplashScreen.hideAsync();
+        /**
+         * deprecated
+         * await SplashScreen.hideAsync();
+         */
     }, []);
 
     useEffect(() => {
