@@ -14,7 +14,10 @@
         "assetBundlePatterns": ["**/*"],
         "ios": {
             "supportsTablet": true,
-            "bundleIdentifier": "com.app.messages"
+            "bundleIdentifier": "com.app.messages",
+            "config": {
+                "usesNonExemptEncryption": false
+            }
         },
         "android": {
             "adaptiveIcon": {
