@@ -7,7 +7,7 @@ import { i18n } from "@lingui/core";
 import { msg } from "@lingui/macro";
 
 // utils
-import { ErrorMessage, getSecureData } from "@utils";
+import { ErrorMessage, getItemAsyncSecureStore } from "@utils";
 
 // hooks
 import { useFirebase } from "@hooks/index";
@@ -20,7 +20,7 @@ const useLogin = () => {
     const firebase = useFirebase();
 
     const onCheckLogin = useCallback(async (): Promise<boolean> => {
-        const userData = await getSecureData("userData");
+        const userData = await getItemAsyncSecureStore("userData");
 
         if (userData) {
             try {

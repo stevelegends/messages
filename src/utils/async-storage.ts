@@ -7,7 +7,7 @@ import * as SecureStore from "expo-secure-store";
 // Define a type for your keys
 type StorageKey = "userData";
 
-export const storeData = async (key: StorageKey, value: string) => {
+export const setItemAsyncStorage = async (key: StorageKey, value: string) => {
     try {
         await AsyncStorage.setItem(key, value);
     } catch (error: any) {
@@ -15,7 +15,7 @@ export const storeData = async (key: StorageKey, value: string) => {
     }
 };
 
-export const getData = async (key: StorageKey) => {
+export const getItemAsyncStorage = async (key: StorageKey) => {
     try {
         const value = await AsyncStorage.getItem(key);
         if (value !== null) {
@@ -27,24 +27,24 @@ export const getData = async (key: StorageKey) => {
     return null;
 };
 
-export const clearAllData = async () => {
+export const clearAsyncStorage = async () => {
     await AsyncStorage.clear();
 };
 
-export const removeItemData = async (key: StorageKey) => {
+export const removeItemAsyncStorage = async (key: StorageKey) => {
     await AsyncStorage.removeItem(key);
 };
 
-export async function storeSecureData(key: StorageKey, value: string) {
+export async function setItemAsyncSecureStore(key: StorageKey, value: string) {
     try {
         await SecureStore.setItemAsync(key, value, {});
     } catch (error: any) {
         Alert.alert(i18n._(msg`An error occurred`), error.message);
-        await storeData(key, value);
+        await setItemAsyncStorage(key, value);
     }
 }
 
-export async function getSecureData(key: StorageKey) {
+export async function getItemAsyncSecureStore(key: StorageKey) {
     try {
         const value = await SecureStore.getItemAsync(key, {});
         if (value !== null) {
@@ -52,12 +52,12 @@ export async function getSecureData(key: StorageKey) {
         }
     } catch (error: any) {
         Alert.alert(i18n._(msg`An error occurred`), error.message);
-        await getData(key);
+        await getItemAsyncStorage(key);
     }
     return null;
 }
 
-export async function deleteSecureItem(key: StorageKey) {
+export async function deleteItemAsyncSecureStore(key: StorageKey) {
     try {
         const value = await SecureStore.deleteItemAsync(key, {});
         if (value !== null) {
@@ -65,7 +65,7 @@ export async function deleteSecureItem(key: StorageKey) {
         }
     } catch (error: any) {
         Alert.alert(i18n._(msg`An error occurred`), error.message);
-        await removeItemData(key);
+        await removeItemAsyncStorage(key);
     }
     return null;
 }

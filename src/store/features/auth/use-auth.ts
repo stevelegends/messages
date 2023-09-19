@@ -8,7 +8,7 @@ import { useAppSelector, useAppDispatch } from "@hooks/index";
 import { setToken, setUserData } from "@store/features/auth/auth-slice";
 
 // utils
-import { deleteSecureItem, removeItemData } from "@utils";
+import { deleteItemAsyncSecureStore, removeItemAsyncStorage } from "@utils";
 
 const useAuth = () => {
     const dispatch = useAppDispatch();
@@ -33,8 +33,8 @@ const useAuth = () => {
 
     const onLogout = useCallback(() => {
         setAuthenticate({ token: null, userData: null });
-        removeItemData("userData");
-        deleteSecureItem("userData");
+        removeItemAsyncStorage("userData");
+        deleteItemAsyncSecureStore("userData");
     }, []);
 
     return {

@@ -7,7 +7,7 @@ import { Alert } from "react-native";
 import { msg } from "@lingui/macro";
 
 // utils
-import { ErrorMessage, storeSecureData } from "@utils";
+import { ErrorMessage, setItemAsyncSecureStore } from "@utils";
 
 // services
 import { getFirebaseAuth } from "@services/firebase-app";
@@ -63,7 +63,7 @@ const useFirebase = () => {
                     userId: uid
                 });
 
-                storeSecureData(
+                setItemAsyncSecureStore(
                     "userData",
                     JSON.stringify({
                         token: accessToken,
@@ -106,7 +106,7 @@ const useFirebase = () => {
 
                 const userData = await getUserData({ userId: uid });
 
-                storeSecureData(
+                setItemAsyncSecureStore(
                     "userData",
                     JSON.stringify({
                         token: accessToken,
