@@ -60,13 +60,10 @@ const schema = yup
 
 const SignInScreen: FC<SignInScreenProps> = ({ navigation }) => {
     const theme = useTheme();
-
     const firebase = useFirebase();
-
     const auth = useAuth();
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
-
     const [isHidePassword, setIsHidePassword] = useState<boolean>(true);
 
     const {
@@ -74,7 +71,11 @@ const SignInScreen: FC<SignInScreenProps> = ({ navigation }) => {
         handleSubmit,
         formState: { errors }
     } = useForm<SignInFormData>({
-        resolver: yupResolver(schema)
+        resolver: yupResolver(schema),
+        defaultValues: {
+            email: __DEV__ ? "hiephuynh200499@gmail.com" : "",
+            password: __DEV__ ? "123456Aa!" : ""
+        }
     });
 
     const onSubmit = (data: SignInFormData) => {

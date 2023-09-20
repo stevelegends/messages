@@ -35,7 +35,8 @@ const MainNavigation = () => {
             <Stack.Screen
                 options={{
                     title: t(i18n)`Chat`,
-                    headerBackTitle: "Back"
+                    headerBackTitle: "Back",
+                    animation: "slide_from_right"
                 }}
                 name="ChatScreen"
                 component={ChatScreen}

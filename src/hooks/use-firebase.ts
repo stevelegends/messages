@@ -14,7 +14,7 @@ import { getFirebaseAuth } from "@services/firebase-app";
 
 // firebase
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { getDatabase, set, get, ref, child } from "firebase/database";
+import { getDatabase, set, get, ref, child, update } from "firebase/database";
 
 type AuthSignUp = {
     firstName: string;
@@ -55,6 +55,12 @@ const useFirebase = () => {
                     stsTokenManager: { accessToken, expirationTime }
                 } = user;
                 const expiryDate = new Date(expirationTime);
+                // const timeNow = new Date();
+                // const millisecondsUntilExpiry = expiryDate - timeNow;
+
+                // should call logout in time
+                // timer = setTimeout(() => {
+                // },  millisecondsUntilExpiry)
 
                 const userData = await createUser({
                     firstName: payload.firstName,
@@ -104,6 +110,13 @@ const useFirebase = () => {
                 } = user;
                 const expiryDate = new Date(expirationTime);
 
+                // const timeNow = new Date();
+                // const millisecondsUntilExpiry = expiryDate - timeNow;
+
+                // should call logout in time
+                // timer = setTimeout(() => {
+                // },  millisecondsUntilExpiry)
+
                 const userData = await getUserData({ userId: uid });
 
                 setItemAsyncSecureStore(
@@ -144,7 +157,7 @@ const useFirebase = () => {
         return userData;
     }, []);
 
-    const getUserData = useCallback(async (payload: { userId: string }) => {
+    const getUserData = useCallback(async (payload: { userId: string }): Promise<any> => {
         try {
             const dbRef = ref(getDatabase());
             const userRef = child(dbRef, `users/${payload.userId}`);
@@ -155,10 +168,43 @@ const useFirebase = () => {
         }
     }, []);
 
+    const onUpdateSignedInUserData = useCallback(
+        async (
+            payload: { userId: string; newData: any },
+            onLoading: (isLoading: boolean) => void,
+            onAuthResult: (payload: { userData: any }) => void
+        ) => {
+            onLoading(true);
+            try {
+                const dbRef = ref(getDatabase());
+                const userRef = child(dbRef, `users/${payload.userId}`);
+                const firstLast =
+                    `${payload.newData.firstName} ${payload.newData.lastName}`.toLowerCase();
+                const userData = {
+                    firstLast,
+                    firstName: payload.newData.firstName,
+                    lastName: payload.newData.lastName,
+                    about: payload.newData.about,
+                    updateDate: new Date().toISOString()
+                };
+                await update(userRef, userData);
+                onAuthResult({ userData });
+            } catch (e: any) {
+                const message = ErrorMessage[e.code as keyof typeof ErrorMessage]
+                    ? i18n._(ErrorMessage[e.code as keyof typeof ErrorMessage])
+                    : e.message;
+                Alert.alert(i18n._(msg`An error occurred`), message, [{ text: i18n._(msg`Ok`) }]);
+            }
+            onLoading(false);
+        },
+        []
+    );
+
     return {
         onSignUp,
         onSignIn,
-        getUserData
+        getUserData,
+        onUpdateSignedInUserData
     };
 };
 

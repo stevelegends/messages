@@ -156,7 +156,7 @@ const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
                     />
                     <SubmitButton
                         style={globalStyles["marginT-20"]}
-                        title="Sign up"
+                        title={<Trans>Sign up</Trans>}
                         onPress={handleSubmit(onSubmit)}
                         loading={isLoading}
                     />

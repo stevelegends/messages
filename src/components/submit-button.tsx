@@ -10,6 +10,7 @@ import {
     TouchableOpacity,
     TouchableOpacityProps
 } from "react-native";
+import Animated, { ZoomIn, ZoomOut } from "react-native-reanimated";
 
 // hooks
 import { useTheme } from "@react-navigation/native";
@@ -41,9 +42,18 @@ const SubmitButton: FC<SubmitButtonProps> = props => {
             >
                 {props.loading ? " " : props.title}
             </Text>
-            {props.loading ? (
-                <ActivityIndicator color={theme.colors.text} style={[StyleSheet.absoluteFill]} />
-            ) : null}
+            {props.loading && (
+                <Animated.View
+                    entering={ZoomIn}
+                    exiting={ZoomOut}
+                    style={[StyleSheet.absoluteFill]}
+                >
+                    <ActivityIndicator
+                        color={theme.colors.text}
+                        style={[StyleSheet.absoluteFill]}
+                    />
+                </Animated.View>
+            )}
         </TouchableOpacity>
     );
 };

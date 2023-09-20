@@ -37,7 +37,7 @@ const Input: FC<InputProps> = props => {
                         name={icon}
                         size={iconSize}
                         color={theme.colors.text}
-                        style={styles.icon}
+                        style={[styles.icon, { opacity: props.editable === false ? 0.3 : 1 }]}
                     />
                 ) : (
                     <></>
@@ -46,7 +46,11 @@ const Input: FC<InputProps> = props => {
                     {...props}
                     value={field.value}
                     onChangeText={field.onChange}
-                    style={[{ color: theme.colors.text }, styles.input, props.style]}
+                    style={[
+                        { color: theme.colors.text, opacity: props.editable === false ? 0.3 : 1 },
+                        styles.input,
+                        props.style
+                    ]}
                 />
                 <View
                     style={[
