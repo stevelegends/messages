@@ -34,6 +34,7 @@ type ChatSettingsScreenProps = {
 };
 
 type UserFormData = {
+    fullName?: string;
     firstName: string;
     lastName: string;
     email: string;
@@ -81,7 +82,7 @@ const ChatSettingsScreen: FC<ChatSettingsScreenProps> = () => {
             about: userData.about
         }
     });
-    console.log("userData", userData);
+
     const onSubmit = (data: UserFormData) => {
         firebase.onUpdateSignedInUserData(
             { userId: userData.userId, newData: data },
@@ -104,12 +105,12 @@ const ChatSettingsScreen: FC<ChatSettingsScreenProps> = () => {
     useEffect(() => {
         const subscription = watch((value, { name, type }) => {
             if (type === "change") {
-                const isChanged = userData[name as string] === value[name];
+                const isChanged = userData[name as string]?.trim() === value[name]?.trim();
                 setDisabled(isChanged);
             }
         });
         return () => subscription.unsubscribe();
-    }, [watch]);
+    }, [watch, userData]);
 
     return (
         <View style={[styles.container, globalStyles["paddingH-20"]]}>
