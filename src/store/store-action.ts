@@ -1,9 +1,9 @@
-// utils
-import { deleteItemAsyncSecureStore, removeItemAsyncStorage } from "./async-storage";
-
 // store
-import { AppDispatch } from "@store/store";
+import { AppDispatch } from "./store";
 import { setToken, setUserData } from "@store/features/auth/auth-slice";
+
+// utils
+import { removeItemAsyncStorage, deleteItemAsyncSecureStore } from "../utils/async-storage";
 
 export const onLogout = () => {
     AppDispatch(setToken({ token: null }));

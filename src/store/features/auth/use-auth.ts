@@ -7,8 +7,8 @@ import { useAppSelector, useAppDispatch } from "@hooks/index";
 // store
 import { setToken, setUserData } from "@store/features/auth/auth-slice";
 
-// utils
-import { onLogout } from "@utils";
+// store
+import { onLogout } from "@store/store-action";
 
 const useAuth = () => {
     const dispatch = useAppDispatch();

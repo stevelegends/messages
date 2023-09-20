@@ -3,8 +3,10 @@ import { Alert } from "react-native";
 import { msg } from "@lingui/macro";
 
 // utils
-import { onLogout } from "./store-action";
 import ErrorMessage from "./error-message";
+
+// store
+import { onLogout } from "@store/store-action";
 
 const ErrorHandler = (error: any) => {
     const errorMessage = error.message?.toLowerCase() || "";
