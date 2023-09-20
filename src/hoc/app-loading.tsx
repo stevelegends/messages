@@ -28,10 +28,8 @@ const AppLoading: FC<AppLoginProps> = ({ children }) => {
 
     useEffect(() => {
         async function handleOnCheckLogin() {
-            const isChecked = await onCheckLogin();
-            if (isChecked) {
-                splashScreenHideAsync();
-            }
+            await onCheckLogin();
+            splashScreenHideAsync();
         }
         handleOnCheckLogin();
     }, []);

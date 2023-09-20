@@ -7,7 +7,7 @@ import { Alert } from "react-native";
 import { msg } from "@lingui/macro";
 
 // utils
-import { ErrorMessage, setItemAsyncSecureStore } from "@utils";
+import { ErrorHandler, ErrorMessage, setItemAsyncSecureStore } from "@utils";
 
 // services
 import { getFirebaseAuth } from "@services/firebase-app";
@@ -79,11 +79,8 @@ const useFirebase = () => {
                 );
 
                 onAuthResult({ token: accessToken, userData });
-            } catch (e: any) {
-                const message = ErrorMessage[e.code as keyof typeof ErrorMessage]
-                    ? i18n._(ErrorMessage[e.code as keyof typeof ErrorMessage])
-                    : e.message;
-                Alert.alert(i18n._(msg`An error occurred`), message, [{ text: i18n._(msg`Ok`) }]);
+            } catch (error) {
+                ErrorHandler(error);
             }
             onLoading(false);
         },
@@ -129,11 +126,8 @@ const useFirebase = () => {
                 );
 
                 onAuthResult({ token: accessToken, userData });
-            } catch (e: any) {
-                const message = ErrorMessage[e.code as keyof typeof ErrorMessage]
-                    ? i18n._(ErrorMessage[e.code as keyof typeof ErrorMessage])
-                    : e.message;
-                Alert.alert(i18n._(msg`An error occurred`), message, [{ text: i18n._(msg`Ok`) }]);
+            } catch (error) {
+                ErrorHandler(error);
             }
             onLoading(false);
         },
@@ -141,20 +135,24 @@ const useFirebase = () => {
     );
 
     const createUser = useCallback(async ({ firstName, lastName, email, userId }: CreateUser) => {
-        const firstLast = `${firstName} ${lastName}`.toLowerCase();
-        const userData = {
-            firstName,
-            lastName,
-            firstLast,
-            email,
-            userId,
-            signUpDate: new Date().toISOString()
-        };
+        try {
+            const firstLast = `${firstName} ${lastName}`.toLowerCase();
+            const userData = {
+                firstName,
+                lastName,
+                firstLast,
+                email,
+                userId,
+                signUpDate: new Date().toISOString()
+            };
 
-        const dbRef = ref(getDatabase());
-        const childRef = child(dbRef, `users/${userId}`);
-        await set(childRef, userData);
-        return userData;
+            const dbRef = ref(getDatabase());
+            const childRef = child(dbRef, `users/${userId}`);
+            await set(childRef, userData);
+            return userData;
+        } catch (error) {
+            ErrorHandler(error);
+        }
     }, []);
 
     const getUserData = useCallback(async (payload: { userId: string }): Promise<any> => {
@@ -164,7 +162,7 @@ const useFirebase = () => {
             const snapshot = await get(userRef);
             return snapshot.val();
         } catch (error) {
-            __DEV__ && console.log("getUserData", error);
+            ErrorHandler(error);
         }
     }, []);
 
@@ -190,10 +188,7 @@ const useFirebase = () => {
                 await update(userRef, userData);
                 onAuthResult({ userData });
             } catch (e: any) {
-                const message = ErrorMessage[e.code as keyof typeof ErrorMessage]
-                    ? i18n._(ErrorMessage[e.code as keyof typeof ErrorMessage])
-                    : e.message;
-                Alert.alert(i18n._(msg`An error occurred`), message, [{ text: i18n._(msg`Ok`) }]);
+                ErrorHandler(e);
             }
             onLoading(false);
         },
