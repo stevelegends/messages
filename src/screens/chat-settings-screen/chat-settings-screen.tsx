@@ -2,7 +2,7 @@
 import React, { FC, useEffect, useState } from "react";
 
 // modules
-import { Alert, View } from "react-native";
+import { Alert, ScrollView, View } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -23,6 +23,7 @@ import { useFirebase } from "@hooks/index";
 
 // components
 import { Input, SubmitButton } from "@components";
+import ProfileImage from "./profile-image/profile-image";
 
 // theme
 import { globalStyles } from "@theme/theme";
@@ -123,66 +124,71 @@ const ChatSettingsScreen: FC<ChatSettingsScreenProps> = () => {
     }, [watch, userData]);
 
     return (
-        <View style={[styles.container, globalStyles["paddingH-20"]]}>
-            <Input
-                label={<Trans>First name</Trans>}
-                iconPack={FontAwesome}
-                icon="user-o"
-                iconSize={20}
-                autoCapitalize="none"
-                control={control}
-                name="firstName"
-                errorText={errors.firstName?.message}
-            />
-            <Input
-                label={<Trans>Last name</Trans>}
-                iconPack={FontAwesome}
-                icon="user-o"
-                iconSize={20}
-                autoCapitalize="none"
-                control={control}
-                name="lastName"
-                errorText={errors.lastName?.message}
-            />
-            <Input
-                label={<Trans>Email</Trans>}
-                iconPack={Feather}
-                icon="mail"
-                iconSize={20}
-                autoCapitalize="none"
-                control={control}
-                name="email"
-                errorText={errors.email?.message}
-                editable={false}
-            />
-            <Input
-                label={<Trans>About</Trans>}
-                iconPack={FontAwesome}
-                icon="user-o"
-                iconSize={20}
-                autoCapitalize="none"
-                control={control}
-                name="about"
-                errorText={errors.about?.message}
-            />
-            <SubmitButton
-                style={globalStyles["marginT-20"]}
-                title={<Trans>Save</Trans>}
-                onPress={handleSubmit(onSubmit)}
-                loading={isLoading}
-                disabled={disabled}
-            />
+        <View style={[styles.container]}>
+            <ScrollView>
+                <View style={globalStyles["paddingH-20"]}>
+                    <ProfileImage />
+                    <Input
+                        label={<Trans>First name</Trans>}
+                        iconPack={FontAwesome}
+                        icon="user-o"
+                        iconSize={20}
+                        autoCapitalize="none"
+                        control={control}
+                        name="firstName"
+                        errorText={errors.firstName?.message}
+                    />
+                    <Input
+                        label={<Trans>Last name</Trans>}
+                        iconPack={FontAwesome}
+                        icon="user-o"
+                        iconSize={20}
+                        autoCapitalize="none"
+                        control={control}
+                        name="lastName"
+                        errorText={errors.lastName?.message}
+                    />
+                    <Input
+                        label={<Trans>Email</Trans>}
+                        iconPack={Feather}
+                        icon="mail"
+                        iconSize={20}
+                        autoCapitalize="none"
+                        control={control}
+                        name="email"
+                        errorText={errors.email?.message}
+                        editable={false}
+                    />
+                    <Input
+                        label={<Trans>About</Trans>}
+                        iconPack={FontAwesome}
+                        icon="user-o"
+                        iconSize={20}
+                        autoCapitalize="none"
+                        control={control}
+                        name="about"
+                        errorText={errors.about?.message}
+                    />
+                    <SubmitButton
+                        style={globalStyles["marginT-30"]}
+                        title={<Trans>Save</Trans>}
+                        onPress={handleSubmit(onSubmit)}
+                        loading={isLoading}
+                        disabled={disabled}
+                    />
 
-            <SubmitButton
-                style={{
-                    ...globalStyles["marginT-5"],
-                    backgroundColor: theme.colors.background
-                }}
-                titleStyle={{ color: theme.colors.notification }}
-                title={<Trans>Logout</Trans>}
-                onPress={handleLogoutOnPress}
-                disabled={isLoading}
-            />
+                    <SubmitButton
+                        style={{
+                            ...globalStyles["marginT-5"],
+                            backgroundColor: theme.colors.background
+                        }}
+                        titleStyle={{ color: theme.colors.notification }}
+                        title={<Trans>Sign Out</Trans>}
+                        onPress={handleLogoutOnPress}
+                        disabled={isLoading}
+                    />
+                </View>
+            </ScrollView>
         </View>
     );
 };

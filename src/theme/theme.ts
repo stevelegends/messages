@@ -54,6 +54,12 @@ export const globalStyles = StyleSheet.create({
     "marginT-20": {
         marginTop: 20
     },
+    "marginT-25": {
+        marginTop: 25
+    },
+    "marginT-30": {
+        marginTop: 30
+    },
     "marginB-5": {
         marginBottom: 5
     },
