@@ -8,7 +8,7 @@ import { useAppSelector, useAppDispatch } from "@hooks/index";
 import { setToken, setUserData } from "@store/features/auth/auth-slice";
 
 // store
-import { onLogout } from "@store/store-action";
+import { onSignOut } from "@store/store-action";
 
 const useAuth = () => {
     const dispatch = useAppDispatch();
@@ -32,7 +32,7 @@ const useAuth = () => {
     }, []);
 
     const setLogoutAction = useCallback(() => {
-        onLogout();
+        onSignOut();
     }, []);
 
     return {

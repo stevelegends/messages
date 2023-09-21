@@ -2,7 +2,7 @@
 import React, { FC, useEffect, useState } from "react";
 
 // modules
-import { View } from "react-native";
+import { Alert, View } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -18,6 +18,8 @@ import styles from "./chat-settings-screen.styles";
 
 // hook
 import { useForm } from "react-hook-form";
+import { useTheme } from "@react-navigation/native";
+import { useFirebase } from "@hooks/index";
 
 // components
 import { Input, SubmitButton } from "@components";
@@ -27,7 +29,7 @@ import { globalStyles } from "@theme/theme";
 
 // store
 import useAuth from "@store/features/auth/use-auth";
-import { useFirebase } from "@hooks/index";
+import { onSignOut } from "@store/store-action";
 
 type ChatSettingsScreenProps = {
     navigation: StackNavigationProp<BottomTabStackNavigatorParams, "ChatSettingsScreen">;
@@ -62,6 +64,7 @@ const schema = yup
     .required();
 
 const ChatSettingsScreen: FC<ChatSettingsScreenProps> = () => {
+    const theme = useTheme();
     const { userData, setUserDataAction } = useAuth();
     const firebase = useFirebase();
 
@@ -100,6 +103,13 @@ const ChatSettingsScreen: FC<ChatSettingsScreenProps> = () => {
                 setUserDataAction({ userData: newUserData });
             }
         );
+    };
+
+    const handleLogoutOnPress = () => {
+        Alert.alert(i18n._(msg`Sign Out`), i18n._(msg`Are you sure you want to sign out?`), [
+            { text: i18n._(msg`Cancel`) },
+            { text: i18n._(msg`Sign Out`), onPress: onSignOut }
+        ]);
     };
 
     useEffect(() => {
@@ -161,6 +171,17 @@ const ChatSettingsScreen: FC<ChatSettingsScreenProps> = () => {
                 onPress={handleSubmit(onSubmit)}
                 loading={isLoading}
                 disabled={disabled}
+            />
+
+            <SubmitButton
+                style={{
+                    ...globalStyles["marginT-5"],
+                    backgroundColor: theme.colors.background
+                }}
+                titleStyle={{ color: theme.colors.notification }}
+                title={<Trans>Logout</Trans>}
+                onPress={handleLogoutOnPress}
+                disabled={isLoading}
             />
         </View>
     );

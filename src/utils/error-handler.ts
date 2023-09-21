@@ -6,7 +6,7 @@ import { msg } from "@lingui/macro";
 import ErrorMessage from "./error-message";
 
 // store
-import { onLogout } from "@store/store-action";
+import { onSignOut } from "@store/store-action";
 
 const ErrorHandler = (error: any) => {
     const errorMessage = error.message?.toLowerCase() || "";
@@ -14,7 +14,7 @@ const ErrorHandler = (error: any) => {
         Alert.alert(i18n._(msg`Session Expired`), i18n._(msg`Please sign in again.`), [
             { text: i18n._(msg`Ok`) }
         ]);
-        onLogout();
+        onSignOut();
         return;
     }
     const message = ErrorMessage[error.code as keyof typeof ErrorMessage]
