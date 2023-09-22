@@ -25,13 +25,17 @@ const useLogin = () => {
                 const expiryDate = user.expiryDate ? new Date(user.expiryDate) : new Date();
 
                 if (expiryDate <= new Date() || !token || !userId) {
-                    throw new Error("PERMISSION_DENIED");
+                    throw { code: "permission_denied" };
                 }
 
                 const data = await firebase.getUserData({ userId });
-                auth.setAuthenticate({ token, userData: data });
-            } catch (e: any) {
-                ErrorHandler(e);
+                if (data && data.userId) {
+                    auth.setAuthenticate({ token, userData: data });
+                } else {
+                    throw { code: "permission_denied" };
+                }
+            } catch (e) {
+                ErrorHandler(e, "onCheckLogin");
             }
         }
     }, []);

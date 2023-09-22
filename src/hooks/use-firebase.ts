@@ -83,7 +83,7 @@ const useFirebase = () => {
 
                 onAuthResult({ token: accessToken, userData });
             } catch (error) {
-                ErrorHandler(error);
+                ErrorHandler(error, "onSignUp");
             }
             onLoading(false);
         },
@@ -130,7 +130,7 @@ const useFirebase = () => {
 
                 onAuthResult({ token: accessToken, userData });
             } catch (error) {
-                ErrorHandler(error);
+                ErrorHandler(error, "onSignIn");
             }
             onLoading(false);
         },
@@ -154,7 +154,7 @@ const useFirebase = () => {
             await set(childRef, userData);
             return userData;
         } catch (error) {
-            ErrorHandler(error);
+            ErrorHandler(error, "createUser");
         }
     }, []);
 
@@ -165,7 +165,7 @@ const useFirebase = () => {
             const snapshot = await get(userRef);
             return snapshot.val();
         } catch (error) {
-            ErrorHandler(error);
+            ErrorHandler(error, "getUserData");
         }
     }, []);
 
@@ -191,9 +191,34 @@ const useFirebase = () => {
                 await update(userRef, userData);
                 onAuthResult({ userData });
             } catch (e: any) {
-                ErrorHandler(e);
+                ErrorHandler(e, "onUpdateSignedInUserData");
             }
             onLoading(false);
+        },
+        []
+    );
+
+    const onUpdateSignedInUserAvatarData = useCallback(
+        async (
+            payload: { userId: string; url: string },
+            onLoading?: (isLoading: boolean) => void,
+            onAuthResult?: (payload: { userData: any }) => void
+        ) => {
+            onLoading && onLoading(true);
+            try {
+                const dbRef = ref(getDatabase());
+                const userRef = child(dbRef, `users/${payload.userId}`);
+
+                const userData = {
+                    profilePicture: payload.url,
+                    updateDate: new Date().toISOString()
+                };
+                await update(userRef, userData);
+                onAuthResult && onAuthResult({ userData });
+            } catch (e: any) {
+                ErrorHandler(e, "onUpdateSignedInUserAvatarData");
+            }
+            onLoading && onLoading(false);
         },
         []
     );
@@ -213,7 +238,7 @@ const useFirebase = () => {
                     resolve(xhr.response);
                 };
                 xhr.onerror = function (e) {
-                    reject({ code: "network_failed" });
+                    reject({ code: "network-failed" });
                 };
                 xhr.responseType = "blob";
                 xhr.open("GET", uri, true);
@@ -221,7 +246,7 @@ const useFirebase = () => {
             });
         } catch (e) {
             onLoading(false);
-            ErrorHandler(e);
+            ErrorHandler(e, "onUploadImageAsync - blob");
             return;
         }
 
@@ -234,7 +259,7 @@ const useFirebase = () => {
             blob.close();
         } catch (e) {
             onLoading(false);
-            ErrorHandler(e);
+            ErrorHandler(e, "onUploadImageAsync - uploadBytesResumable");
             return;
         }
 
@@ -243,11 +268,11 @@ const useFirebase = () => {
             if (resultUrl) {
                 onResult({ url: resultUrl });
             } else {
-                throw { code: "upload_image_fail" };
+                throw { code: "upload-image-failed" };
             }
         } catch (e) {
             onLoading(false);
-            ErrorHandler(e);
+            ErrorHandler(e, "onUploadImageAsync - getDownloadURL");
             return;
         }
 
@@ -259,7 +284,8 @@ const useFirebase = () => {
         onSignIn,
         getUserData,
         onUpdateSignedInUserData,
-        onUploadImageAsync
+        onUploadImageAsync,
+        onUpdateSignedInUserAvatarData
     };
 };
 

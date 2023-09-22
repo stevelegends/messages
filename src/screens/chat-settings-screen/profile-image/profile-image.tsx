@@ -36,22 +36,34 @@ const ProfileImage: FC<ProfileImageProps> = () => {
     const navigation = useNavigation();
     const { i18n } = useLingui();
     const theme = useTheme();
-    const { userData } = useAuth();
     const firebase = useFirebase();
+    const { userData, setUserDataAction } = useAuth();
 
-    const [uriResult, setUriResult] = useState<string | undefined>(undefined);
+    const [uriResult, setUriResult] = useState<string | undefined>(userData.profilePicture);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isShowOption, setIsShowOption] = useState(false);
-
+    console.log("userData", userData);
     const handlePickImageOnPress = async () => {
         setIsLoading(true);
         const result = await onLaunchImageLibraryAsync("photo", true, false, true);
         if (!result.canceled) {
             const asset = result.assets[0];
-            setUriResult(asset.uri);
-            firebase.onUploadImageAsync(asset.uri, setIsLoading, payload => {
-                console.log(payload);
-            });
+            if (asset.uri) {
+                setUriResult(asset.uri);
+                firebase.onUploadImageAsync(asset.uri, setIsLoading, payload => {
+                    firebase.onUpdateSignedInUserAvatarData(
+                        { userId: userData.userId, url: payload.url },
+                        undefined,
+                        payload => {
+                            const newUserData = {
+                                ...userData,
+                                ...payload.userData
+                            };
+                            setUserDataAction({ userData: newUserData });
+                        }
+                    );
+                });
+            }
         } else {
             setIsLoading(false);
         }

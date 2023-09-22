@@ -51,7 +51,7 @@ export const onLaunchCameraAsync = async (
         return res;
     } catch (e) {
         if (!askPermAndRetry) {
-            ErrorHandler(e);
+            ErrorHandler(e, "onLaunchCameraAsync");
             return null;
         }
         try {
@@ -69,7 +69,7 @@ export const onLaunchImageLibraryAsyncUri = async (_: string): Promise<Array<str
         const result = await onLaunchImageLibraryAsync("photo");
         return result.canceled ? [] : result.assets?.map(a => parseUri(a)) ?? [];
     } catch (e) {
-        ErrorHandler(e);
+        ErrorHandler(e, "onLaunchImageLibraryAsyncUri");
     }
     return [];
 };

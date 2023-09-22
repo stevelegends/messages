@@ -8,9 +8,9 @@ import ErrorMessage from "./error-message";
 // store
 import { onSignOut } from "@store/store-action";
 
-const ErrorHandler = (error: any) => {
-    const errorMessage = error.message?.toLowerCase() || "";
-    if (errorMessage.includes("permission_denied")) {
+const ErrorHandler = (error: any, tag: string) => {
+    __DEV__ && console.log("error -> " + tag + " ->", JSON.stringify(error, "", "\t"));
+    if (error && typeof error === "object" && error.code === "permission_denied") {
         Alert.alert(i18n._(msg`Session Expired`), i18n._(msg`Please sign in again.`), [
             { text: i18n._(msg`Ok`) }
         ]);
