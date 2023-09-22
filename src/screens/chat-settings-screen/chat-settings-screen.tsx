@@ -89,7 +89,12 @@ const ChatSettingsScreen: FC<ChatSettingsScreenProps> = () => {
 
     const onSubmit = (data: UserFormData) => {
         firebase.onUpdateSignedInUserData(
-            { userId: userData.userId, newData: data },
+            {
+                userId: userData.userId,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                about: data.about || ""
+            },
             isLoading => {
                 setIsLoading(isLoading);
                 if (!isLoading) {
@@ -97,11 +102,7 @@ const ChatSettingsScreen: FC<ChatSettingsScreenProps> = () => {
                 }
             },
             payload => {
-                const newUserData = {
-                    ...userData,
-                    ...payload.userData
-                };
-                setUserDataAction({ userData: newUserData });
+                setUserDataAction({ userData: { ...userData, ...payload } });
             }
         );
     };

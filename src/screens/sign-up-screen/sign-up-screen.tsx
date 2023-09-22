@@ -5,7 +5,7 @@ import React, { FC, useState } from "react";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { Feather, FontAwesome } from "@expo/vector-icons";
 import { msg, Trans } from "@lingui/macro";
-import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
+import { KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { i18n } from "@lingui/core";
@@ -83,7 +83,13 @@ const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
         handleSubmit,
         formState: { errors }
     } = useForm<SignUpFormData>({
-        resolver: yupResolver(schema)
+        resolver: yupResolver(schema),
+        defaultValues: {
+            firstName: __DEV__ ? "Ledge" : "",
+            lastName: __DEV__ ? "Testnet" : "",
+            email: __DEV__ ? "devfptpoly@gmail.com" : "",
+            password: __DEV__ ? "123456Aa!" : ""
+        }
     });
 
     const [isHidePassword, setIsHidePassword] = useState<boolean>(true);

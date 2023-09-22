@@ -23,7 +23,7 @@ import useNavigation from "@hooks/use-navigation";
 import { useLingui } from "@lingui/react";
 
 // utils
-import { onLaunchImageLibraryAsync } from "@utils";
+import { ErrorHandler, onLaunchImageLibraryAsync } from "@utils";
 
 // store
 import useAuth from "@store/features/auth/use-auth";
@@ -42,31 +42,38 @@ const ProfileImage: FC<ProfileImageProps> = () => {
     const [uriResult, setUriResult] = useState<string | undefined>(userData.profilePicture);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isShowOption, setIsShowOption] = useState(false);
-    console.log("userData", userData);
+
     const handlePickImageOnPress = async () => {
         setIsLoading(true);
-        const result = await onLaunchImageLibraryAsync("photo", true, false, true);
-        if (!result.canceled) {
-            const asset = result.assets[0];
-            if (asset.uri) {
-                setUriResult(asset.uri);
-                firebase.onUploadImageAsync(asset.uri, setIsLoading, payload => {
+
+        try {
+            const result = await onLaunchImageLibraryAsync("photo", true, false, true);
+            if (result.canceled) {
+                setIsLoading(false);
+                return;
+            }
+
+            const assetUri = result.assets[0].uri;
+            if (assetUri) {
+                setUriResult(assetUri);
+
+                firebase.onUploadImageAsync(assetUri, setIsLoading, payload => {
                     firebase.onUpdateSignedInUserAvatarData(
                         { userId: userData.userId, url: payload.url },
                         undefined,
                         payload => {
-                            const newUserData = {
-                                ...userData,
-                                ...payload.userData
-                            };
-                            setUserDataAction({ userData: newUserData });
+                            setUserDataAction({ userData: { ...userData, ...payload } });
                         }
                     );
                 });
+
+                return;
             }
-        } else {
-            setIsLoading(false);
+        } catch (e) {
+            ErrorHandler(e, "handlePickImageOnPress");
         }
+
+        setIsLoading(false);
     };
 
     const handleImageOnPress = async () => {

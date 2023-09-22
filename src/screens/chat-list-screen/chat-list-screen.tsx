@@ -1,5 +1,5 @@
 // react
-import React, { FC } from "react";
+import React, { FC, useCallback } from "react";
 
 // modules
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -15,7 +15,13 @@ import { BottomTabStackNavigatorParams } from "@navigation/bottom-tab-navigation
 import { Text } from "@components";
 
 // hooks
-import { useNavigation } from "@hooks/index";
+import { useFirebase, useNavigation, useUserState } from "@hooks/index";
+
+// constants
+import { UserStatus } from "@constants/user-status";
+
+// store
+import useAuth from "@store/features/auth/use-auth";
 
 type ChatListScreenProps = {
     navigation: StackNavigationProp<BottomTabStackNavigatorParams, "ChatListScreen">;
@@ -23,6 +29,19 @@ type ChatListScreenProps = {
 
 const ChatListScreen: FC<ChatListScreenProps> = () => {
     const { navigate } = useNavigation();
+    const firebase = useFirebase();
+    const auth = useAuth();
+
+    const onUserStatus = useCallback((status, deps) => {
+        __DEV__ && console.log("onUserStatus", status, deps);
+        const userId = deps as string;
+        firebase.onUpdateSignedInUserStatusData({ userId, status }, payload => {
+            auth.setStatusAction({ status: payload.status });
+        });
+    }, []) as (status: UserStatus, deps: any) => any;
+
+    useUserState(onUserStatus, auth.userData?.userId);
+
     return (
         <View style={styles.container}>
             <Button title="Chat" onPress={() => navigate("ChatScreen")} />

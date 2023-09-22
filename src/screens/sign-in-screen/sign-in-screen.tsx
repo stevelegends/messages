@@ -73,7 +73,7 @@ const SignInScreen: FC<SignInScreenProps> = ({ navigation }) => {
     } = useForm<SignInFormData>({
         resolver: yupResolver(schema),
         defaultValues: {
-            email: __DEV__ ? "hiephuynh200499@gmail.com" : "",
+            email: __DEV__ ? "devfptpoly@gmail.com" : "",
             password: __DEV__ ? "123456Aa!" : ""
         }
     });

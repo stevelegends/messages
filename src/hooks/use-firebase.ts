@@ -2,7 +2,6 @@
 import { useCallback } from "react";
 
 // modules
-
 // utils
 import { ErrorHandler, generateUUIDV4, setItemAsyncSecureStore } from "@utils";
 
@@ -11,13 +10,17 @@ import { getFirebaseAuth } from "@services/firebase-app";
 
 // firebase
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { getDatabase, set, get, ref, child, update } from "firebase/database";
+import { child, get, getDatabase, ref, set, update } from "firebase/database";
 import {
+    getDownloadURL,
     getStorage,
     ref as storageRef,
-    uploadBytesResumable,
-    getDownloadURL
+    uploadBytesResumable
 } from "firebase/storage";
+
+// constants
+import { UserStatus } from "@constants/user-status";
+import { getUserRole } from "@constants/user-roles";
 
 type AuthSignUp = {
     firstName: string;
@@ -140,12 +143,14 @@ const useFirebase = () => {
     const createUser = useCallback(async ({ firstName, lastName, email, userId }: CreateUser) => {
         try {
             const firstLast = `${firstName} ${lastName}`.toLowerCase();
+            const role = getUserRole;
             const userData = {
                 firstName,
                 lastName,
                 firstLast,
                 email,
                 userId,
+                role,
                 signUpDate: new Date().toISOString()
             };
 
@@ -171,25 +176,39 @@ const useFirebase = () => {
 
     const onUpdateSignedInUserData = useCallback(
         async (
-            payload: { userId: string; newData: any },
+            payload: { userId: string; firstName: string; lastName: string; about: string },
             onLoading: (isLoading: boolean) => void,
-            onAuthResult: (payload: { userData: any }) => void
+            onAuthResult: (payload: {
+                firstLast: string;
+                firstName: string;
+                lastName: string;
+                about: string;
+                updateDate: string;
+            }) => void
         ) => {
             onLoading(true);
             try {
                 const dbRef = ref(getDatabase());
                 const userRef = child(dbRef, `users/${payload.userId}`);
-                const firstLast =
-                    `${payload.newData.firstName} ${payload.newData.lastName}`.toLowerCase();
-                const userData = {
+                const firstLast = `${payload.firstName} ${payload.lastName}`.toLowerCase();
+                const firstName = payload.firstName;
+                const lastName = payload.lastName;
+                const about = payload.about;
+                const updateDate = new Date().toISOString();
+                await update(userRef, {
                     firstLast,
-                    firstName: payload.newData.firstName,
-                    lastName: payload.newData.lastName,
-                    about: payload.newData.about,
-                    updateDate: new Date().toISOString()
-                };
-                await update(userRef, userData);
-                onAuthResult({ userData });
+                    firstName,
+                    lastName,
+                    about,
+                    updateDate
+                });
+                onAuthResult({
+                    firstLast,
+                    firstName,
+                    lastName,
+                    about,
+                    updateDate
+                });
             } catch (e: any) {
                 ErrorHandler(e, "onUpdateSignedInUserData");
             }
@@ -202,23 +221,47 @@ const useFirebase = () => {
         async (
             payload: { userId: string; url: string },
             onLoading?: (isLoading: boolean) => void,
-            onAuthResult?: (payload: { userData: any }) => void
+            onAuthResult?: (payload: { profilePicture: string; updateDate: string }) => void
         ) => {
             onLoading && onLoading(true);
             try {
                 const dbRef = ref(getDatabase());
                 const userRef = child(dbRef, `users/${payload.userId}`);
 
-                const userData = {
-                    profilePicture: payload.url,
-                    updateDate: new Date().toISOString()
-                };
-                await update(userRef, userData);
-                onAuthResult && onAuthResult({ userData });
+                const profilePicture = payload.url;
+                const updateDate = new Date().toISOString();
+
+                await update(userRef, {
+                    profilePicture,
+                    updateDate
+                });
+
+                onAuthResult && onAuthResult({ profilePicture, updateDate });
             } catch (e: any) {
                 ErrorHandler(e, "onUpdateSignedInUserAvatarData");
             }
             onLoading && onLoading(false);
+        },
+        []
+    );
+
+    const onUpdateSignedInUserStatusData = useCallback(
+        async (
+            payload: { userId: string; status: UserStatus },
+            onUserDataResult: (payload: { status: UserStatus; lastOnlineDate: string }) => void
+        ) => {
+            try {
+                const dbRef = ref(getDatabase());
+                const userRef = child(dbRef, `users/${payload.userId}`);
+
+                const status = payload.status;
+                const lastOnlineDate = new Date().toISOString();
+
+                await update(userRef, { status, lastOnlineDate });
+                onUserDataResult({ status, lastOnlineDate });
+            } catch (e: any) {
+                console.log("onUpdateSignedInUserStatusData: ", e);
+            }
         },
         []
     );
@@ -285,7 +328,8 @@ const useFirebase = () => {
         getUserData,
         onUpdateSignedInUserData,
         onUploadImageAsync,
-        onUpdateSignedInUserAvatarData
+        onUpdateSignedInUserAvatarData,
+        onUpdateSignedInUserStatusData
     };
 };
 

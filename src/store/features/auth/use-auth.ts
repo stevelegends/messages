@@ -5,16 +5,20 @@ import { useCallback, useMemo } from "react";
 import { useAppSelector, useAppDispatch } from "@hooks/index";
 
 // store
-import { setToken, setUserData } from "@store/features/auth/auth-slice";
+import { setToken, setUserData, setStatus } from "@store/features/auth/auth-slice";
 
 // store
 import { onSignOut } from "@store/store-action";
+
+// constants
+import { UserStatus } from "@constants/user-status";
 
 const useAuth = () => {
     const dispatch = useAppDispatch();
 
     const token = useAppSelector(state => state.authReducer.token);
     const userData = useAppSelector(state => state.authReducer.userData);
+    const status = useAppSelector(state => state.authReducer.status);
 
     const isAuth = useMemo(() => token !== null && token !== "" && token !== undefined, [token]);
 
@@ -35,6 +39,10 @@ const useAuth = () => {
         onSignOut();
     }, []);
 
+    const setStatusAction = useCallback((payload: { status: UserStatus }) => {
+        dispatch(setStatus(payload));
+    }, []);
+
     return {
         setAuthenticate,
         setTokenAction,
@@ -42,7 +50,9 @@ const useAuth = () => {
         token,
         userData,
         isAuth,
-        setLogoutAction
+        setLogoutAction,
+        status,
+        setStatusAction
     };
 };
 
