@@ -4,7 +4,18 @@ import React from "react";
 // modules
 import { Pressable, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import Animated, { FlipInEasyY, FlipOutEasyY } from "react-native-reanimated";
+import Animated, {
+    FlipInEasyY,
+    FlipOutEasyY,
+    RotateInDownLeft,
+    RotateInDownRight,
+    RotateInUpLeft,
+    RotateInUpRight,
+    RotateOutDownLeft,
+    RotateOutDownRight,
+    RotateOutUpLeft,
+    RotateOutUpRight
+} from "react-native-reanimated";
 
 // contexts
 import { useThemeProvider } from "@contexts/theme-context";
@@ -23,12 +34,12 @@ const ToggleThemeButton = () => {
         <View style={[globalStyles["paddingR-10"], globalStyles["horizontal-center"]]}>
             <Pressable onPress={() => setToggleScheme()}>
                 {isDark && (
-                    <Animated.View entering={FlipInEasyY} exiting={FlipOutEasyY}>
+                    <Animated.View entering={RotateInUpLeft} exiting={RotateOutUpLeft}>
                         <Feather name="sun" size={24} color={theme.colors.text} />
                     </Animated.View>
                 )}
                 {!isDark && (
-                    <Animated.View entering={FlipInEasyY} exiting={FlipOutEasyY}>
+                    <Animated.View entering={RotateInUpLeft} exiting={RotateOutUpLeft}>
                         <Feather name="moon" size={24} color={theme.colors.text} />
                     </Animated.View>
                 )}

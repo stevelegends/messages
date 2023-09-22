@@ -18,7 +18,7 @@ const Text: FC<TextProps> = props => {
             {...props}
             style={[
                 props.style,
-                { color: theme.colors.text },
+                { color: props.style?.color || theme.colors.text },
                 props.style
                     ? { fontFamily: props.style.fontFamily as string }
                     : { fontFamily: "Roboto-Regular" }

@@ -36,13 +36,28 @@ const CircleImage: FC<CircleImage> = props => {
                 ]}
             />
             {props.loading && (
-                <Animated.View style={StyleSheet.absoluteFill} entering={ZoomIn} exiting={ZoomOut}>
-                    <ActivityIndicator style={StyleSheet.absoluteFill} color={theme.colors.text} />
+                <Animated.View
+                    entering={ZoomIn}
+                    exiting={ZoomOut}
+                    style={[
+                        StyleSheet.absoluteFill,
+                        { borderRadius: (props.size || 0) / 2 },
+                        styles.backdropLoading
+                    ]}
+                >
+                    <ActivityIndicator style={StyleSheet.absoluteFill} color="white" />
                 </Animated.View>
             )}
         </Pressable>
     );
 };
+
+const styles = StyleSheet.create({
+    backdropLoading: {
+        backgroundColor: "black",
+        opacity: 0.4
+    }
+});
 
 CircleImage.defaultProps = {
     onPress: () => undefined,

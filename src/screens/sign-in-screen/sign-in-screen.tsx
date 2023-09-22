@@ -3,7 +3,7 @@ import React, { FC, useState } from "react";
 
 // modules
 import { StackNavigationProp } from "@react-navigation/stack";
-import { Feather, AntDesign } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { msg, Trans } from "@lingui/macro";
 import { KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -18,10 +18,10 @@ import { AuthStackNavigatorParams } from "@navigation/auth-navigation";
 import styles from "./sign-in-screen.styles";
 
 // components
-import { Input, PageContainer, SubmitButton, ToggleEyeButton } from "@components";
+import { AppLogoImage, Input, PageContainer, SubmitButton, ToggleEyeButton } from "@components";
 
 // theme
-import { globalSize, globalStyles } from "@theme/theme";
+import { globalStyles } from "@theme/theme";
 
 // hooks
 import { useTheme } from "@react-navigation/native";
@@ -94,11 +94,7 @@ const SignInScreen: FC<SignInScreenProps> = ({ navigation }) => {
                         sharedTransitionTag="appLogo"
                         style={[globalStyles["flex-center"], globalStyles["paddingV-20"]]}
                     >
-                        <AntDesign
-                            name="message1"
-                            size={globalSize.screenWidth / 4}
-                            color={theme.colors.primary}
-                        />
+                        <AppLogoImage type="primary" />
                     </Animated.View>
                     <Input
                         label={<Trans>Email</Trans>}

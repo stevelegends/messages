@@ -25,7 +25,6 @@ const ChatListScreen: FC<ChatListScreenProps> = () => {
     const { navigate } = useNavigation();
     return (
         <View style={styles.container}>
-            <Text>Chat</Text>
             <Button title="Chat" onPress={() => navigate("ChatScreen")} />
         </View>
     );

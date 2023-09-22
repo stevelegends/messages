@@ -19,6 +19,9 @@ export const globalStyles = StyleSheet.create({
     "flex-jc-center": {
         justifyContent: "center"
     },
+    "align-self-center": {
+        alignSelf: "center"
+    },
     horizontal: {
         flexDirection: "row"
     },
@@ -100,5 +103,6 @@ export const globalSize = {
     screenWidth: DimensionScreen.width,
     screenHeight: DimensionScreen.height,
     windowHeight: DimensionsWindow.height,
-    windowWidth: DimensionsWindow.width
+    windowWidth: DimensionsWindow.width,
+    headerTitle: 25
 };

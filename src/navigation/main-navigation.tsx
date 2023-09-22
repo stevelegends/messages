@@ -8,7 +8,7 @@ import { t } from "@lingui/macro";
 import BottomTabNavigation from "@navigation/bottom-tab-navigation";
 
 // screens
-import { ChatScreen, SettingsScreen } from "@screens";
+import { ChatScreen, ReviewImageModal, SettingsScreen } from "@screens";
 
 // hooks
 import { useLingui } from "@lingui/react";
@@ -17,6 +17,9 @@ export type StackNavigatorParams = {
     BottomTab: undefined;
     SettingsScreen: undefined;
     ChatScreen: undefined;
+    ReviewImageModal: {
+        url: string;
+    };
 };
 
 const Stack = createNativeStackNavigator<StackNavigatorParams>();
@@ -24,7 +27,13 @@ const Stack = createNativeStackNavigator<StackNavigatorParams>();
 const MainNavigation = () => {
     const { i18n } = useLingui();
     return (
-        <Stack.Navigator>
+        <Stack.Navigator
+            screenOptions={{
+                headerTitleStyle: {
+                    fontFamily: "Roboto-Bold"
+                }
+            }}
+        >
             <Stack.Screen
                 options={{
                     headerShown: false
@@ -35,7 +44,7 @@ const MainNavigation = () => {
             <Stack.Screen
                 options={{
                     title: t(i18n)`Chat`,
-                    headerBackTitle: "Back",
+                    headerBackTitle: t(i18n)`Back`,
                     animation: "slide_from_right"
                 }}
                 name="ChatScreen"
@@ -44,10 +53,19 @@ const MainNavigation = () => {
             <Stack.Screen
                 options={{
                     title: t(i18n)`Settings`,
-                    headerBackTitle: "Back"
+                    headerBackTitle: t(i18n)`Back`
                 }}
                 name="SettingsScreen"
                 component={SettingsScreen}
+            />
+
+            <Stack.Screen
+                options={{
+                    headerShown: false,
+                    animation: "fade"
+                }}
+                name="ReviewImageModal"
+                component={ReviewImageModal}
             />
         </Stack.Navigator>
     );

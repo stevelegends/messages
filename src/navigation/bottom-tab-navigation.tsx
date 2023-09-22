@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { Ionicons } from "@expo/vector-icons";
 import { t } from "@lingui/macro";
+import { View } from "react-native";
 
 // screens
 import { ChatListScreen, ChatSettingsScreen } from "@screens";
@@ -18,6 +19,10 @@ import { StackNavigatorParams } from "@navigation/main-navigation";
 
 // hooks
 import { useLingui } from "@lingui/react";
+import { useTheme } from "@react-navigation/native";
+
+// theme
+import { globalSize } from "@theme/theme";
 
 export type BottomTabStackNavigatorParams = {
     ChatListScreen: undefined;
@@ -32,9 +37,23 @@ type BottomTabNavigationProps = {
 
 const BottomTabNavigation: FC<BottomTabNavigationProps> = () => {
     const { i18n } = useLingui();
+    const theme = useTheme();
 
     return (
-        <Tab.Navigator>
+        <Tab.Navigator
+            screenOptions={{
+                headerShown: true,
+                headerTitleAlign: "left",
+                headerTitleStyle: {
+                    fontFamily: "Roboto-Bold",
+                    fontSize: globalSize.headerTitle
+                },
+                headerShadowVisible: false,
+                headerBackground: () => (
+                    <View style={{ backgroundColor: theme.colors.background }} />
+                )
+            }}
+        >
             <Tab.Screen
                 options={{
                     title: t(i18n)`Chats`,

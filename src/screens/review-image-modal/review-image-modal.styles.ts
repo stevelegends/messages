@@ -2,14 +2,16 @@ import { StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
     container: {
-        alignSelf: "center",
+        flex: 1
+    },
+    backButton: {
+        width: 50,
+        aspectRatio: 1,
         justifyContent: "center"
     },
-    placeholderText: {
-        position: "absolute",
-        alignSelf: "center",
-        fontSize: 40,
-        fontFamily: "Roboto-Black"
+    imageView: {
+        width: "100%",
+        height: "100%"
     }
 });
 

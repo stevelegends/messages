@@ -3,7 +3,7 @@ import React, { FC, useState } from "react";
 
 // modules
 import { StackNavigationProp } from "@react-navigation/stack";
-import { AntDesign, Feather, FontAwesome } from "@expo/vector-icons";
+import { Feather, FontAwesome } from "@expo/vector-icons";
 import { msg, Trans } from "@lingui/macro";
 import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 import * as yup from "yup";
@@ -18,10 +18,10 @@ import { AuthStackNavigatorParams } from "@navigation/auth-navigation";
 import styles from "./sign-up-screen.styles";
 
 // theme
-import { globalSize, globalStyles } from "@theme/theme";
+import { globalStyles } from "@theme/theme";
 
 // components
-import { Input, PageContainer, SubmitButton, ToggleEyeButton } from "@components";
+import { AppLogoImage, Input, PageContainer, SubmitButton, ToggleEyeButton } from "@components";
 
 // hooks
 import { useTheme } from "@react-navigation/native";
@@ -104,11 +104,7 @@ const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
                         sharedTransitionTag="appLogo"
                         style={[globalStyles["flex-center"], globalStyles["paddingV-20"]]}
                     >
-                        <AntDesign
-                            name="message1"
-                            size={globalSize.screenWidth / 4}
-                            color={theme.colors.primary}
-                        />
+                        <AppLogoImage type="primary" />
                     </Animated.View>
                     <Input
                         label={<Trans>First name</Trans>}

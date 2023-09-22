@@ -27,11 +27,17 @@ const AuthNavigation = () => {
     const { i18n } = useLingui();
 
     return (
-        <Stack.Navigator initialRouteName="SignInScreen">
+        <Stack.Navigator
+            initialRouteName="SignInScreen"
+            screenOptions={{
+                headerTitleStyle: {
+                    fontFamily: "Roboto-Bold"
+                }
+            }}
+        >
             <Stack.Screen
                 options={{
                     title: t(i18n)`Sign Up`,
-                    headerShown: true,
                     headerStyle: {
                         backgroundColor: theme.colors.background
                     },

@@ -4,3 +4,4 @@ export { default as ChatSettingsScreen } from "./chat-settings-screen/chat-setti
 export { default as SignInScreen } from "./sign-in-screen/sign-in-screen";
 export { default as ChatScreen } from "./chat-screen/chat-screen";
 export { default as SignUpScreen } from "./sign-up-screen/sign-up-screen";
+export { default as ReviewImageModal } from "./review-image-modal/review-image-modal";
