@@ -2,12 +2,9 @@
 import { useCallback } from "react";
 
 // modules
-import { i18n } from "@lingui/core";
-import { Alert } from "react-native";
-import { msg } from "@lingui/macro";
 
 // utils
-import { ErrorHandler, ErrorMessage, setItemAsyncSecureStore } from "@utils";
+import { ErrorHandler, generateUUIDV4, setItemAsyncSecureStore } from "@utils";
 
 // services
 import { getFirebaseAuth } from "@services/firebase-app";
@@ -15,6 +12,12 @@ import { getFirebaseAuth } from "@services/firebase-app";
 // firebase
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { getDatabase, set, get, ref, child, update } from "firebase/database";
+import {
+    getStorage,
+    ref as storageRef,
+    uploadBytesResumable,
+    getDownloadURL
+} from "firebase/storage";
 
 type AuthSignUp = {
     firstName: string;
@@ -195,11 +198,68 @@ const useFirebase = () => {
         []
     );
 
+    const onUploadImageAsync = async (
+        uri: string,
+        onLoading: (isLoading: boolean) => void,
+        onResult: (payload: { url: string }) => void
+    ) => {
+        onLoading(true);
+        let blob: any;
+        let sRef: any;
+        try {
+            blob = await new Promise((resolve, reject) => {
+                const xhr = new XMLHttpRequest();
+                xhr.onload = function () {
+                    resolve(xhr.response);
+                };
+                xhr.onerror = function (e) {
+                    reject({ code: "network_failed" });
+                };
+                xhr.responseType = "blob";
+                xhr.open("GET", uri, true);
+                xhr.send();
+            });
+        } catch (e) {
+            onLoading(false);
+            ErrorHandler(e);
+            return;
+        }
+
+        try {
+            const path = "profilePics";
+            const uuidV4 = generateUUIDV4();
+            sRef = storageRef(getStorage(), `${path}/${uuidV4}`);
+            await uploadBytesResumable(sRef, blob);
+
+            blob.close();
+        } catch (e) {
+            onLoading(false);
+            ErrorHandler(e);
+            return;
+        }
+
+        try {
+            const resultUrl = await getDownloadURL(sRef);
+            if (resultUrl) {
+                onResult({ url: resultUrl });
+            } else {
+                throw { code: "upload_image_fail" };
+            }
+        } catch (e) {
+            onLoading(false);
+            ErrorHandler(e);
+            return;
+        }
+
+        onLoading(false);
+    };
+
     return {
         onSignUp,
         onSignIn,
         getUserData,
-        onUpdateSignedInUserData
+        onUpdateSignedInUserData,
+        onUploadImageAsync
     };
 };
 

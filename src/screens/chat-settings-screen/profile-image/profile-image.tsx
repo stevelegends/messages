@@ -4,6 +4,7 @@ import React, { FC, Fragment, useState } from "react";
 // modules
 import { Pressable, View, ViewStyle } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
+import { t } from "@lingui/macro";
 
 // styles
 import styles from "./profile-image.styles";
@@ -17,16 +18,15 @@ import { globalSize, globalStyles } from "@theme/theme";
 
 // hooks
 import { useTheme } from "@react-navigation/native";
+import useFirebase from "@hooks/use-firebase";
+import useNavigation from "@hooks/use-navigation";
+import { useLingui } from "@lingui/react";
 
 // utils
 import { onLaunchImageLibraryAsync } from "@utils";
 
 // store
 import useAuth from "@store/features/auth/use-auth";
-import { useLingui } from "@lingui/react";
-import { t } from "@lingui/macro";
-import useNavigation from "@hooks/use-navigation";
-import * as url from "url";
 
 type ProfileImageProps = {};
 
@@ -35,9 +35,9 @@ const ImageSize = globalSize.screenWidth / 4;
 const ProfileImage: FC<ProfileImageProps> = () => {
     const navigation = useNavigation();
     const { i18n } = useLingui();
-    const { userData } = useAuth();
-
     const theme = useTheme();
+    const { userData } = useAuth();
+    const firebase = useFirebase();
 
     const [uriResult, setUriResult] = useState<string | undefined>(undefined);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -49,8 +49,12 @@ const ProfileImage: FC<ProfileImageProps> = () => {
         if (!result.canceled) {
             const asset = result.assets[0];
             setUriResult(asset.uri);
+            firebase.onUploadImageAsync(asset.uri, setIsLoading, payload => {
+                console.log(payload);
+            });
+        } else {
+            setIsLoading(false);
         }
-        setIsLoading(false);
     };
 
     const handleImageOnPress = async () => {
