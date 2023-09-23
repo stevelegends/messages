@@ -1,5 +1,5 @@
 // react
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 
 // modules
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -79,7 +79,10 @@ const SignInScreen: FC<SignInScreenProps> = ({ navigation }) => {
     });
 
     const onSubmit = (data: SignInFormData) => {
-        firebase.onSignIn(data, setIsLoading, auth.setAuthenticate);
+        firebase.onSignIn(data, setIsLoading, payload => {
+            auth.setTokenAction({ token: payload.token });
+            auth.setUserDataAction({ userData: payload.userData });
+        });
     };
 
     return (

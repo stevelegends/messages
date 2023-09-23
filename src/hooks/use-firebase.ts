@@ -3,7 +3,13 @@ import { useCallback } from "react";
 
 // modules
 // utils
-import { ErrorHandler, generateUUIDV4, setItemAsyncSecureStore } from "@utils";
+import {
+    encrypted,
+    ErrorHandler,
+    generateHashedUUID,
+    generateUUID,
+    setItemAsyncSecureStore
+} from "@utils";
 
 // services
 import { getFirebaseAuth } from "@services/firebase-app";
@@ -143,14 +149,16 @@ const useFirebase = () => {
     const createUser = useCallback(async ({ firstName, lastName, email, userId }: CreateUser) => {
         try {
             const firstLast = `${firstName} ${lastName}`.toLowerCase();
+            const hashed = await generateHashedUUID(userId);
             const role = getUserRole;
             const userData = {
                 firstName,
                 lastName,
                 firstLast,
-                email,
+                email: encrypted(email, hashed),
                 userId,
                 role,
+                hashed,
                 signUpDate: new Date().toISOString()
             };
 
@@ -248,7 +256,7 @@ const useFirebase = () => {
     const onUpdateSignedInUserStatusData = useCallback(
         async (
             payload: { userId: string; status: UserStatus },
-            onUserDataResult: (payload: { status: UserStatus; lastOnlineDate: string }) => void
+            onUserDataResult?: (payload: { status: UserStatus; lastOnlineDate: string }) => void
         ) => {
             try {
                 const dbRef = ref(getDatabase());
@@ -258,7 +266,7 @@ const useFirebase = () => {
                 const lastOnlineDate = new Date().toISOString();
 
                 await update(userRef, { status, lastOnlineDate });
-                onUserDataResult({ status, lastOnlineDate });
+                onUserDataResult && onUserDataResult({ status, lastOnlineDate });
             } catch (e: any) {
                 console.log("onUpdateSignedInUserStatusData: ", e);
             }
@@ -295,8 +303,8 @@ const useFirebase = () => {
 
         try {
             const path = "profilePics";
-            const uuidV4 = generateUUIDV4();
-            sRef = storageRef(getStorage(), `${path}/${uuidV4}`);
+            const uuid = generateUUID();
+            sRef = storageRef(getStorage(), `${path}/${uuid}`);
             await uploadBytesResumable(sRef, blob);
 
             blob.close();

@@ -27,6 +27,12 @@ export const authSlice = createSlice({
             __DEV__ && console.log("updated user data: ", action.payload.userData);
             state.userData = action.payload.userData;
         },
+        setClearUserData: state => {
+            state.userData = null;
+        },
+        setClearToken: state => {
+            state.token = null;
+        },
         setStatus: (state, action: PayloadAction<{ status: UserStatus }>) => {
             state.status = action.payload.status;
         }
@@ -36,6 +42,8 @@ export const authSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const setToken = authSlice.actions.setToken;
 export const setUserData = authSlice.actions.setUserData;
+export const setClearToken = authSlice.actions.setClearToken;
+export const setClearUserData = authSlice.actions.setClearUserData;
 export const setStatus = authSlice.actions.setStatus;
 
 export default authSlice.reducer;

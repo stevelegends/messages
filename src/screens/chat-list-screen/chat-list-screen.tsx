@@ -35,9 +35,8 @@ const ChatListScreen: FC<ChatListScreenProps> = () => {
     const onUserStatus = useCallback((status, deps) => {
         __DEV__ && console.log("onUserStatus", status, deps);
         const userId = deps as string;
-        firebase.onUpdateSignedInUserStatusData({ userId, status }, payload => {
-            auth.setStatusAction({ status: payload.status });
-        });
+        firebase.onUpdateSignedInUserStatusData({ userId, status }, undefined);
+        auth.setStatusAction({ status });
     }, []) as (status: UserStatus, deps: any) => any;
 
     useUserState(onUserStatus, auth.userData?.userId);

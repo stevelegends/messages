@@ -1,8 +1,10 @@
 import { useCallback, useEffect } from "react";
 
 // modules
-import { UserStatus } from "@constants/user-status";
 import { AppState } from "react-native";
+
+// constants
+import { UserStatus } from "@constants/user-status";
 
 const useUserState = (callback: (status: UserStatus, deps: any) => void, deps: any) => {
     const handleAppStateChange = useCallback(

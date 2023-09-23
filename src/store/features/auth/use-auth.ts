@@ -30,10 +30,18 @@ const useAuth = () => {
         dispatch(setUserData(payload));
     }, []);
 
-    const setAuthenticate = useCallback((payload: { token: string | null; userData: any }) => {
-        dispatch(setToken({ token: payload.token }));
-        dispatch(setUserData({ userData: payload.userData }));
-    }, []);
+    const setUserDataOverrideAction = useCallback(
+        (payload: { userData: any }) => {
+            if (userData) {
+                const overrideData = { ...userData, ...payload.userData };
+                dispatch(setUserData({ userData: overrideData }));
+            } else {
+                __DEV__ &&
+                    console.log("userData does not exist please use setUserDataAction instead ");
+            }
+        },
+        [userData]
+    );
 
     const setLogoutAction = useCallback(() => {
         onSignOut();
@@ -44,9 +52,9 @@ const useAuth = () => {
     }, []);
 
     return {
-        setAuthenticate,
         setTokenAction,
         setUserDataAction,
+        setUserDataOverrideAction,
         token,
         userData,
         isAuth,

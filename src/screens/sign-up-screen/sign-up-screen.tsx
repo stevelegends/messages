@@ -95,7 +95,10 @@ const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
     const [isHidePassword, setIsHidePassword] = useState<boolean>(true);
 
     const onSubmit = (data: SignUpFormData) => {
-        firebase.onSignUp(data, setIsLoading, auth.setAuthenticate);
+        firebase.onSignUp(data, setIsLoading, payload => {
+            auth.setUserDataAction({ userData: payload.userData });
+            auth.setTokenAction({ token: payload.token });
+        });
     };
 
     return (

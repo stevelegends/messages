@@ -22,7 +22,7 @@ import { useTheme } from "@react-navigation/native";
 import { useFirebase } from "@hooks/index";
 
 // components
-import { Input, SubmitButton } from "@components";
+import { Input, SubmitButton, ToggleEyeButton } from "@components";
 import ProfileImage from "./profile-image/profile-image";
 
 // theme
@@ -31,6 +31,9 @@ import { globalStyles } from "@theme/theme";
 // store
 import useAuth from "@store/features/auth/use-auth";
 import { onSignOut } from "@store/store-action";
+
+// utils
+import { decrypted } from "@utils";
 
 type ChatSettingsScreenProps = {
     navigation: StackNavigationProp<BottomTabStackNavigatorParams, "ChatSettingsScreen">;
@@ -66,17 +69,19 @@ const schema = yup
 
 const ChatSettingsScreen: FC<ChatSettingsScreenProps> = () => {
     const theme = useTheme();
-    const { userData, setUserDataAction } = useAuth();
+    const { userData, setUserDataOverrideAction } = useAuth();
     const firebase = useFirebase();
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [disabled, setDisabled] = useState<boolean>(true);
+    const [isHideEmail, setIsHideEmail] = useState<boolean>(true);
 
     const {
         control,
         handleSubmit,
         formState: { errors },
-        watch
+        watch,
+        setValue
     } = useForm<UserFormData>({
         resolver: yupResolver(schema),
         defaultValues: {
@@ -102,16 +107,21 @@ const ChatSettingsScreen: FC<ChatSettingsScreenProps> = () => {
                 }
             },
             payload => {
-                setUserDataAction({ userData: { ...userData, ...payload } });
+                setUserDataOverrideAction({ userData: payload });
             }
         );
     };
 
     const handleLogoutOnPress = () => {
         Alert.alert(i18n._(msg`Sign Out`), i18n._(msg`Are you sure you want to sign out?`), [
-            { text: i18n._(msg`Cancel`) },
-            { text: i18n._(msg`Sign Out`), onPress: onSignOut }
+            { text: i18n._(msg`Cancel`), style: "cancel" },
+            { text: i18n._(msg`Sign Out`), onPress: onSignOut, style: "destructive" }
         ]);
+    };
+
+    const handleToggleHideEmailOnPress = (isOff: boolean) => {
+        setIsHideEmail(isOff);
+        setValue("email", isOff ? userData.email : decrypted(userData.email, userData.hashed));
     };
 
     useEffect(() => {
@@ -159,6 +169,12 @@ const ChatSettingsScreen: FC<ChatSettingsScreenProps> = () => {
                         name="email"
                         errorText={errors.email?.message}
                         editable={false}
+                        rightView={
+                            <ToggleEyeButton
+                                isOff={isHideEmail}
+                                onPress={handleToggleHideEmailOnPress}
+                            />
+                        }
                     />
                     <Input
                         label={<Trans>About</Trans>}

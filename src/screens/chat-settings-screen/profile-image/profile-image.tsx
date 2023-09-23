@@ -37,7 +37,7 @@ const ProfileImage: FC<ProfileImageProps> = () => {
     const { i18n } = useLingui();
     const theme = useTheme();
     const firebase = useFirebase();
-    const { userData, setUserDataAction } = useAuth();
+    const { userData, setUserDataOverrideAction } = useAuth();
 
     const [uriResult, setUriResult] = useState<string | undefined>(userData.profilePicture);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -62,7 +62,7 @@ const ProfileImage: FC<ProfileImageProps> = () => {
                         { userId: userData.userId, url: payload.url },
                         undefined,
                         payload => {
-                            setUserDataAction({ userData: { ...userData, ...payload } });
+                            setUserDataOverrideAction({ userData: payload });
                         }
                     );
                 });
