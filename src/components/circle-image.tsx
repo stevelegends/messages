@@ -2,7 +2,7 @@
 import React, { FC } from "react";
 
 // modules
-import { ActivityIndicator, Image, ImageProps, Pressable, StyleSheet } from "react-native";
+import { ActivityIndicator, ImageProps, Pressable, StyleSheet, Image } from "react-native";
 import Animated, { ZoomIn, ZoomOut } from "react-native-reanimated";
 
 // hooks

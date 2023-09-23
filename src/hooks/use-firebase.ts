@@ -4,6 +4,7 @@ import { useCallback } from "react";
 // modules
 // utils
 import {
+    DeviceInfo,
     encrypted,
     ErrorHandler,
     generateHashedUUID,
@@ -127,6 +128,10 @@ const useFirebase = () => {
                 // },  millisecondsUntilExpiry)
 
                 const userData = await getUserData({ userId: uid });
+
+                if (userData && userData.status === UserStatus.active) {
+                    throw { code: "account-logged-in-already" };
+                }
 
                 setItemAsyncSecureStore(
                     "userData",
@@ -264,8 +269,9 @@ const useFirebase = () => {
 
                 const status = payload.status;
                 const lastOnlineDate = new Date().toISOString();
+                const device = JSON.stringify(DeviceInfo);
 
-                await update(userRef, { status, lastOnlineDate });
+                await update(userRef, { status, lastOnlineDate, device });
                 onUserDataResult && onUserDataResult({ status, lastOnlineDate });
             } catch (e: any) {
                 console.log("onUpdateSignedInUserStatusData: ", e);

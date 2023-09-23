@@ -57,6 +57,12 @@ export const globalStyles = StyleSheet.create({
     "marginT-20": {
         marginTop: 20
     },
+    "marginT-40": {
+        marginTop: 40
+    },
+    "marginT-50": {
+        marginTop: 50
+    },
     "marginT-25": {
         marginTop: 25
     },
@@ -93,8 +99,26 @@ export const globalStyles = StyleSheet.create({
     "paddingH-20": {
         paddingHorizontal: 20
     },
+    "paddingH-40": {
+        paddingHorizontal: 40
+    },
     "paddingV-20": {
         paddingVertical: 20
+    },
+    "marginH-8": {
+        marginHorizontal: 8
+    },
+    "marginH-10": {
+        marginHorizontal: 10
+    },
+    "marginH-20": {
+        marginHorizontal: 20
+    },
+    "marginH-50": {
+        marginHorizontal: 50
+    },
+    "marginV-50": {
+        marginVertical: 50
     }
     // TODO add more
 });
@@ -104,5 +128,13 @@ export const globalSize = {
     screenHeight: DimensionScreen.height,
     windowHeight: DimensionsWindow.height,
     windowWidth: DimensionsWindow.width,
-    headerTitle: 25
+    headerTitle: 25,
+    button: 50,
+    paddingButton: 15,
+    box: 30
+};
+
+export const globalColor = {
+    "black-0.9": "rgba(1,1,1, 0.9)",
+    white: "rgb(255,255,255)"
 };

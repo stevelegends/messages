@@ -103,7 +103,7 @@ const SignInScreen: FC<SignInScreenProps> = ({ navigation }) => {
                         label={<Trans>Email</Trans>}
                         iconPack={Feather}
                         icon="mail"
-                        iconSize={20}
+                        iconSize={15}
                         autoCapitalize="none"
                         control={control}
                         name="email"
@@ -114,7 +114,7 @@ const SignInScreen: FC<SignInScreenProps> = ({ navigation }) => {
                         label={<Trans>Password</Trans>}
                         iconPack={Feather}
                         icon="lock"
-                        iconSize={20}
+                        iconSize={15}
                         secureTextEntry={isHidePassword}
                         autoCapitalize="none"
                         control={control}

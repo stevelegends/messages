@@ -87,7 +87,7 @@ const ProfileImage: FC<ProfileImageProps> = () => {
     return (
         <Fragment>
             <View
-                style={[styles.container, globalStyles["paddingH-20"], globalStyles["marginT-20"]]}
+                style={[styles.container, globalStyles["paddingH-20"], globalStyles["marginT-50"]]}
             >
                 <CircleImage
                     size={ImageSize}

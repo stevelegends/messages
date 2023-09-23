@@ -4,18 +4,7 @@ import React from "react";
 // modules
 import { Pressable, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import Animated, {
-    FlipInEasyY,
-    FlipOutEasyY,
-    RotateInDownLeft,
-    RotateInDownRight,
-    RotateInUpLeft,
-    RotateInUpRight,
-    RotateOutDownLeft,
-    RotateOutDownRight,
-    RotateOutUpLeft,
-    RotateOutUpRight
-} from "react-native-reanimated";
+import Animated, { RotateInUpLeft, RotateOutUpLeft } from "react-native-reanimated";
 
 // contexts
 import { useThemeProvider } from "@contexts/theme-context";

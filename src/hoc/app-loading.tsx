@@ -16,7 +16,7 @@ import { useThemeProvider } from "@contexts/theme-context";
 import { globalStyles } from "@theme/theme";
 
 // utils
-import { splashScreenHideAsync } from "@utils";
+import { ErrorHandler, isRootedExperimentalAsync, splashScreenHideAsync } from "@utils";
 
 type AppLoginProps = {
     children: ReactNode;
@@ -28,6 +28,15 @@ const AppLoading: FC<AppLoginProps> = ({ children }) => {
 
     useEffect(() => {
         async function handleOnCheckLogin() {
+            const isJailBreak = await isRootedExperimentalAsync();
+            if (isJailBreak) {
+                ErrorHandler(
+                    { code: "device-rooted-jailbroken" },
+                    "app-loading/handleOnCheckLogin"
+                );
+                return;
+            }
+
             await onCheckLogin();
             splashScreenHideAsync();
         }

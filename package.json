@@ -34,6 +34,7 @@
         "crypto-es": "^2.0.4",
         "expo": "~49.0.8",
         "expo-crypto": "~12.4.1",
+        "expo-device": "~5.4.0",
         "expo-font": "~11.4.0",
         "expo-image-picker": "~14.3.2",
         "expo-secure-store": "~12.3.1",

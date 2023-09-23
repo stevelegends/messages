@@ -8,6 +8,8 @@ const errorMessage = {
     "auth/user-not-found": msg`The username or password was incorrect`,
     "network-failed": msg`Network request failed`,
     "upload-image-failed": msg`Could not upload image`,
+    "account-logged-in-already": msg`Your account has been logged into another device.`,
+    "device-rooted-jailbroken": msg`Your device is rooted/jailbroken, for security reason we have stopped the app on rooted/jailbroken device.`,
     default: msg`Something went wrong.`
 };
 

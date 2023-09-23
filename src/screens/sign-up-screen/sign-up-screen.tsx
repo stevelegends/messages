@@ -119,7 +119,7 @@ const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
                         label={<Trans>First name</Trans>}
                         iconPack={FontAwesome}
                         icon="user-o"
-                        iconSize={20}
+                        iconSize={15}
                         autoCapitalize="none"
                         control={control}
                         name="firstName"
@@ -129,7 +129,7 @@ const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
                         label={<Trans>Last name</Trans>}
                         iconPack={FontAwesome}
                         icon="user-o"
-                        iconSize={20}
+                        iconSize={15}
                         autoCapitalize="none"
                         control={control}
                         name="lastName"
@@ -139,7 +139,7 @@ const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
                         label={<Trans>Email</Trans>}
                         iconPack={Feather}
                         icon="mail"
-                        iconSize={20}
+                        iconSize={15}
                         autoCapitalize="none"
                         control={control}
                         name="email"
@@ -149,7 +149,7 @@ const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
                         label={<Trans>Password</Trans>}
                         iconPack={Feather}
                         icon="lock"
-                        iconSize={20}
+                        iconSize={15}
                         autoCapitalize="none"
                         secureTextEntry={isHidePassword}
                         control={control}

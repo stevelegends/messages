@@ -1,5 +1,5 @@
 // react
-import React, { FC, useCallback } from "react";
+import React, { FC, useCallback, useEffect } from "react";
 
 // modules
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -12,7 +12,7 @@ import styles from "./chat-list-screen.styles";
 import { BottomTabStackNavigatorParams } from "@navigation/bottom-tab-navigation";
 
 // components
-import { Text } from "@components";
+import { CreateButton, Text } from "@components";
 
 // hooks
 import { useFirebase, useNavigation, useUserState } from "@hooks/index";
@@ -27,7 +27,7 @@ type ChatListScreenProps = {
     navigation: StackNavigationProp<BottomTabStackNavigatorParams, "ChatListScreen">;
 };
 
-const ChatListScreen: FC<ChatListScreenProps> = () => {
+const ChatListScreen: FC<ChatListScreenProps> = ({ navigation }) => {
     const { navigate } = useNavigation();
     const firebase = useFirebase();
     const auth = useAuth();
@@ -40,6 +40,12 @@ const ChatListScreen: FC<ChatListScreenProps> = () => {
     }, []) as (status: UserStatus, deps: any) => any;
 
     useUserState(onUserStatus, auth.userData?.userId);
+
+    useEffect(() => {
+        navigation.setOptions({
+            headerRight: () => <CreateButton onPress={() => navigate("NewChatScreen")} />
+        });
+    }, []);
 
     return (
         <View style={styles.container}>

@@ -59,10 +59,7 @@ const schema = yup
             .matches(/^[A-Za-z 0-9]*$/, i18n._(msg`Please enter valid last name`))
             .max(40, i18n._(msg`Last name must be at most 40 characters`))
             .required(i18n._(msg`Last name is a required`)),
-        email: yup
-            .string()
-            .required(i18n._(msg`Email is a required`))
-            .email(i18n._(msg`Email must be a vali email`)),
+        email: yup.string(),
         about: yup.string().max(150, i18n._(msg`About is too long (maximum is 150 characters)`))
     })
     .required();
@@ -125,13 +122,15 @@ const ChatSettingsScreen: FC<ChatSettingsScreenProps> = () => {
     };
 
     useEffect(() => {
-        const subscription = watch((value, { name, type }) => {
-            if (type === "change") {
-                const isChanged = userData[name as string]?.trim() === value[name]?.trim();
-                setDisabled(isChanged);
-            }
-        });
-        return () => subscription.unsubscribe();
+        if (userData) {
+            const subscription = watch((value, { name, type }) => {
+                if (type === "change") {
+                    const isChanged = userData[name as string]?.trim() === value[name]?.trim();
+                    setDisabled(isChanged);
+                }
+            });
+            return () => subscription.unsubscribe();
+        }
     }, [watch, userData]);
 
     return (
@@ -140,30 +139,10 @@ const ChatSettingsScreen: FC<ChatSettingsScreenProps> = () => {
                 <View style={globalStyles["paddingH-20"]}>
                     <ProfileImage />
                     <Input
-                        label={<Trans>First name</Trans>}
-                        iconPack={FontAwesome}
-                        icon="user-o"
-                        iconSize={20}
-                        autoCapitalize="none"
-                        control={control}
-                        name="firstName"
-                        errorText={errors.firstName?.message}
-                    />
-                    <Input
-                        label={<Trans>Last name</Trans>}
-                        iconPack={FontAwesome}
-                        icon="user-o"
-                        iconSize={20}
-                        autoCapitalize="none"
-                        control={control}
-                        name="lastName"
-                        errorText={errors.lastName?.message}
-                    />
-                    <Input
-                        label={<Trans>Email</Trans>}
+                        label={isHideEmail ? <Trans>Email (Hashed)</Trans> : <Trans>Email</Trans>}
                         iconPack={Feather}
                         icon="mail"
-                        iconSize={20}
+                        iconSize={15}
                         autoCapitalize="none"
                         control={control}
                         name="email"
@@ -176,11 +155,33 @@ const ChatSettingsScreen: FC<ChatSettingsScreenProps> = () => {
                             />
                         }
                     />
+
+                    <Input
+                        label={<Trans>First name</Trans>}
+                        iconPack={FontAwesome}
+                        icon="user-o"
+                        iconSize={15}
+                        autoCapitalize="none"
+                        control={control}
+                        name="firstName"
+                        errorText={errors.firstName?.message}
+                    />
+                    <Input
+                        label={<Trans>Last name</Trans>}
+                        iconPack={FontAwesome}
+                        icon="user-o"
+                        iconSize={15}
+                        autoCapitalize="none"
+                        control={control}
+                        name="lastName"
+                        errorText={errors.lastName?.message}
+                    />
+
                     <Input
                         label={<Trans>About</Trans>}
                         iconPack={FontAwesome}
                         icon="user-o"
-                        iconSize={20}
+                        iconSize={15}
                         autoCapitalize="none"
                         control={control}
                         name="about"

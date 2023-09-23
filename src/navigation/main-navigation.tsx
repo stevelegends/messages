@@ -8,7 +8,7 @@ import { t } from "@lingui/macro";
 import BottomTabNavigation from "@navigation/bottom-tab-navigation";
 
 // screens
-import { ChatScreen, ReviewImageModal, SettingsScreen } from "@screens";
+import { ChatScreen, NewChatScreen, ReviewImageModal, SettingsScreen } from "@screens";
 
 // hooks
 import { useLingui } from "@lingui/react";
@@ -20,6 +20,7 @@ export type StackNavigatorParams = {
     ReviewImageModal: {
         url: string;
     };
+    NewChatScreen: undefined;
 };
 
 const Stack = createNativeStackNavigator<StackNavigatorParams>();
@@ -34,39 +35,54 @@ const MainNavigation = () => {
                 }
             }}
         >
-            <Stack.Screen
-                options={{
-                    headerShown: false
-                }}
-                name="BottomTab"
-                component={BottomTabNavigation}
-            />
-            <Stack.Screen
-                options={{
-                    title: t(i18n)`Chat`,
-                    headerBackTitle: t(i18n)`Back`,
-                    animation: "slide_from_right"
-                }}
-                name="ChatScreen"
-                component={ChatScreen}
-            />
-            <Stack.Screen
-                options={{
-                    title: t(i18n)`Settings`,
-                    headerBackTitle: t(i18n)`Back`
-                }}
-                name="SettingsScreen"
-                component={SettingsScreen}
-            />
+            <Stack.Group>
+                <Stack.Screen
+                    options={{
+                        headerShown: false
+                    }}
+                    name="BottomTab"
+                    component={BottomTabNavigation}
+                />
+                <Stack.Screen
+                    options={{
+                        title: t(i18n)`Chat`,
+                        headerBackTitle: t(i18n)`Back`,
+                        animation: "slide_from_right"
+                    }}
+                    name="ChatScreen"
+                    component={ChatScreen}
+                />
 
-            <Stack.Screen
-                options={{
-                    headerShown: false,
-                    animation: "fade"
-                }}
-                name="ReviewImageModal"
-                component={ReviewImageModal}
-            />
+                <Stack.Screen
+                    options={{
+                        title: t(i18n)`Settings`,
+                        headerBackTitle: t(i18n)`Back`
+                    }}
+                    name="SettingsScreen"
+                    component={SettingsScreen}
+                />
+            </Stack.Group>
+
+            <Stack.Group screenOptions={{ presentation: "containedModal" }}>
+                <Stack.Screen
+                    options={{
+                        title: t(i18n)`New Chat`
+                    }}
+                    name="NewChatScreen"
+                    component={NewChatScreen}
+                />
+            </Stack.Group>
+
+            <Stack.Group screenOptions={{ presentation: "containedTransparentModal" }}>
+                <Stack.Screen
+                    options={{
+                        headerShown: false,
+                        animation: "fade"
+                    }}
+                    name="ReviewImageModal"
+                    component={ReviewImageModal}
+                />
+            </Stack.Group>
         </Stack.Navigator>
     );
 };
