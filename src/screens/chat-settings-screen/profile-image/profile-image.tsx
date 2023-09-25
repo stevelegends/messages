@@ -1,5 +1,5 @@
 // react
-import React, { FC, Fragment, useState } from "react";
+import React, { FC, Fragment, useCallback, useMemo, useState } from "react";
 
 // modules
 import { Pressable, View, ViewStyle } from "react-native";
@@ -55,9 +55,10 @@ const ProfileImage: FC<ProfileImageProps> = () => {
 
             const assetUri = result.assets[0].uri;
             if (assetUri) {
-                setUriResult(assetUri);
+                // setUriResult(assetUri);
 
                 firebase.onUploadImageAsync(assetUri, setIsLoading, payload => {
+                    setUriResult(payload.url);
                     firebase.onUpdateSignedInUserAvatarData(
                         { userId: userData.userId, url: payload.url },
                         undefined,
@@ -76,40 +77,46 @@ const ProfileImage: FC<ProfileImageProps> = () => {
         setIsLoading(false);
     };
 
-    const handleImageOnPress = async () => {
+    const handleImageOnPress = useCallback(() => {
         setIsShowOption(prevState => !prevState);
-    };
+    }, []) as () => void;
 
     const handleReviewImageOnPress = () => {
         navigation.navigate("ReviewImageModal", { url: uriResult ? uriResult : "" });
     };
+
+    const sourceUri = useMemo(() => {
+        return { uri: uriResult };
+    }, [uriResult]);
 
     return (
         <Fragment>
             <View
                 style={[styles.container, globalStyles["paddingH-20"], globalStyles["marginT-50"]]}
             >
-                <CircleImage
-                    size={ImageSize}
-                    onPress={handleImageOnPress}
-                    source={{ uri: uriResult }}
-                    loading={isLoading}
-                />
+                <View>
+                    <CircleImage
+                        size={ImageSize}
+                        onPress={handleImageOnPress}
+                        source={sourceUri}
+                        loading={isLoading}
+                    />
+                </View>
                 {!isLoading && !uriResult && (
-                    <Text style={styles.placeholderText}>{userData.firstName[0]}</Text>
+                    <Text style={styles.placeholderText as any}>{userData.firstName[0]}</Text>
                 )}
                 <Pressable
                     style={[
+                        editViewStyle,
                         {
                             left: ImageSize / 2 + 35,
                             backgroundColor: theme.colors.background,
                             borderColor: theme.colors.text
-                        },
-                        editViewStyle
+                        }
                     ]}
                     onPress={handleImageOnPress}
                 >
-                    <FontAwesome name="pencil" size={18} color={theme.colors.text} />
+                    <FontAwesome name="pencil" size={15} color={theme.colors.text} />
                 </Pressable>
                 <AnimatedOption
                     show={isShowOption}

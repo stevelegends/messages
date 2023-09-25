@@ -18,7 +18,7 @@ import styles from "./review-image-modal.styles";
 import { globalColor, globalSize } from "@theme/theme";
 
 // components
-import { CloseButton } from "@components";
+import { CloseButton, CachedImageV2 } from "@components";
 
 type ReviewImageModalProps = {
     navigation: StackNavigationProp<StackNavigatorParams, "ReviewImageModal">;
@@ -41,11 +41,7 @@ const ReviewImageModal: FC<ReviewImageModalProps> = props => {
                     style={{ height: globalSize.screenHeight, width: globalSize.screenWidth }}
                 >
                     <ActivityIndicator color={globalColor.white} style={StyleSheet.absoluteFill} />
-                    <Animated.Image
-                        source={{ uri }}
-                        style={styles.imageView}
-                        resizeMode="contain"
-                    />
+                    <CachedImageV2 source={{ uri }} style={styles.imageView} resizeMode="contain" />
                 </Animated.View>
             </ScrollView>
             <SafeAreaView style={styles.buttonWrap}>

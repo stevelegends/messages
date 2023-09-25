@@ -9,6 +9,8 @@ import {
     ErrorHandler,
     generateHashedUUID,
     generateUUID,
+    getItemAsyncSecureStore,
+    SessionId,
     setItemAsyncSecureStore
 } from "@utils";
 
@@ -129,9 +131,9 @@ const useFirebase = () => {
 
                 const userData = await getUserData({ userId: uid });
 
-                if (userData && userData.status === UserStatus.active) {
-                    throw { code: "account-logged-in-already" };
-                }
+                // if (userData && userData.status === UserStatus.active) {
+                //     throw { code: "account-logged-in-already" };
+                // }
 
                 setItemAsyncSecureStore(
                     "userData",
@@ -260,19 +262,33 @@ const useFirebase = () => {
 
     const onUpdateSignedInUserStatusData = useCallback(
         async (
-            payload: { userId: string; status: UserStatus },
-            onUserDataResult?: (payload: { status: UserStatus; lastOnlineDate: string }) => void
+            payload: { userId: string; status: UserStatus; session: any },
+            onUserDataResult?: (payload: { session: any }) => void
         ) => {
             try {
+                let unitKey;
+                unitKey = await getItemAsyncSecureStore("unitKey");
+                if (!unitKey) {
+                    unitKey = generateUUID();
+                    await setItemAsyncSecureStore("unitKey", unitKey);
+                }
+
                 const dbRef = ref(getDatabase());
                 const userRef = child(dbRef, `users/${payload.userId}`);
 
                 const status = payload.status;
-                const lastOnlineDate = new Date().toISOString();
                 const device = JSON.stringify(DeviceInfo);
-
-                await update(userRef, { status, lastOnlineDate, device });
-                onUserDataResult && onUserDataResult({ status, lastOnlineDate });
+                const lastOnlineDate = new Date().toISOString();
+                const session = {
+                    ...payload.session,
+                    [unitKey]: {
+                        status,
+                        device,
+                        lastOnlineDate
+                    }
+                };
+                await update(userRef, { session });
+                onUserDataResult && onUserDataResult({ session });
             } catch (e: any) {
                 console.log("onUpdateSignedInUserStatusData: ", e);
             }

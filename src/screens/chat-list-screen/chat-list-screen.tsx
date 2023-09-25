@@ -12,7 +12,7 @@ import styles from "./chat-list-screen.styles";
 import { BottomTabStackNavigatorParams } from "@navigation/bottom-tab-navigation";
 
 // components
-import { CreateButton, Text } from "@components";
+import { CreateButton } from "@components";
 
 // hooks
 import { useFirebase, useNavigation, useUserState } from "@hooks/index";
@@ -33,13 +33,15 @@ const ChatListScreen: FC<ChatListScreenProps> = ({ navigation }) => {
     const auth = useAuth();
 
     const onUserStatus = useCallback((status, deps) => {
+        if (!deps) return;
         __DEV__ && console.log("onUserStatus", status, deps);
-        const userId = deps as string;
-        firebase.onUpdateSignedInUserStatusData({ userId, status }, undefined);
+        const userId = deps.userId as string;
+        const session = deps.session || {};
+        firebase.onUpdateSignedInUserStatusData({ userId, status, session }, undefined);
         auth.setStatusAction({ status });
     }, []) as (status: UserStatus, deps: any) => any;
 
-    useUserState(onUserStatus, auth.userData?.userId);
+    useUserState(onUserStatus, auth.userData);
 
     useEffect(() => {
         navigation.setOptions({

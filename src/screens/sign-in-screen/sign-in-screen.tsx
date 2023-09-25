@@ -9,7 +9,7 @@ import { KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { i18n } from "@lingui/core";
-import Animated from "react-native-reanimated";
+import Animated, { ZoomIn, ZoomOut } from "react-native-reanimated";
 
 // navigation
 import { AuthStackNavigatorParams } from "@navigation/auth-navigation";
@@ -94,7 +94,6 @@ const SignInScreen: FC<SignInScreenProps> = ({ navigation }) => {
                     keyboardVerticalOffset={100}
                 >
                     <Animated.View
-                        sharedTransitionTag="appLogo"
                         style={[globalStyles["flex-center"], globalStyles["paddingV-20"]]}
                     >
                         <AppLogoImage type="primary" />

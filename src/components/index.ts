@@ -9,3 +9,6 @@ export { default as BackButton } from "./back-button";
 export { default as CreateButton } from "./create-button";
 export { default as CloseButton } from "./close-button";
 export { default as CloseButtonText } from "./close-button-text";
+export { default as SpotlightView } from "./spotlight-view";
+export { default as AnimatedCircleProgress } from "./animated-circle-progress";
+export { default as CachedImageV2 } from "./cached-image-v2";

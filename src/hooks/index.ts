@@ -4,3 +4,4 @@ export { default as useFirebase } from "./use-firebase";
 export { default as useAppDispatch } from "./use-app-dispatch";
 export { default as useAppSelector } from "./use-app-selector";
 export { default as useUserState } from "./use-user-state";
+export { default as useRenderTracker } from "./use-render-tracker";

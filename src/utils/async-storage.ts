@@ -5,7 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SecureStore from "expo-secure-store";
 
 // Define a type for your keys
-type StorageKey = "userData";
+type StorageKey = "userData" | "unitKey";
 
 export const setItemAsyncStorage = async (key: StorageKey, value: string) => {
     try {

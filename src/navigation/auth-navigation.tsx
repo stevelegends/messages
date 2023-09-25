@@ -42,7 +42,7 @@ const AuthNavigation = () => {
                         backgroundColor: theme.colors.background
                     },
                     gestureEnabled: false,
-                    animation: "slide_from_right"
+                    animation: "fade"
                 }}
                 name="SignUpScreen"
                 component={SignUpScreen}
