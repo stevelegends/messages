@@ -152,24 +152,24 @@ const CachedImageV2: React.FC<Props> = props => {
         }
     }, [source]);
 
-    const width = props.width || (props.style as any).width;
+    const circleProgressR = props.width || (props.style as any).width;
 
     return (
         <Fragment>
             <Image {...props} source={imageSource} />
-            {typeof width === "number" && (
+            {typeof circleProgressR === "number" && (
                 <View
                     style={{
-                        width: width,
-                        height: width,
-                        borderRadius: width / 2,
+                        width: circleProgressR,
+                        height: circleProgressR,
+                        borderRadius: circleProgressR / 2,
                         position: "absolute"
                     }}
                 >
                     <AnimatedCircleProgress
                         color={theme.colors.primary}
                         percentage={sharedPercentage}
-                        radius={width / 2}
+                        radius={circleProgressR / 2}
                         borderWidth={2}
                     />
                 </View>

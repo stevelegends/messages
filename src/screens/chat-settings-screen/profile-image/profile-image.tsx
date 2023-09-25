@@ -55,6 +55,7 @@ const ProfileImage: FC<ProfileImageProps> = () => {
 
             const assetUri = result.assets[0].uri;
             if (assetUri) {
+                // DEPRECATED
                 // setUriResult(assetUri);
 
                 firebase.onUploadImageAsync(assetUri, setIsLoading, payload => {

@@ -1,8 +1,15 @@
 // react
-import React, { FC, memo } from "react";
+import React, { FC, memo, useMemo } from "react";
 
 // modules
-import { ActivityIndicator, ImageProps, Pressable, StyleSheet, Image } from "react-native";
+import {
+    ActivityIndicator,
+    ImageProps,
+    Pressable,
+    StyleSheet,
+    Image,
+    ImageStyle
+} from "react-native";
 import Animated, { ZoomIn, ZoomOut } from "react-native-reanimated";
 
 // hooks
@@ -19,6 +26,7 @@ type CircleImage = {
     size?: number;
     onPress?: () => void;
     loading?: boolean;
+    style?: ImageStyle;
 } & ImageProps;
 
 const CircleImage: FC<CircleImage> = memo(props => {
@@ -26,35 +34,24 @@ const CircleImage: FC<CircleImage> = memo(props => {
 
     const theme = useTheme();
 
+    const imageCachedStyle = useMemo(() => {
+        return {
+            backgroundColor: theme.colors.card,
+            borderColor: theme.colors.text,
+            borderWidth: 1,
+            ...(props.style as ImageStyle),
+            width: props.size,
+            height: props.size,
+            borderRadius: (props.size || 0) / 2
+        };
+    }, [props.size, props.style, theme.dark]) as ImageStyle;
+
     return (
         <Pressable onPress={props.onPress}>
             {props.source && (props.source as any)?.uri.startsWith("https://") ? (
-                <CachedImageV2
-                    source={props.source}
-                    style={{
-                        width: props.size,
-                        aspectRatio: 1,
-                        borderRadius: (props.size || 0) / 2,
-                        backgroundColor: theme.colors.card,
-                        borderColor: theme.colors.text,
-                        borderWidth: 1
-                    }}
-                />
+                <CachedImageV2 {...props} style={imageCachedStyle} />
             ) : (
-                <Image
-                    {...props}
-                    style={[
-                        {
-                            width: props.size,
-                            aspectRatio: 1,
-                            borderRadius: (props.size || 0) / 2,
-                            backgroundColor: theme.colors.card,
-                            borderColor: theme.colors.text,
-                            borderWidth: 1
-                        },
-                        props.style
-                    ]}
-                />
+                <Image {...props} style={imageCachedStyle} />
             )}
 
             {props.loading && (
