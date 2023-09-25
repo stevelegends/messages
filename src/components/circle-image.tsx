@@ -48,7 +48,7 @@ const CircleImage: FC<CircleImage> = memo(props => {
 
     return (
         <Pressable onPress={props.onPress}>
-            {props.source && (props.source as any)?.uri.startsWith("https://") ? (
+            {props.source && (props.source as any)?.uri?.startsWith("https://") ? (
                 <CachedImageV2 {...props} style={imageCachedStyle} />
             ) : (
                 <Image {...props} style={imageCachedStyle} />

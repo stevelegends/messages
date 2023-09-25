@@ -66,7 +66,8 @@ const MainNavigation = () => {
             <Stack.Group screenOptions={{ presentation: "containedModal" }}>
                 <Stack.Screen
                     options={{
-                        title: t(i18n)`New Chat`
+                        title: t(i18n)`New Chat`,
+                        headerTitleAlign: "center"
                     }}
                     name="NewChatScreen"
                     component={NewChatScreen}

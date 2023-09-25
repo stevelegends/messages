@@ -104,7 +104,9 @@ const ProfileImage: FC<ProfileImageProps> = () => {
                     />
                 </View>
                 {!isLoading && !uriResult && (
-                    <Text style={styles.placeholderText as any}>{userData.firstName[0]}</Text>
+                    <Text style={styles.placeholderText as any}>
+                        {userData.firstName?.[0]?.toUpperCase()}
+                    </Text>
                 )}
                 <Pressable
                     style={[

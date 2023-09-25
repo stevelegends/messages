@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
         flex: 1
     },
     searchContainer: {
-        height: globalSize.box,
+        height: globalSize.box40,
         marginVertical: 8,
         paddingHorizontal: 8,
         paddingVertical: 5,
@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     searchBox: {
         marginLeft: 8,
         fontSize: 15,
-        width: "100%"
+        flex: 1
     },
     noResultText: {
         letterSpacing: 0.3

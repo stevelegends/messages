@@ -10,7 +10,6 @@ import {
     generateHashedUUID,
     generateUUID,
     getItemAsyncSecureStore,
-    SessionId,
     setItemAsyncSecureStore
 } from "@utils";
 
@@ -19,7 +18,18 @@ import { getFirebaseAuth } from "@services/firebase-app";
 
 // firebase
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { child, get, getDatabase, ref, set, update } from "firebase/database";
+import {
+    child,
+    get,
+    getDatabase,
+    ref,
+    set,
+    update,
+    query,
+    orderByChild,
+    startAt,
+    endAt
+} from "firebase/database";
 import {
     getDownloadURL,
     getStorage,
@@ -30,6 +40,7 @@ import {
 // constants
 import { UserStatus } from "@constants/user-status";
 import { getUserRole } from "@constants/user-roles";
+import { Alert } from "react-native";
 
 type AuthSignUp = {
     firstName: string;
@@ -129,8 +140,18 @@ const useFirebase = () => {
                 // timer = setTimeout(() => {
                 // },  millisecondsUntilExpiry)
 
-                const userData = await getUserData({ userId: uid });
-
+                let userData = await getUserData({ userId: uid });
+                if (!userData) {
+                    userData = await createUser({
+                        firstName: "default",
+                        lastName: "default",
+                        email: payload.email,
+                        userId: uid
+                    });
+                }
+                if (!userData) {
+                    throw { code: "account-synced-failed" };
+                }
                 // if (userData && userData.status === UserStatus.active) {
                 //     throw { code: "account-logged-in-already" };
                 // }
@@ -144,7 +165,7 @@ const useFirebase = () => {
                     })
                 );
 
-                onAuthResult({ token: accessToken, userData });
+                onAuthResult({ token: accessToken, userData: userData || {} });
             } catch (error) {
                 ErrorHandler(error, "onSignIn");
             }
@@ -187,6 +208,28 @@ const useFirebase = () => {
         } catch (error) {
             ErrorHandler(error, "getUserData");
         }
+    }, []);
+
+    const getUserDataByText = useCallback(async (payload: { queryText: string }): Promise<any> => {
+        try {
+            const searchTerm = payload.queryText.toLowerCase();
+
+            const dbRef = ref(getDatabase());
+            const userRef = child(dbRef, `users`);
+            const queryRef = query(
+                userRef,
+                orderByChild("firstLast"),
+                startAt(searchTerm),
+                endAt(searchTerm + "\uf8ff")
+            );
+            const snapshot = await get(queryRef);
+            if (snapshot.exists()) {
+                return snapshot.val();
+            }
+        } catch (error) {
+            ErrorHandler(error, "getUserDataByText");
+        }
+        return {};
     }, []);
 
     const onUpdateSignedInUserData = useCallback(
@@ -359,7 +402,8 @@ const useFirebase = () => {
         onUpdateSignedInUserData,
         onUploadImageAsync,
         onUpdateSignedInUserAvatarData,
-        onUpdateSignedInUserStatusData
+        onUpdateSignedInUserStatusData,
+        getUserDataByText
     };
 };
 

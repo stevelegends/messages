@@ -7,7 +7,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { i18n } from "@lingui/core";
-import { msg, Trans } from "@lingui/macro";
+import { msg, t, Trans } from "@lingui/macro";
 import { Feather, FontAwesome } from "@expo/vector-icons";
 
 // navigation
@@ -22,7 +22,7 @@ import { useTheme } from "@react-navigation/native";
 import { useFirebase } from "@hooks/index";
 
 // components
-import { Input, SubmitButton, ToggleEyeButton } from "@components";
+import { Input, SubmitButton, ToggleEyeButton, NotificationView } from "@components";
 import ProfileImage from "./profile-image/profile-image";
 
 // theme
@@ -34,6 +34,7 @@ import { onSignOut } from "@store/store-action";
 
 // utils
 import { decrypted } from "@utils";
+import { useLingui } from "@lingui/react";
 
 type ChatSettingsScreenProps = {
     navigation: StackNavigationProp<BottomTabStackNavigatorParams, "ChatSettingsScreen">;
@@ -65,6 +66,8 @@ const schema = yup
     .required();
 
 const ChatSettingsScreen: FC<ChatSettingsScreenProps> = () => {
+    const { i18n } = useLingui();
+
     const theme = useTheme();
     const { userData, setUserDataOverrideAction } = useAuth();
     const firebase = useFirebase();
@@ -136,6 +139,14 @@ const ChatSettingsScreen: FC<ChatSettingsScreenProps> = () => {
     return (
         <View style={[styles.container]}>
             <ScrollView>
+                <NotificationView
+                    height={130}
+                    show={userData.firstName === "default" || userData.lastName === "default"}
+                    title={t(i18n)`Update!`}
+                    message={t(
+                        i18n
+                    )`An error occurred when syncing the First name and Last name to our system. Please update your own.`}
+                />
                 <View style={globalStyles["paddingH-20"]}>
                     <ProfileImage />
                     <Input

@@ -131,7 +131,8 @@ export const globalSize = {
     headerTitle: 25,
     button: 50,
     paddingButton: 15,
-    box: 30
+    box: 30,
+    box40: 40
 };
 
 export const globalColor = {
