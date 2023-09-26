@@ -35,6 +35,7 @@ import { onSignOut } from "@store/store-action";
 // utils
 import { decrypted } from "@utils";
 import { useLingui } from "@lingui/react";
+import { DefaultUser } from "@constants/user-status";
 
 type ChatSettingsScreenProps = {
     navigation: StackNavigationProp<BottomTabStackNavigatorParams, "ChatSettingsScreen">;
@@ -141,7 +142,10 @@ const ChatSettingsScreen: FC<ChatSettingsScreenProps> = () => {
             <ScrollView>
                 <NotificationView
                     height={130}
-                    show={userData.firstName === "default" || userData.lastName === "default"}
+                    show={
+                        userData.firstName === DefaultUser.firstNameMD5 ||
+                        userData.lastName === DefaultUser.lastNameMD5
+                    }
                     title={t(i18n)`Update!`}
                     message={t(
                         i18n

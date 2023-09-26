@@ -38,7 +38,7 @@ import {
 } from "firebase/storage";
 
 // constants
-import { UserStatus } from "@constants/user-status";
+import { DefaultUser, UserStatus } from "@constants/user-status";
 import { getUserRole } from "@constants/user-roles";
 import { Alert } from "react-native";
 
@@ -143,8 +143,8 @@ const useFirebase = () => {
                 let userData = await getUserData({ userId: uid });
                 if (!userData) {
                     userData = await createUser({
-                        firstName: "default",
-                        lastName: "default",
+                        firstName: DefaultUser.firstNameMD5,
+                        lastName: DefaultUser.lastNameMD5,
                         email: payload.email,
                         userId: uid
                     });
