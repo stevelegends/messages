@@ -2,7 +2,7 @@
 import React, { FC, Fragment, useCallback, useMemo, useState } from "react";
 
 // modules
-import { Pressable, View, ViewStyle } from "react-native";
+import { Pressable, View, ViewStyle, Image } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { t } from "@lingui/macro";
 

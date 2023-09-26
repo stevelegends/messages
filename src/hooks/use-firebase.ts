@@ -4,11 +4,13 @@ import { useCallback } from "react";
 // modules
 // utils
 import {
+    compressImageEachSize,
     DeviceInfo,
     encrypted,
     ErrorHandler,
     generateHashedUUID,
     generateUUID,
+    getImageSizeToKBAsync,
     getItemAsyncSecureStore,
     setItemAsyncSecureStore
 } from "@utils";
@@ -345,6 +347,14 @@ const useFirebase = () => {
         onResult: (payload: { url: string }) => void
     ) => {
         onLoading(true);
+
+        const compressedUri = await compressImageEachSize(uri, 100);
+
+        if (__DEV__) {
+            const size = await getImageSizeToKBAsync(compressedUri);
+            console.log("getImageSizeToKBAsync", size);
+        }
+
         let blob: any;
         let sRef: any;
         try {
@@ -357,7 +367,7 @@ const useFirebase = () => {
                     reject({ code: "network-failed" });
                 };
                 xhr.responseType = "blob";
-                xhr.open("GET", uri, true);
+                xhr.open("GET", compressedUri, true);
                 xhr.send();
             });
         } catch (e) {

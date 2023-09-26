@@ -12,6 +12,7 @@ const errorMessage = {
     "device-rooted-jailbroken": msg`Your device is rooted/jailbroken, for security reason we have stopped the app on rooted/jailbroken device.`,
     "auth/network-request-failed": msg`Network request failed`,
     "account-synced-failed": msg`This account is not active. Please contact an administrator if you believe this is an error.`,
+    "file-does-not-exist": msg`File does not exist`,
     default: msg`Something went wrong.`
 };
 
