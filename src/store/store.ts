@@ -4,11 +4,13 @@ import { configureStore } from "@reduxjs/toolkit";
 // reducer
 import counterReducer from "@store/features/counter/counter-slice";
 import authReducer from "@store/features/auth/auth-slice";
+import userSlide from "@store/features/user/user-slice";
 
 export const store = configureStore({
     reducer: {
         counterReducer,
-        authReducer
+        authReducer,
+        userSlide
     }
 });
 

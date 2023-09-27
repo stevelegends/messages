@@ -22,6 +22,9 @@ export const globalStyles = StyleSheet.create({
     "align-self-center": {
         alignSelf: "center"
     },
+    absolute: {
+        position: "absolute"
+    },
     horizontal: {
         flexDirection: "row"
     },
@@ -50,6 +53,9 @@ export const globalStyles = StyleSheet.create({
     },
     "marginT-5": {
         marginTop: 5
+    },
+    "marginT-8": {
+        marginTop: 8
     },
     "marginT-10": {
         marginTop: 10
@@ -119,6 +125,15 @@ export const globalStyles = StyleSheet.create({
     },
     "marginV-50": {
         marginVertical: 50
+    },
+    "margin-8": {
+        margin: 8
+    },
+    "marginV-8": {
+        marginVertical: 8
+    },
+    "marginH-14": {
+        marginHorizontal: 14
     }
     // TODO add more
 });

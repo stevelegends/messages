@@ -28,14 +28,23 @@ import { globalStyles } from "@theme/theme";
 import { images } from "@theme/images";
 
 // hooks
-import { useTheme } from "@react-navigation/native";
+import { RouteProp, useTheme } from "@react-navigation/native";
+
+// store
+import useUser from "@store/features/user/use-user";
+import useAuth from "@store/features/auth/use-auth";
 
 type ChatScreenProps = {
     navigation: StackNavigationProp<StackNavigatorParams, "ChatScreen">;
+    route: RouteProp<StackNavigatorParams, "ChatScreen">;
 };
 
-const ChatScreen: FC<ChatScreenProps> = () => {
+const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
     const theme = useTheme();
+
+    const auth = useAuth();
+    const user = useUser();
+    const newChatData = route.params?.newChatData;
 
     const [messageText, setMessageText] = useState<string>("");
 
@@ -43,7 +52,27 @@ const ChatScreen: FC<ChatScreenProps> = () => {
         setMessageText("");
     }, [messageText]);
 
-    useEffect(() => {}, []);
+    const getChatTitleFromName = () => {
+        const chatUsers = newChatData?.users;
+        if (Array.isArray(chatUsers)) {
+            const otherUserId = chatUsers.find(uid => uid !== auth.userData.userId);
+            if (otherUserId) {
+                const otherUserData = user.storedUsers[otherUserId];
+                return `${otherUserData.firstName} ${otherUserData.lastName}`;
+            }
+        }
+    };
+
+    useEffect(() => {
+        function onHandleNewChatData() {
+            const title = getChatTitleFromName();
+            navigation.setOptions({
+                headerTitle: title
+            });
+        }
+        onHandleNewChatData();
+        return () => {};
+    }, []);
 
     return (
         <SafeAreaView edges={["left", "right", "bottom"]} style={styles.container}>

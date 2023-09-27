@@ -5,3 +5,5 @@ export { default as useAppDispatch } from "./use-app-dispatch";
 export { default as useAppSelector } from "./use-app-selector";
 export { default as useUserState } from "./use-user-state";
 export { default as useRenderTracker } from "./use-render-tracker";
+export { default as useImageSize } from "./use-image-size";
+export { default as useTabNavigation } from "./use-tab-navigation";

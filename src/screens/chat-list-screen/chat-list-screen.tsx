@@ -1,9 +1,10 @@
 // react
-import React, { FC, useCallback, useEffect } from "react";
+import React, { FC, useCallback, useEffect, useMemo } from "react";
 
 // modules
 import { StackNavigationProp } from "@react-navigation/stack";
-import { Button, View } from "react-native";
+import { View } from "react-native";
+import { RouteProp } from "@react-navigation/native";
 
 // styles
 import styles from "./chat-list-screen.styles";
@@ -25,9 +26,10 @@ import useAuth from "@store/features/auth/use-auth";
 
 type ChatListScreenProps = {
     navigation: StackNavigationProp<BottomTabStackNavigatorParams, "ChatListScreen">;
+    route: RouteProp<BottomTabStackNavigatorParams, "ChatListScreen">;
 };
 
-const ChatListScreen: FC<ChatListScreenProps> = ({ navigation }) => {
+const ChatListScreen: FC<ChatListScreenProps> = ({ navigation, route }) => {
     const { navigate } = useNavigation();
     const firebase = useFirebase();
     const auth = useAuth();
@@ -44,16 +46,28 @@ const ChatListScreen: FC<ChatListScreenProps> = ({ navigation }) => {
     useUserState(onUserStatus, auth.userData);
 
     useEffect(() => {
+        function handleSelectedUserFromNewChatScreen() {
+            if (!route.params?.selectedUserId) return;
+
+            navigation.setParams({ selectedUserId: undefined });
+
+            const props = {
+                newChatData: {
+                    users: [route.params?.selectedUserId, auth.userData.userId]
+                }
+            };
+            navigate("ChatScreen", props);
+        }
+        handleSelectedUserFromNewChatScreen();
+    }, [route.params?.selectedUserId]);
+
+    useEffect(() => {
         navigation.setOptions({
             headerRight: () => <CreateButton onPress={() => navigate("NewChatScreen")} />
         });
     }, []);
 
-    return (
-        <View style={styles.container}>
-            <Button title="Chat" onPress={() => navigate("ChatScreen")} />
-        </View>
-    );
+    return <View style={styles.container}></View>;
 };
 
 export default ChatListScreen;

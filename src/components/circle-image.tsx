@@ -8,7 +8,10 @@ import {
     Pressable,
     StyleSheet,
     Image,
-    ImageStyle
+    ImageStyle,
+    Text,
+    View,
+    TextStyle
 } from "react-native";
 import Animated, { ZoomIn, ZoomOut } from "react-native-reanimated";
 
@@ -17,16 +20,22 @@ import { useTheme } from "@react-navigation/native";
 import { useRenderTracker } from "@hooks/index";
 
 // theme
-import { globalSize } from "@theme/theme";
+import { globalSize, globalStyles } from "@theme/theme";
 
 // components
 import CachedImageV2 from "./cached-image-v2";
+
+// utils
+import { getRandomDarkColor, getRandomLightColor } from "@utils";
 
 type CircleImage = {
     size?: number;
     onPress?: () => void;
     loading?: boolean;
     style?: ImageStyle;
+    cached?: boolean;
+    placeholder?: string;
+    placeholderStyle?: TextStyle;
 } & ImageProps;
 
 const CircleImage: FC<CircleImage> = memo(props => {
@@ -34,9 +43,12 @@ const CircleImage: FC<CircleImage> = memo(props => {
 
     const theme = useTheme();
 
+    const randomColor = useMemo(() => {
+        return theme.dark ? getRandomDarkColor() : getRandomLightColor();
+    }, [theme.dark]);
+
     const imageCachedStyle = useMemo(() => {
         return {
-            backgroundColor: theme.colors.card,
             borderColor: theme.colors.text,
             borderWidth: 1,
             ...(props.style as ImageStyle),
@@ -48,7 +60,31 @@ const CircleImage: FC<CircleImage> = memo(props => {
 
     return (
         <Pressable onPress={props.onPress}>
-            {props.source && (props.source as any)?.uri?.startsWith("https://") ? (
+            {props.placeholder !== null && props.placeholder !== undefined && (
+                <View
+                    style={[
+                        StyleSheet.absoluteFill,
+                        globalStyles["flex-center"],
+                        {
+                            width: props.size,
+                            aspectRatio: 1,
+                            borderRadius: (props.size || 0) / 2,
+                            backgroundColor: randomColor
+                        }
+                    ]}
+                >
+                    <Text
+                        style={[
+                            styles.placeholder,
+                            { color: theme.colors.text },
+                            props.placeholderStyle
+                        ]}
+                    >
+                        {props.placeholder}
+                    </Text>
+                </View>
+            )}
+            {props.cached && props.source && (props.source as any)?.uri?.startsWith("https://") ? (
                 <CachedImageV2 {...props} style={imageCachedStyle} />
             ) : (
                 <Image {...props} style={imageCachedStyle} />
@@ -75,6 +111,10 @@ const styles = StyleSheet.create({
     backdropLoading: {
         backgroundColor: "black",
         opacity: 0.4
+    },
+    placeholder: {
+        fontFamily: "Roboto-Black",
+        fontSize: 12
     }
 });
 

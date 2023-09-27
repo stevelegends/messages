@@ -2,7 +2,7 @@
 import React, { FC, Fragment, useCallback, useMemo, useState } from "react";
 
 // modules
-import { Pressable, View, ViewStyle, Image } from "react-native";
+import { Pressable, View, ViewStyle, TextStyle } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { t } from "@lingui/macro";
 
@@ -21,6 +21,7 @@ import { useTheme } from "@react-navigation/native";
 import useFirebase from "@hooks/use-firebase";
 import useNavigation from "@hooks/use-navigation";
 import { useLingui } from "@lingui/react";
+import { useImageSize } from "@hooks/index";
 
 // utils
 import { ErrorHandler, onLaunchImageLibraryAsync } from "@utils";
@@ -38,6 +39,7 @@ const ProfileImage: FC<ProfileImageProps> = () => {
     const theme = useTheme();
     const firebase = useFirebase();
     const { userData, setUserDataOverrideAction } = useAuth();
+    const imageSize = useImageSize();
 
     const [uriResult, setUriResult] = useState<string | undefined>(userData.profilePicture);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -57,17 +59,22 @@ const ProfileImage: FC<ProfileImageProps> = () => {
             if (assetUri) {
                 // DEPRECATED
                 // setUriResult(assetUri);
-
-                firebase.onUploadImageAsync(assetUri, setIsLoading, payload => {
-                    setUriResult(payload.url);
-                    firebase.onUpdateSignedInUserAvatarData(
-                        { userId: userData.userId, url: payload.url },
-                        undefined,
-                        payload => {
-                            setUserDataOverrideAction({ userData: payload });
-                        }
-                    );
-                });
+                const optimizedSize = await imageSize.getImageOptimizedSize(assetUri);
+                firebase.onUploadImageAsync(
+                    assetUri,
+                    setIsLoading,
+                    payload => {
+                        setUriResult(payload.url);
+                        firebase.onUpdateSignedInUserAvatarData(
+                            { userId: userData.userId, url: payload.url },
+                            undefined,
+                            payload => {
+                                setUserDataOverrideAction({ userData: payload });
+                            }
+                        );
+                    },
+                    optimizedSize
+                );
 
                 return;
             }
@@ -90,6 +97,10 @@ const ProfileImage: FC<ProfileImageProps> = () => {
         return { uri: uriResult };
     }, [uriResult]);
 
+    const placeholderStyle = useMemo(() => {
+        return { fontSize: 40 };
+    }, []) as TextStyle;
+
     return (
         <Fragment>
             <View
@@ -101,13 +112,12 @@ const ProfileImage: FC<ProfileImageProps> = () => {
                         onPress={handleImageOnPress}
                         source={sourceUri}
                         loading={isLoading}
+                        cached
+                        placeholder={userData.firstName?.[0]?.toUpperCase()}
+                        placeholderStyle={placeholderStyle}
                     />
                 </View>
-                {!isLoading && !uriResult && (
-                    <Text style={styles.placeholderText as any}>
-                        {userData.firstName?.[0]?.toUpperCase()}
-                    </Text>
-                )}
+
                 <Pressable
                     style={[
                         editViewStyle,

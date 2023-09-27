@@ -344,11 +344,12 @@ const useFirebase = () => {
     const onUploadImageAsync = async (
         uri: string,
         onLoading: (isLoading: boolean) => void,
-        onResult: (payload: { url: string }) => void
+        onResult: (payload: { url: string }) => void,
+        imageSize?: number
     ) => {
         onLoading(true);
 
-        const compressedUri = await compressImageEachSize(uri, 100);
+        const compressedUri = await compressImageEachSize(uri, 100, imageSize);
 
         if (__DEV__) {
             const size = await getImageSizeToKBAsync(compressedUri);

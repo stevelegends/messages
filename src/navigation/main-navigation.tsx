@@ -16,7 +16,7 @@ import { useLingui } from "@lingui/react";
 export type StackNavigatorParams = {
     BottomTab: undefined;
     SettingsScreen: undefined;
-    ChatScreen: undefined;
+    ChatScreen: { newChatData: { users: string[] } };
     ReviewImageModal: {
         url: string;
     };
