@@ -22,7 +22,7 @@ export type AuthStackNavigatorParams = {
 
 const Stack = createNativeStackNavigator<AuthStackNavigatorParams>();
 
-const AuthNavigation = () => {
+const AuthNavigator = () => {
     const theme = useTheme();
     const { i18n } = useLingui();
 
@@ -64,4 +64,4 @@ const AuthNavigation = () => {
     );
 };
 
-export default AuthNavigation;
+export default AuthNavigator;

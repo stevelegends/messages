@@ -11,7 +11,7 @@ import { msg, t, Trans } from "@lingui/macro";
 import { Feather, FontAwesome } from "@expo/vector-icons";
 
 // navigation
-import { BottomTabStackNavigatorParams } from "@navigation/bottom-tab-navigation";
+import { BottomTabStackNavigatorParams } from "@navigation/bottom-tab-navigator";
 
 // styles
 import styles from "./chat-settings-screen.styles";

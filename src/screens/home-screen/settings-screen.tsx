@@ -15,7 +15,7 @@ import { globalStyles } from "@theme/theme";
 import { Text } from "@components";
 
 // navigation
-import { StackNavigatorParams } from "@navigation/main-navigation";
+import { StackNavigatorParams } from "@navigation/main-navigator";
 
 type SettingsScreenProps = {
     navigation: StackNavigationProp<StackNavigatorParams, "SettingsScreen">;

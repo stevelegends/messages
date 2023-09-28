@@ -30,7 +30,11 @@ import {
     query,
     orderByChild,
     startAt,
-    endAt
+    endAt,
+    push,
+    onValue,
+    off,
+    DataSnapshot
 } from "firebase/database";
 import {
     getDownloadURL,
@@ -42,7 +46,6 @@ import {
 // constants
 import { DefaultUser, UserStatus } from "@constants/user-status";
 import { getUserRole } from "@constants/user-roles";
-import { Alert } from "react-native";
 
 type AuthSignUp = {
     firstName: string;
@@ -142,7 +145,7 @@ const useFirebase = () => {
                 // timer = setTimeout(() => {
                 // },  millisecondsUntilExpiry)
 
-                let userData = await getUserData({ userId: uid });
+                let userData = await getUserDataAsync({ userId: uid });
                 if (!userData) {
                     userData = await createUser({
                         firstName: DefaultUser.firstNameMD5,
@@ -201,14 +204,14 @@ const useFirebase = () => {
         }
     }, []);
 
-    const getUserData = useCallback(async (payload: { userId: string }): Promise<any> => {
+    const getUserDataAsync = useCallback(async (payload: { userId: string }): Promise<any> => {
         try {
             const dbRef = ref(getDatabase());
             const userRef = child(dbRef, `users/${payload.userId}`);
             const snapshot = await get(userRef);
             return snapshot.val();
         } catch (error) {
-            ErrorHandler(error, "getUserData");
+            ErrorHandler(error, "getUserDataAsync");
         }
     }, []);
 
@@ -406,15 +409,109 @@ const useFirebase = () => {
         onLoading(false);
     };
 
+    const onCreateChatAsync = async (loggedInUserId: string, chatData: any): Promise<string> => {
+        try {
+            const newChatData = {
+                ...chatData,
+                createdBy: loggedInUserId,
+                updatedBy: loggedInUserId,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+            const dbRef = ref(getDatabase());
+            const newChat = await push(child(dbRef, "chats"), newChatData);
+
+            const chatUsers = chatData?.users || [];
+            for (let i = 0; i < chatUsers.length; i++) {
+                const userId = chatUsers[i];
+                await push(child(dbRef, `userChats/${userId}`), newChat.key);
+            }
+
+            return newChat.key || "";
+        } catch (e) {
+            ErrorHandler(e, "onCreateChatAsync");
+        }
+        return "";
+    };
+
+    const onUserChatsListener = (userId: string, listener: (chatIds: unknown[]) => void) => {
+        const dbRef = ref(getDatabase());
+        const userChatsRef = child(dbRef, `userChats/${userId}`);
+
+        onValue(
+            userChatsRef,
+            dataSnapshot => {
+                const chatIdsData = dataSnapshot.val() || {};
+                const chatIds = Object.values(chatIdsData);
+                listener(chatIds);
+            },
+            error => {
+                ErrorHandler(error, "onUserChatsListener");
+            }
+        );
+
+        return userChatsRef;
+    };
+
+    const onChatsListener = (chatId: string, listener: (dataSnapshot: DataSnapshot) => void) => {
+        if (!chatId) return;
+        const dbRef = ref(getDatabase());
+        const chatRef = child(dbRef, `chats/${chatId}`);
+
+        onValue(
+            chatRef,
+            dataSnapshot => {
+                listener(dataSnapshot);
+            },
+            error => {
+                ErrorHandler(error, "onUserChatsListener");
+            }
+        );
+
+        return chatRef;
+    };
+
+    const onUnSubscribeFromListener = (ref: any) => {
+        if (ref) {
+            off(ref);
+        }
+    };
+
+    const onSendMessageTextAsync = async (
+        chatId: string,
+        senderId: string,
+        messageText: string
+    ) => {
+        const dbRef = ref(getDatabase());
+        const messagesRef = child(dbRef, `messages/${chatId}`);
+
+        const messageData = {
+            sentBy: senderId,
+            sentAt: new Date().toISOString(),
+            text: messageText
+        };
+
+        try {
+            await push(messagesRef, messageData);
+        } catch (error) {
+            ErrorHandler(error, "onSendMessageTextAsync");
+        }
+    };
+
     return {
         onSignUp,
         onSignIn,
-        getUserData,
+        getUserDataAsync,
         onUpdateSignedInUserData,
         onUploadImageAsync,
         onUpdateSignedInUserAvatarData,
         onUpdateSignedInUserStatusData,
-        getUserDataByText
+        getUserDataByText,
+        onCreateChatAsync,
+        onUserChatsListener,
+        onUnSubscribeFromListener,
+        onChatsListener,
+        onSendMessageTextAsync
     };
 };
 

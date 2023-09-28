@@ -28,7 +28,7 @@ const useLogin = () => {
                     throw { code: "permission_denied" };
                 }
 
-                const data = await firebase.getUserData({ userId });
+                const data = await firebase.getUserDataAsync({ userId });
                 if (data && data.userId) {
                     auth.setUserDataAction({ userData: data });
                     auth.setTokenAction({ token });

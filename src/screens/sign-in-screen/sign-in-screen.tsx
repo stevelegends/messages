@@ -12,7 +12,7 @@ import { i18n } from "@lingui/core";
 import Animated, { ZoomIn, ZoomOut } from "react-native-reanimated";
 
 // navigation
-import { AuthStackNavigatorParams } from "@navigation/auth-navigation";
+import { AuthStackNavigatorParams } from "@navigation/auth-navigator";
 
 // styles
 import styles from "./sign-in-screen.styles";

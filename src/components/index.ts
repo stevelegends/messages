@@ -13,3 +13,4 @@ export { default as SpotlightView } from "./spotlight-view";
 export { default as AnimatedCircleProgress } from "./animated-circle-progress";
 export { default as CachedImageV2 } from "./cached-image-v2";
 export { default as NotificationView } from "./notification-view";
+export { default as ToggleThemeButton } from "./toggle-theme-button";

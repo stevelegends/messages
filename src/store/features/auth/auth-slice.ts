@@ -24,7 +24,7 @@ export const authSlice = createSlice({
             state.token = action.payload.token;
         },
         setUserData: (state, action: PayloadAction<{ userData: any }>) => {
-            __DEV__ && console.log("updated user data: ", action.payload.userData);
+            __DEV__ && console.log("updated user data to store: ", action.payload.userData);
             state.userData = action.payload.userData;
         },
         setClearUserData: state => {

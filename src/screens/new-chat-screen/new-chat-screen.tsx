@@ -11,7 +11,7 @@ import { Trans } from "@lingui/macro";
 import styles from "./new-chat-screen.styles";
 
 // navigation
-import { StackNavigatorParams } from "@navigation/main-navigation";
+import { StackNavigatorParams } from "@navigation/main-navigator";
 
 // hooks
 import { useFirebase, useTabNavigation } from "@hooks/index";

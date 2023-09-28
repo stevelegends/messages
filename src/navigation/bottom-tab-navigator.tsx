@@ -15,7 +15,7 @@ import { ChatListScreen, ChatSettingsScreen } from "@screens";
 import ToggleThemeButton from "../components/toggle-theme-button";
 
 // navigation
-import { StackNavigatorParams } from "@navigation/main-navigation";
+import { StackNavigatorParams } from "@navigation/main-navigator";
 
 // hooks
 import { useLingui } from "@lingui/react";
@@ -29,18 +29,18 @@ export type BottomTabStackNavigatorParams = {
     ChatSettingsScreen: undefined;
 };
 
-const Tab = createBottomTabNavigator<BottomTabStackNavigatorParams>();
+const BottomTab = createBottomTabNavigator<BottomTabStackNavigatorParams>();
 
 type BottomTabNavigationProps = {
     navigation: StackNavigationProp<StackNavigatorParams, "BottomTab">;
 };
 
-const BottomTabNavigation: FC<BottomTabNavigationProps> = () => {
+const BottomTabNavigator: FC<BottomTabNavigationProps> = () => {
     const { i18n } = useLingui();
     const theme = useTheme();
 
     return (
-        <Tab.Navigator
+        <BottomTab.Navigator
             screenOptions={{
                 headerShown: true,
                 headerTitleAlign: "left",
@@ -54,7 +54,7 @@ const BottomTabNavigation: FC<BottomTabNavigationProps> = () => {
                 )
             }}
         >
-            <Tab.Screen
+            <BottomTab.Screen
                 options={{
                     title: t(i18n)`Chats`,
                     tabBarLabel: "Chats",
@@ -65,7 +65,7 @@ const BottomTabNavigation: FC<BottomTabNavigationProps> = () => {
                 name="ChatListScreen"
                 component={ChatListScreen}
             />
-            <Tab.Screen
+            <BottomTab.Screen
                 options={{
                     title: t(i18n)`Settings`,
                     tabBarLabel: "Settings",
@@ -77,8 +77,8 @@ const BottomTabNavigation: FC<BottomTabNavigationProps> = () => {
                 name="ChatSettingsScreen"
                 component={ChatSettingsScreen}
             />
-        </Tab.Navigator>
+        </BottomTab.Navigator>
     );
 };
 
-export default BottomTabNavigation;
+export default BottomTabNavigator;

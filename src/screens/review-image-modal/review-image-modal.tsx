@@ -9,7 +9,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Animated from "react-native-reanimated";
 
 // navigation
-import { StackNavigatorParams } from "@navigation/main-navigation";
+import { StackNavigatorParams } from "@navigation/main-navigator";
 
 // styles
 import styles from "./review-image-modal.styles";

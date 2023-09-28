@@ -9,8 +9,8 @@ import { StatusBar } from "expo-status-bar";
 import { useThemeProvider } from "@contexts/theme-context";
 
 // navigation
-import MainNavigation from "@navigation/main-navigation";
-import AuthNavigation from "@navigation/auth-navigation";
+import MainNavigator from "@navigation/main-navigator";
+import AuthNavigator from "@navigation/auth-navigator";
 
 // store
 import useAuth from "@store/features/auth/use-auth";
@@ -33,8 +33,8 @@ const Navigation = () => {
         <AppLoading>
             <StatusBar style={isDark ? "light" : "dark"} />
             <NavigationContainer theme={isDark ? DarkTheme : AppTheme}>
-                {auth.isAuth ? <MainNavigation /> : undefined}
-                {!auth.isAuth ? <AuthNavigation /> : undefined}
+                {auth.isAuth ? <MainNavigator /> : undefined}
+                {!auth.isAuth ? <AuthNavigator /> : undefined}
             </NavigationContainer>
         </AppLoading>
     );

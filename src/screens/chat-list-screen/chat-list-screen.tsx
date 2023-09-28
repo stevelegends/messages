@@ -3,26 +3,26 @@ import React, { FC, useCallback, useEffect, useMemo } from "react";
 
 // modules
 import { StackNavigationProp } from "@react-navigation/stack";
-import { View } from "react-native";
+import { FlatList, View } from "react-native";
 import { RouteProp } from "@react-navigation/native";
 
 // styles
 import styles from "./chat-list-screen.styles";
 
 // navigation
-import { BottomTabStackNavigatorParams } from "@navigation/bottom-tab-navigation";
+import { BottomTabStackNavigatorParams } from "@navigation/bottom-tab-navigator";
 
 // components
 import { CreateButton } from "@components";
 
 // hooks
-import { useFirebase, useNavigation, useUserState } from "@hooks/index";
-
-// constants
-import { UserStatus } from "@constants/user-status";
+import { useNavigation } from "@hooks/index";
 
 // store
 import useAuth from "@store/features/auth/use-auth";
+import useChats from "@store/features/chats/use-chats";
+import useUser from "@store/features/user/use-user";
+import ItemListView from "../new-chat-screen/components/item-list-view";
 
 type ChatListScreenProps = {
     navigation: StackNavigationProp<BottomTabStackNavigatorParams, "ChatListScreen">;
@@ -31,32 +31,37 @@ type ChatListScreenProps = {
 
 const ChatListScreen: FC<ChatListScreenProps> = ({ navigation, route }) => {
     const { navigate } = useNavigation();
-    const firebase = useFirebase();
     const auth = useAuth();
+    const chats = useChats();
+    const user = useUser();
 
-    const onUserStatus = useCallback((status, deps) => {
-        if (!deps) return;
-        __DEV__ && console.log("onUserStatus", status, deps);
-        const userId = deps.userId as string;
-        const session = deps.session || {};
-        firebase.onUpdateSignedInUserStatusData({ userId, status, session }, undefined);
-        auth.setStatusAction({ status });
-    }, []) as (status: UserStatus, deps: any) => any;
+    const sortedChatsData = useMemo(() => {
+        if (chats.chatsData && Array.isArray(Object.values(chats.chatsData))) {
+            return Object.values(chats.chatsData).sort((a, b) => {
+                return new Date(b.updatedAt).valueOf() - new Date(a.updatedAt).valueOf();
+            });
+        }
+        return [];
+    }, [chats.chatsData]);
 
-    useUserState(onUserStatus, auth.userData);
+    const handleItemOnPress = useCallback(
+        id => {
+            navigate("ChatScreen", { chatId: id });
+        },
+        [user.storedUsers]
+    ) as (id: string) => void;
 
     useEffect(() => {
         function handleSelectedUserFromNewChatScreen() {
-            if (!route.params?.selectedUserId) return;
+            if (!route.params?.selectedUserId || !auth.userData?.userId) return;
 
             navigation.setParams({ selectedUserId: undefined });
 
-            const props = {
+            navigate("ChatScreen", {
                 newChatData: {
-                    users: [route.params?.selectedUserId, auth.userData.userId]
+                    users: [route.params.selectedUserId, auth.userData.userId]
                 }
-            };
-            navigate("ChatScreen", props);
+            });
         }
         handleSelectedUserFromNewChatScreen();
     }, [route.params?.selectedUserId]);
@@ -67,7 +72,35 @@ const ChatListScreen: FC<ChatListScreenProps> = ({ navigation, route }) => {
         });
     }, []);
 
-    return <View style={styles.container}></View>;
+    return (
+        <View style={styles.container}>
+            <FlatList
+                data={sortedChatsData}
+                renderItem={({ item, index }) => {
+                    const chatId = item.key;
+
+                    const otherUserId = (item.users as string[]).find(
+                        uid => uid !== auth.userData?.userId
+                    );
+                    if (!otherUserId) return null;
+                    const otherUser = user.storedUsers[otherUserId];
+                    if (!otherUser) return null;
+
+                    return (
+                        <ItemListView
+                            id={chatId}
+                            index={index}
+                            title={otherUser.firstName + " " + otherUser.lastName}
+                            subTitle={otherUser.about}
+                            image={otherUser.profilePicture}
+                            onPress={handleItemOnPress}
+                        />
+                    );
+                }}
+                keyExtractor={(item, index) => item.key || index.toString()}
+            />
+        </View>
+    );
 };
 
 export default ChatListScreen;

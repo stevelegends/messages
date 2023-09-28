@@ -16,23 +16,27 @@ import { Feather } from "@expo/vector-icons";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 // navigation
-import { StackNavigatorParams } from "@navigation/main-navigation";
+import { StackNavigatorParams } from "@navigation/main-navigator";
 
 // styles
 import styles from "./chat-screen.styles";
 
 // theme
 import { globalStyles } from "@theme/theme";
+import { images } from "@theme/images";
 
 // components
-import { images } from "@theme/images";
+import { ToggleThemeButton } from "@components";
+import BubbleView from "./components/bubble-view";
 
 // hooks
 import { RouteProp, useTheme } from "@react-navigation/native";
+import { useFirebase } from "@hooks/index";
 
 // store
 import useUser from "@store/features/user/use-user";
 import useAuth from "@store/features/auth/use-auth";
+import useChats from "@store/features/chats/use-chats";
 
 type ChatScreenProps = {
     navigation: StackNavigationProp<StackNavigatorParams, "ChatScreen">;
@@ -41,36 +45,54 @@ type ChatScreenProps = {
 
 const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
     const theme = useTheme();
-
+    const firebase = useFirebase();
     const auth = useAuth();
     const user = useUser();
-    const newChatData = route.params?.newChatData;
+    const chats = useChats();
+
+    const [chatId, setChatId] = useState<string | undefined>(route.params?.chatId);
 
     const [messageText, setMessageText] = useState<string>("");
 
-    const sendMessageOnPress = useCallback(() => {
-        setMessageText("");
-    }, [messageText]);
+    const chatData =
+        (route.params?.chatId && chats.chatsData[route.params.chatId]) || route.params?.newChatData;
 
-    const getChatTitleFromName = () => {
-        const chatUsers = newChatData?.users;
-        if (Array.isArray(chatUsers)) {
-            const otherUserId = chatUsers.find(uid => uid !== auth.userData.userId);
-            if (otherUserId) {
-                const otherUserData = user.storedUsers[otherUserId];
-                return `${otherUserData.firstName} ${otherUserData.lastName}`;
-            }
+    const sendMessageOnPress = useCallback(async () => {
+        if (!auth.userData?.userId) return;
+        if (!chatData) return;
+
+        if (chatId) {
+            await firebase.onSendMessageTextAsync(chatId, auth.userData.userId, messageText);
+        } else {
+            /** no chat id, create new */
+            const newChatId = await firebase.onCreateChatAsync(auth.userData.userId, chatData);
+            setChatId(newChatId);
         }
-    };
+
+        setMessageText("");
+    }, [messageText, chatId, auth.userData?.userId, chatData]);
 
     useEffect(() => {
-        function onHandleNewChatData() {
+        function getChatTitleFromName() {
+            const chatUsers = chatData?.users;
+            if (Array.isArray(chatUsers)) {
+                const otherUserId = chatUsers.find(uid => uid !== auth.userData.userId);
+                if (otherUserId) {
+                    const otherUserData = user.storedUsers[otherUserId];
+                    return `${otherUserData.firstName} ${otherUserData.lastName}`;
+                }
+            }
+        }
+
+        function onHandleSetNavigationOptions() {
             const title = getChatTitleFromName();
             navigation.setOptions({
-                headerTitle: title
+                headerTitle: title,
+                headerRight: () => <ToggleThemeButton />
             });
         }
-        onHandleNewChatData();
+
+        onHandleSetNavigationOptions();
         return () => {};
     }, []);
 
@@ -81,10 +103,11 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
                 keyboardVerticalOffset={100}
                 style={globalStyles["flex-1"]}
             >
-                <ImageBackground
-                    source={images.droplet}
-                    style={globalStyles["flex-1"]}
-                ></ImageBackground>
+                <ImageBackground source={images.droplet} style={globalStyles["flex-1"]}>
+                    <View style={[globalStyles["flex-1"]]}>
+                        {!chatId && <BubbleView text="This is new chat" />}
+                    </View>
+                </ImageBackground>
                 <View style={styles.inputContainer}>
                     <TouchableOpacity style={styles.mediaButton}>
                         <Feather name="plus" size={24} color={theme.colors.primary} />
