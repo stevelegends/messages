@@ -14,6 +14,7 @@ import {
     getItemAsyncSecureStore,
     setItemAsyncSecureStore
 } from "@utils";
+import { ErrorHandlerPayload } from "../utils/error-handler";
 
 // services
 import { getFirebaseAuth } from "@services/firebase-app";
@@ -71,7 +72,8 @@ const useFirebase = () => {
         async (
             payload: AuthSignUp,
             onLoading: (isLoading: boolean) => void,
-            onAuthResult: (payload: { token: string; userData: any }) => void
+            onAuthResult: (payload: { token: string; userData: any }) => void,
+            onError: (error: ErrorHandlerPayload) => void
         ) => {
             onLoading(true);
             try {
@@ -111,7 +113,7 @@ const useFirebase = () => {
 
                 onAuthResult({ token: accessToken, userData });
             } catch (error) {
-                ErrorHandler(error, "onSignUp");
+                onError(ErrorHandler(error, "onSignUp"));
             }
             onLoading(false);
         },
@@ -122,7 +124,8 @@ const useFirebase = () => {
         async (
             payload: AuthSignIp,
             onLoading: (isLoading: boolean) => void,
-            onAuthResult: (payload: { token: string; userData: any }) => void
+            onAuthResult: (payload: { token: string; userData: any }) => void,
+            onError: (error: ErrorHandlerPayload) => void
         ) => {
             onLoading(true);
             try {
@@ -172,7 +175,7 @@ const useFirebase = () => {
 
                 onAuthResult({ token: accessToken, userData: userData || {} });
             } catch (error) {
-                ErrorHandler(error, "onSignIn");
+                onError(ErrorHandler(error, "onSignIn"));
             }
             onLoading(false);
         },

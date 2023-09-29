@@ -18,6 +18,7 @@ import { globalStyles } from "@theme/theme";
 
 // contexts
 import { ThemeProvider } from "@contexts/theme-context";
+import { NotificationProvider } from "@contexts/notification-context";
 
 // utils
 import { splashScreenPreventAutoHideAsync } from "@utils";
@@ -28,7 +29,9 @@ const App = () => {
     return (
         <AppLoader style={globalStyles["flex-1"]}>
             <ThemeProvider>
-                <Navigation />
+                <NotificationProvider>
+                    <Navigation />
+                </NotificationProvider>
             </ThemeProvider>
         </AppLoader>
     );

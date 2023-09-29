@@ -18,6 +18,9 @@ import { globalStyles } from "@theme/theme";
 // utils
 import { ErrorHandler, isRootedExperimentalAsync, splashScreenHideAsync } from "@utils";
 
+// components
+import { NotificationPopup } from "@components";
+
 type AppLoginProps = {
     children: ReactNode;
 };
@@ -32,7 +35,8 @@ const AppLoading: FC<AppLoginProps> = ({ children }) => {
             if (isJailBreak) {
                 ErrorHandler(
                     { code: "device-rooted-jailbroken" },
-                    "app-loading/handleOnCheckLogin"
+                    "app-loading/handleOnCheckLogin",
+                    true
                 );
                 return;
             }
@@ -63,6 +67,7 @@ const AppLoading: FC<AppLoginProps> = ({ children }) => {
                     />
                 </Animated.View>
             )}
+            <NotificationPopup />
         </Fragment>
     );
 };

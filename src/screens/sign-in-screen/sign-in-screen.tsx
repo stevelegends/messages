@@ -31,6 +31,9 @@ import { useFirebase } from "@hooks/index";
 // store
 import useAuth from "@store/features/auth/use-auth";
 
+// contexts
+import { useNotificationProvider } from "@contexts/notification-context";
+
 type SignInScreenProps = {
     navigation: StackNavigationProp<AuthStackNavigatorParams, "SignInScreen">;
 };
@@ -62,6 +65,7 @@ const SignInScreen: FC<SignInScreenProps> = ({ navigation }) => {
     const theme = useTheme();
     const firebase = useFirebase();
     const auth = useAuth();
+    const notification = useNotificationProvider();
 
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isHidePassword, setIsHidePassword] = useState<boolean>(true);
@@ -79,10 +83,22 @@ const SignInScreen: FC<SignInScreenProps> = ({ navigation }) => {
     });
 
     const onSubmit = (data: SignInFormData) => {
-        firebase.onSignIn(data, setIsLoading, payload => {
-            auth.setTokenAction({ token: payload.token });
-            auth.setUserDataAction({ userData: payload.userData });
-        });
+        firebase.onSignIn(
+            data,
+            setIsLoading,
+            payload => {
+                auth.setTokenAction({ token: payload.token });
+                auth.setUserDataAction({ userData: payload.userData });
+            },
+            error => {
+                notification.addStack({
+                    status: "error",
+                    title: error.title,
+                    message: error.message,
+                    timeout: 3000
+                });
+            }
+        );
     };
 
     return (

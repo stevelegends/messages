@@ -1,5 +1,5 @@
 // react
-import React from "react";
+import React, { memo } from "react";
 
 // modules
 import { DefaultTheme, DarkTheme, NavigationContainer } from "@react-navigation/native";
@@ -25,7 +25,7 @@ const AppTheme = {
     }
 };
 
-const Navigation = () => {
+const Navigation = memo(() => {
     const { isDark } = useThemeProvider();
     const auth = useAuth();
 
@@ -38,6 +38,6 @@ const Navigation = () => {
             </NavigationContainer>
         </AppLoading>
     );
-};
+});
 
 export default Navigation;
