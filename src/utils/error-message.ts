@@ -13,6 +13,8 @@ const errorMessage = {
     "auth/network-request-failed": msg`Network request failed`,
     "account-synced-failed": msg`This account is not active. Please contact an administrator if you believe this is an error.`,
     "file-does-not-exist": msg`File does not exist`,
+    "connection-error": msg`Your connection has encountered an issue. Please try signing in again.`,
+    "send-message-failed": msg`Message failed to send`,
     default: msg`Something went wrong.`
 };
 

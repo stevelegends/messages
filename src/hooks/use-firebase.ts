@@ -359,7 +359,7 @@ const useFirebase = () => {
 
         if (__DEV__) {
             const size = await getImageSizeToKBAsync(compressedUri);
-            console.log("getImageSizeToKBAsync", size);
+            console.log("getImageSizeToKBAsync", size, " KB");
         }
 
         let blob: any;

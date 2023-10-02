@@ -20,11 +20,18 @@ const styles = StyleSheet.create({
     mediaButton: {
         justifyContent: "center",
         alignItems: "center",
-        width: 35
+        width: 35,
+        aspectRatio: 1
     },
     sendButton: {
-        borderRadius: 50,
-        padding: 8
+        width: 35,
+        aspectRatio: 1,
+        borderRadius: 35 / 2,
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    separatorChatList: {
+        height: 10
     }
 });
 
