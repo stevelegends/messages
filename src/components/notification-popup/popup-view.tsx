@@ -1,18 +1,18 @@
-import React, { FC, memo, useEffect } from "react";
+import React, { FC, memo } from "react";
 
 // modules
-import { i18n } from "@lingui/core";
 import { Dimensions, StyleSheet, TouchableOpacity, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { msg } from "@lingui/macro";
 import Animated, {
-    BounceInLeft,
     runOnJS,
+    SlideInLeft,
     SlideOutRight,
     useAnimatedStyle,
     useSharedValue,
     withSpring,
-    withTiming
+    withTiming,
+    ZoomIn,
+    ZoomOut
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
@@ -51,13 +51,6 @@ const color = (dark: boolean) => ({
     }
 });
 
-const title = {
-    success: msg`Success`,
-    error: msg`Error`,
-    warning: msg`Warning`,
-    info: msg`Info`
-};
-
 const Icon = ({
     status,
     color,
@@ -88,13 +81,12 @@ type Props = {
     status: StatusType;
     title: string;
     message: string;
-    timeout?: number;
 };
 
 const CLAMP = 20;
 const WIDTH = Dimensions.get("window").width;
 
-const PopupView: FC<Props> = memo(({ id, index, onPress, status, title, message, timeout }) => {
+const PopupView: FC<Props> = memo(({ id, index, onPress, status, title, message }) => {
     const theme = useThemeProvider();
     const getColor = color(theme.isDark)[status];
 
@@ -130,24 +122,10 @@ const PopupView: FC<Props> = memo(({ id, index, onPress, status, title, message,
         };
     }, []);
 
-    useEffect(() => {
-        if (timeout && index >= 0) {
-            const time = setTimeout(
-                () => {
-                    handleOnPress();
-                },
-                timeout * (index + 1)
-            );
-            return () => {
-                clearTimeout(time);
-            };
-        }
-    }, [timeout, index]);
-
     return (
         <GestureDetector gesture={panGesture}>
             <Animated.View
-                entering={BounceInLeft}
+                entering={SlideInLeft}
                 exiting={SlideOutRight}
                 style={[
                     translateX,
@@ -157,16 +135,16 @@ const PopupView: FC<Props> = memo(({ id, index, onPress, status, title, message,
                         borderColor: getColor.primary,
                         backgroundColor: getColor.background,
                         zIndex: index,
-                        marginTop: 50 + index * 3
+                        // marginTop: 50
+                        marginTop: 50 + index * 4
                     }
                 ]}
             >
-                {/*<View style={[styles.horizontalStatus, {backgroundColor: getColor.primary}]} />*/}
                 <TouchableOpacity
                     onPress={handleOnPress}
                     style={[styles.statusView, { backgroundColor: getColor.primary }]}
                 >
-                    <Icon status={status} color={getColor.icon} size={25} />
+                    <Icon status={status} color={getColor.icon} size={20} />
                 </TouchableOpacity>
                 <View style={styles.wrapMessage}>
                     <Text
@@ -188,6 +166,23 @@ const PopupView: FC<Props> = memo(({ id, index, onPress, status, title, message,
                         {message}
                     </Text>
                 </View>
+                {index > 0 && (
+                    <Animated.View
+                        entering={ZoomIn.delay(500)}
+                        exiting={ZoomOut}
+                        style={[styles.counterView]}
+                    >
+                        <Text
+                            style={{
+                                ...styles.messageText,
+                                color: getColor.text,
+                                fontFamily: "Roboto-Medium"
+                            }}
+                        >
+                            {index}
+                        </Text>
+                    </Animated.View>
+                )}
             </Animated.View>
         </GestureDetector>
     );
@@ -214,13 +209,13 @@ const styles = StyleSheet.create({
         elevation: 2
     },
     statusView: {
-        width: 45,
-        height: 45,
-        borderRadius: 45 / 2,
+        width: 30,
+        height: 30,
+        borderRadius: 15,
         justifyContent: "center",
         alignItems: "center",
-        marginVertical: 20,
-        marginHorizontal: 20
+        marginVertical: 10,
+        marginHorizontal: 10
     },
     wrapMessage: {
         flex: 1
@@ -228,10 +223,10 @@ const styles = StyleSheet.create({
     messageText: {
         fontSize: 14
     },
-    horizontalStatus: {
-        width: 3,
-        height: "100%",
-        borderRadius: 1.5
+    counterView: {
+        justifyContent: "center",
+        alignItems: "center",
+        marginHorizontal: 10
     }
 });
 

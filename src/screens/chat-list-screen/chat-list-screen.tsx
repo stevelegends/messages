@@ -24,6 +24,9 @@ import useChats from "@store/features/chats/use-chats";
 import useUser from "@store/features/user/use-user";
 import ItemListView from "../new-chat-screen/components/item-list-view";
 
+// contexts
+import { useNotificationProvider } from "@contexts/notification-context";
+
 type ChatListScreenProps = {
     navigation: StackNavigationProp<BottomTabStackNavigatorParams, "ChatListScreen">;
     route: RouteProp<BottomTabStackNavigatorParams, "ChatListScreen">;
@@ -34,6 +37,7 @@ const ChatListScreen: FC<ChatListScreenProps> = ({ navigation, route }) => {
     const auth = useAuth();
     const chats = useChats();
     const user = useUser();
+    const { addStack } = useNotificationProvider();
 
     const sortedChatsData = useMemo(() => {
         if (chats.chatsData && Array.isArray(Object.values(chats.chatsData))) {
@@ -46,7 +50,13 @@ const ChatListScreen: FC<ChatListScreenProps> = ({ navigation, route }) => {
 
     const handleItemOnPress = useCallback(
         id => {
-            navigate("ChatScreen", { chatId: id });
+            // navigate("ChatScreen", { chatId: id });
+            addStack({
+                status: "success",
+                title: "Successfully",
+                message: "Update done!",
+                timeout: 5000
+            });
         },
         [user.storedUsers]
     ) as (id: string) => void;
