@@ -6,13 +6,15 @@ import counterReducer from "@store/features/counter/counter-slice";
 import authReducer from "@store/features/auth/auth-slice";
 import userSlide from "@store/features/user/user-slice";
 import chatsSlide from "@store/features/chats/chat-slice";
+import messagesSlice from "@store/features/messages/messages-slice";
 
 export const store = configureStore({
     reducer: {
         counterReducer,
         authReducer,
         userSlide,
-        chatsSlide
+        chatsSlide,
+        messagesSlice
     }
 });
 

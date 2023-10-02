@@ -20,13 +20,16 @@ import { useTheme } from "@react-navigation/native";
 import { useRenderTracker } from "@hooks/index";
 
 // theme
-import { globalSize, globalStyles } from "@theme/theme";
+import { globalColor, globalSize, globalStyles } from "@theme/theme";
 
 // components
 import CachedImageV2 from "./cached-image-v2";
 
 // utils
 import { getRandomDarkColor, getRandomLightColor } from "@utils";
+
+// constants
+import { UserStatus } from "@constants/user-status";
 
 type CircleImage = {
     size?: number;
@@ -36,6 +39,7 @@ type CircleImage = {
     cached?: boolean;
     placeholder?: string;
     placeholderStyle?: TextStyle;
+    status?: UserStatus;
 } & ImageProps;
 
 const CircleImage: FC<CircleImage> = memo(props => {
@@ -48,15 +52,19 @@ const CircleImage: FC<CircleImage> = memo(props => {
     }, [theme.dark]);
 
     const imageCachedStyle = useMemo(() => {
+        const statusColor =
+            props.status && props.status === UserStatus.active
+                ? globalColor["green-active"]
+                : globalColor["red-error"];
         return {
-            borderColor: theme.colors.text,
+            borderColor: props.status ? statusColor : theme.colors.text,
             borderWidth: 1,
             ...(props.style as ImageStyle),
             width: props.size,
             height: props.size,
             borderRadius: (props.size || 0) / 2
         };
-    }, [props.size, props.style, theme.dark]) as ImageStyle;
+    }, [props.size, props.style, theme.dark, props.status]) as ImageStyle;
 
     return (
         <Pressable onPress={props.onPress}>

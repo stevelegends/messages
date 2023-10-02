@@ -18,6 +18,7 @@ import { useFirebase, useUserState } from "@hooks/index";
 import useAuth from "@store/features/auth/use-auth";
 import useChats from "@store/features/chats/use-chats";
 import useUser from "@store/features/user/use-user";
+import useMessages from "@store/features/messages/use-messages";
 
 // constants
 import { UserStatus } from "@constants/user-status";
@@ -107,10 +108,12 @@ const MainNavigator = () => {
         onUpdateSignedInUserStatusData,
         onUnSubscribeFromListener,
         onChatsListener,
-        getUserDataAsync
+        getUserDataAsync,
+        onMessagesListener
     } = useFirebase();
     const chats = useChats();
     const { setStoredUsersOverrideAction, storedUsers } = useUser();
+    const { setMessagesDataAction } = useMessages();
 
     const onUserStatus = useCallback((status, deps) => {
         if (!deps?.userId) return;
@@ -161,10 +164,16 @@ const MainNavigator = () => {
                         }
                     });
 
+                    const messagesRef = onMessagesListener(chatId, dataSnapshot => {
+                        const messagesData = dataSnapshot.val();
+                        setMessagesDataAction({ chatId, messagesData });
+                    });
+
                     if (chatsFoundCount === 0) {
                         // set loading false
                     }
 
+                    refs.push(messagesRef);
                     refs.push(chatRef);
                 }
             });

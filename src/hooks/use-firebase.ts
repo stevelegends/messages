@@ -496,9 +496,33 @@ const useFirebase = () => {
 
         try {
             await push(messagesRef, messageData);
+
+            const chatRef = child(dbRef, `chats/${chatId}`);
+            await update(chatRef, {
+                updatedBy: senderId,
+                updatedAt: new Date().toISOString(),
+                latestMessageText: messageText
+            });
         } catch (error) {
             ErrorHandler(error, "onSendMessageTextAsync");
         }
+    };
+
+    const onMessagesListener = (chatId: string, listener: (dataSnapshot: DataSnapshot) => void) => {
+        const dbRef = ref(getDatabase());
+        const messagesRef = child(dbRef, `messages/${chatId}`);
+
+        onValue(
+            messagesRef,
+            dataSnapshot => {
+                listener(dataSnapshot);
+            },
+            error => {
+                ErrorHandler(error, "onUserChatsListener");
+            }
+        );
+
+        return messagesRef;
     };
 
     return {
@@ -514,7 +538,8 @@ const useFirebase = () => {
         onUserChatsListener,
         onUnSubscribeFromListener,
         onChatsListener,
-        onSendMessageTextAsync
+        onSendMessageTextAsync,
+        onMessagesListener
     };
 };
 

@@ -15,7 +15,7 @@ export const chatSlice = createSlice({
     initialState,
     reducers: {
         setChatsData: (state, action: PayloadAction<{ [key: string]: any }>) => {
-            state.chatsData = action.payload;
+            state.chatsData = { ...action.payload };
         }
     }
 });

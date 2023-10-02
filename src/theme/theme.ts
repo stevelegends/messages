@@ -152,5 +152,15 @@ export const globalSize = {
 
 export const globalColor = {
     "black-0.9": "rgba(1,1,1, 0.9)",
-    white: "rgb(255,255,255)"
+    "black-2": "#2F3032",
+    "white-1.0": "#FFFFFF",
+    "white-2": "#E5FAF6",
+    white3: "#FDF8E8",
+    "white-3e": "#EEEEFE",
+    white: "rgb(255,255,255)",
+    "light-grey-1": "#FDEEEE",
+    "green-active": "#45CC99",
+    "red-error": "#EB5757",
+    "yellow-warn": "#F2C84C",
+    "blue-info": "#5458F7"
 };

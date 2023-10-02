@@ -5,6 +5,7 @@ import React, { FC, useCallback, useEffect, useMemo } from "react";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { FlatList, View } from "react-native";
 import { RouteProp } from "@react-navigation/native";
+import { t } from "@lingui/macro";
 
 // styles
 import styles from "./chat-list-screen.styles";
@@ -17,6 +18,7 @@ import { CreateButton } from "@components";
 
 // hooks
 import { useNavigation } from "@hooks/index";
+import { useLingui } from "@lingui/react";
 
 // store
 import useAuth from "@store/features/auth/use-auth";
@@ -27,6 +29,9 @@ import ItemListView from "../new-chat-screen/components/item-list-view";
 // contexts
 import { useNotificationProvider } from "@contexts/notification-context";
 
+// constants
+import { UserStatus } from "@constants/user-status";
+
 type ChatListScreenProps = {
     navigation: StackNavigationProp<BottomTabStackNavigatorParams, "ChatListScreen">;
     route: RouteProp<BottomTabStackNavigatorParams, "ChatListScreen">;
@@ -34,6 +39,7 @@ type ChatListScreenProps = {
 
 const ChatListScreen: FC<ChatListScreenProps> = ({ navigation, route }) => {
     const { navigate } = useNavigation();
+    const { i18n } = useLingui();
     const auth = useAuth();
     const chats = useChats();
     const user = useUser();
@@ -50,13 +56,7 @@ const ChatListScreen: FC<ChatListScreenProps> = ({ navigation, route }) => {
 
     const handleItemOnPress = useCallback(
         id => {
-            // navigate("ChatScreen", { chatId: id });
-            addStack({
-                status: "success",
-                title: "Successfully",
-                message: "Update done!",
-                timeout: 5000
-            });
+            navigate("ChatScreen", { chatId: id });
         },
         [user.storedUsers]
     ) as (id: string) => void;
@@ -95,15 +95,19 @@ const ChatListScreen: FC<ChatListScreenProps> = ({ navigation, route }) => {
                     if (!otherUserId) return null;
                     const otherUser = user.storedUsers[otherUserId];
                     if (!otherUser) return null;
-
+                    const statuses = Object.values(otherUser.session).map(ss => (ss as any).status);
+                    const status = statuses.includes(UserStatus.active)
+                        ? UserStatus.active
+                        : UserStatus.inactive;
                     return (
                         <ItemListView
                             id={chatId}
                             index={index}
                             title={otherUser.firstName + " " + otherUser.lastName}
-                            subTitle={otherUser.about}
+                            subTitle={item.latestMessageText || t(i18n)`New chat`}
                             image={otherUser.profilePicture}
                             onPress={handleItemOnPress}
+                            status={status}
                         />
                     );
                 }}

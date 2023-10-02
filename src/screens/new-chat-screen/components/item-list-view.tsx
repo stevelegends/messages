@@ -10,6 +10,9 @@ import { CircleImage, Text } from "@components";
 // hooks
 import { useTheme } from "@react-navigation/native";
 
+// constants
+import { UserStatus } from "@constants/user-status";
+
 type Props = {
     index: number;
     id: string;
@@ -17,9 +20,10 @@ type Props = {
     subTitle: string;
     image: string;
     onPress: (id: string) => void;
+    status?: UserStatus;
 };
 
-const ItemListView: FC<Props> = ({ index, id, title, subTitle, image, onPress }) => {
+const ItemListView: FC<Props> = ({ index, id, title, subTitle, image, onPress, status }) => {
     const theme = useTheme();
     const source = useMemo(() => {
         return { uri: image };
@@ -34,7 +38,12 @@ const ItemListView: FC<Props> = ({ index, id, title, subTitle, image, onPress })
                 exiting={FadeOut}
                 style={[styles.container, { borderBottomColor: theme.colors.border }]}
             >
-                <CircleImage size={40} source={source} placeholder={title?.[0]?.toUpperCase()} />
+                <CircleImage
+                    size={40}
+                    source={source}
+                    placeholder={title?.[0]?.toUpperCase()}
+                    status={status}
+                />
 
                 <View style={styles.textContainer}>
                     <Text

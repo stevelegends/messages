@@ -37,6 +37,7 @@ import { useFirebase } from "@hooks/index";
 import useUser from "@store/features/user/use-user";
 import useAuth from "@store/features/auth/use-auth";
 import useChats from "@store/features/chats/use-chats";
+import useMessages from "@store/features/messages/use-messages";
 
 type ChatScreenProps = {
     navigation: StackNavigationProp<StackNavigatorParams, "ChatScreen">;
@@ -49,6 +50,7 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
     const auth = useAuth();
     const user = useUser();
     const chats = useChats();
+    const messages = useMessages();
 
     const [chatId, setChatId] = useState<string | undefined>(route.params?.chatId);
 

@@ -21,33 +21,34 @@ import Text from "../text";
 
 // contexts
 import { useThemeProvider } from "@contexts/theme-context";
+import { globalColor } from "@theme/theme";
 
 export type StatusType = "success" | "error" | "warning" | "info";
 
 const color = (dark: boolean) => ({
     success: {
-        primary: "#45CC99",
-        background: dark ? "#2F3032" : "#E5FAF6",
-        text: dark ? "#FFFFFF" : "#2F3032",
-        icon: "#FFFFFF"
+        primary: globalColor["green-active"],
+        background: dark ? globalColor["black-2"] : globalColor["white-2"],
+        text: dark ? globalColor["white-1.0"] : globalColor["black-2"],
+        icon: globalColor["white-1.0"]
     },
     error: {
-        primary: "#EB5757",
-        background: dark ? "#2F3032" : "#FDEEEE",
-        text: dark ? "#FFFFFF" : "#2F3032",
-        icon: "#FFFFFF"
+        primary: globalColor["red-error"],
+        background: dark ? globalColor["black-2"] : globalColor["light-grey-1"],
+        text: dark ? globalColor["white-1.0"] : globalColor["black-2"],
+        icon: globalColor["white-1.0"]
     },
     warning: {
-        primary: "#F2C84C",
-        background: dark ? "#2F3032" : "#FDF8E8",
-        text: dark ? "#FFFFFF" : "#2F3032",
-        icon: "#FFFFFF"
+        primary: globalColor["yellow-warn"],
+        background: dark ? globalColor["black-2"] : globalColor.white3,
+        text: dark ? globalColor["white-1.0"] : globalColor["black-2"],
+        icon: globalColor["white-1.0"]
     },
     info: {
-        primary: "#5458F7",
-        background: dark ? "#2F3032" : "#EEEEFE",
-        text: dark ? "#FFFFFF" : "#2F3032",
-        icon: "#FFFFFF"
+        primary: globalColor["blue-info"],
+        background: dark ? globalColor["black-2"] : globalColor["white-3e"],
+        text: dark ? globalColor["white-1.0"] : globalColor["black-2"],
+        icon: globalColor["white-1.0"]
     }
 });
 
