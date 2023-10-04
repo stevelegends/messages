@@ -17,7 +17,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
 import Animated, { useSharedValue, ZoomIn, ZoomOut } from "react-native-reanimated";
 import { i18n } from "@lingui/core";
-import { msg } from "@lingui/macro";
+import { msg, Trans } from "@lingui/macro";
 
 // navigation
 import { StackNavigatorParams } from "@navigation/main-navigator";
@@ -167,6 +167,17 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
                                     placeholder={name[0].toUpperCase()}
                                 />
                                 <Text style={{ fontSize: 12 }}>{name}</Text>
+                                <Text style={{ fontSize: 12 }}>
+                                    <Trans>End-to-end encrypted</Trans>
+                                </Text>
+                                <Text style={{ fontSize: 12 }}>
+                                    <Trans>
+                                        Messages and others are secured with end-to-end encryption.
+                                    </Trans>
+                                </Text>
+                                <Text style={{ fontSize: 12 }}>
+                                    <Trans>Learn more</Trans>
+                                </Text>
                             </View>
 
                             <ToggleThemeButton />
