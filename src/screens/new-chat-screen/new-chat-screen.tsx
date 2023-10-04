@@ -79,9 +79,9 @@ const NewChatScreen: FC<Props> = ({ navigation }) => {
 
             if (Object.keys(userData || {}).length) {
                 user.setStoredUsersOverrideAction(userData);
-                setNoResultFound(true);
-            } else {
                 setNoResultFound(false);
+            } else {
+                setNoResultFound(true);
             }
 
             setIsLoading(false);

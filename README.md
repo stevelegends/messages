@@ -164,3 +164,7 @@ const loadAndActivateLocale = () => {
     title={t`Toggle language to ${i18n.locale === "en" ? "cs" : "en"}`}
 />
 ```
+
+### How does end-to-end encryption work?
+
+![img.png](img.png)

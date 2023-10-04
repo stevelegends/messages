@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 
 // modules
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, ViewStyle } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { Trans } from "@lingui/macro";
 
@@ -12,9 +12,18 @@ type Props = {
     backgroundColor?: string;
     onPress: () => void;
     isTitle?: boolean;
+    style?: ViewStyle;
 };
 
-const ReplyButton: FC<Props> = ({ buttonSize, size, color, backgroundColor, onPress, isTitle }) => {
+const ReplyButton: FC<Props> = ({
+    buttonSize,
+    size,
+    color,
+    backgroundColor,
+    onPress,
+    isTitle,
+    style
+}) => {
     return (
         <TouchableOpacity
             onPress={onPress}
@@ -25,7 +34,8 @@ const ReplyButton: FC<Props> = ({ buttonSize, size, color, backgroundColor, onPr
                     height: buttonSize,
                     backgroundColor,
                     borderRadius: buttonSize || 0 / 2
-                }
+                },
+                style
             ]}
         >
             <FontAwesome name="reply" size={size} color={color} />

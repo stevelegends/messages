@@ -68,121 +68,115 @@ type CreateUser = {
 };
 
 const useFirebase = () => {
-    const onSignUp = useCallback(
-        async (
-            payload: AuthSignUp,
-            onLoading: (isLoading: boolean) => void,
-            onAuthResult: (payload: { token: string; userData: any }) => void,
-            onError: (error: ErrorHandlerPayload) => void
-        ) => {
-            onLoading(true);
-            try {
-                const result = await createUserWithEmailAndPassword(
-                    getFirebaseAuth(),
-                    payload.email,
-                    payload.password
-                );
-                const user: any = result.user;
-                const {
-                    uid,
-                    stsTokenManager: { accessToken, expirationTime }
-                } = user;
-                const expiryDate = new Date(expirationTime);
-                // const timeNow = new Date();
-                // const millisecondsUntilExpiry = expiryDate - timeNow;
+    const onSignUp = useCallback(async (payload, onLoading, onAuthResult, onError) => {
+        onLoading(true);
+        try {
+            const result = await createUserWithEmailAndPassword(
+                getFirebaseAuth(),
+                payload.email,
+                payload.password
+            );
+            const user: any = result.user;
+            const {
+                uid,
+                stsTokenManager: { accessToken, expirationTime }
+            } = user;
+            const expiryDate = new Date(expirationTime);
+            // const timeNow = new Date();
+            // const millisecondsUntilExpiry = expiryDate - timeNow;
 
-                // should call logout in time
-                // timer = setTimeout(() => {
-                // },  millisecondsUntilExpiry)
+            // should call logout in time
+            // timer = setTimeout(() => {
+            // },  millisecondsUntilExpiry)
 
-                const userData = await createUser({
-                    firstName: payload.firstName,
-                    lastName: payload.lastName,
+            const userData = await createUser({
+                firstName: payload.firstName,
+                lastName: payload.lastName,
+                email: payload.email,
+                userId: uid
+            });
+
+            setItemAsyncSecureStore(
+                "userData",
+                JSON.stringify({
+                    token: accessToken,
+                    userId: uid,
+                    expiryDate: expiryDate.toISOString()
+                })
+            );
+
+            onAuthResult({ token: accessToken, userData });
+        } catch (error) {
+            onError(ErrorHandler(error, "onSignUp"));
+        }
+        onLoading(false);
+    }, []) as (
+        payload: AuthSignUp,
+        onLoading: (isLoading: boolean) => void,
+        onAuthResult: (payload: { token: string; userData: any }) => void,
+        onError: (error: ErrorHandlerPayload) => void
+    ) => Promise<void>;
+
+    const onSignIn = useCallback(async (payload, onLoading, onAuthResult, onError) => {
+        onLoading(true);
+        try {
+            const result = await signInWithEmailAndPassword(
+                getFirebaseAuth(),
+                payload.email,
+                payload.password
+            );
+            const user: any = result.user;
+            const {
+                uid,
+                stsTokenManager: { accessToken, expirationTime }
+            } = user;
+            const expiryDate = new Date(expirationTime);
+
+            // const timeNow = new Date();
+            // const millisecondsUntilExpiry = expiryDate - timeNow;
+
+            // should call logout in time
+            // timer = setTimeout(() => {
+            // },  millisecondsUntilExpiry)
+
+            let userData = await getUserDataAsync({ userId: uid });
+            if (!userData) {
+                userData = await createUser({
+                    firstName: DefaultUser.firstNameMD5,
+                    lastName: DefaultUser.lastNameMD5,
                     email: payload.email,
                     userId: uid
                 });
-
-                setItemAsyncSecureStore(
-                    "userData",
-                    JSON.stringify({
-                        token: accessToken,
-                        userId: uid,
-                        expiryDate: expiryDate.toISOString()
-                    })
-                );
-
-                onAuthResult({ token: accessToken, userData });
-            } catch (error) {
-                onError(ErrorHandler(error, "onSignUp"));
             }
-            onLoading(false);
-        },
-        []
-    );
-
-    const onSignIn = useCallback(
-        async (
-            payload: AuthSignIp,
-            onLoading: (isLoading: boolean) => void,
-            onAuthResult: (payload: { token: string; userData: any }) => void,
-            onError: (error: ErrorHandlerPayload) => void
-        ) => {
-            onLoading(true);
-            try {
-                const result = await signInWithEmailAndPassword(
-                    getFirebaseAuth(),
-                    payload.email,
-                    payload.password
-                );
-                const user: any = result.user;
-                const {
-                    uid,
-                    stsTokenManager: { accessToken, expirationTime }
-                } = user;
-                const expiryDate = new Date(expirationTime);
-
-                // const timeNow = new Date();
-                // const millisecondsUntilExpiry = expiryDate - timeNow;
-
-                // should call logout in time
-                // timer = setTimeout(() => {
-                // },  millisecondsUntilExpiry)
-
-                let userData = await getUserDataAsync({ userId: uid });
-                if (!userData) {
-                    userData = await createUser({
-                        firstName: DefaultUser.firstNameMD5,
-                        lastName: DefaultUser.lastNameMD5,
-                        email: payload.email,
-                        userId: uid
-                    });
-                }
-                if (!userData) {
-                    throw { code: "account-synced-failed" };
-                }
-                // if (userData && userData.status === UserStatus.active) {
-                //     throw { code: "account-logged-in-already" };
-                // }
-
-                setItemAsyncSecureStore(
-                    "userData",
-                    JSON.stringify({
-                        token: accessToken,
-                        userId: uid,
-                        expiryDate: expiryDate.toISOString()
-                    })
-                );
-
-                onAuthResult({ token: accessToken, userData: userData || {} });
-            } catch (error) {
-                onError(ErrorHandler(error, "onSignIn"));
+            if (!userData) {
+                throw { code: "account-synced-failed" };
             }
-            onLoading(false);
-        },
-        []
-    );
+            // if (userData && userData.status === UserStatus.active) {
+            //     throw { code: "account-logged-in-already" };
+            // }
 
-    const createUser = useCallback(async ({ firstName, lastName, email, userId }: CreateUser) => {
+            setItemAsyncSecureStore(
+                "userData",
+                JSON.stringify({
+                    token: accessToken,
+                    userId: uid,
+                    expiryDate: expiryDate.toISOString()
+                })
+            );
+
+            onAuthResult({ token: accessToken, userData: userData || {} });
+        } catch (error) {
+            onError(ErrorHandler(error, "onSignIn"));
+        }
+        onLoading(false);
+    }, []) as (
+        payload: AuthSignIp,
+        onLoading: (isLoading: boolean) => void,
+        onAuthResult: (payload: { token: string; userData: any }) => void,
+        onError: (error: ErrorHandlerPayload) => void
+    ) => Promise<void>;
+
+    const createUser = useCallback(async ({ firstName, lastName, email, userId }) => {
         try {
             const firstLast = `${firstName} ${lastName}`.toLowerCase();
             const hashed = await generateHashedUUID(userId);
@@ -205,9 +199,9 @@ const useFirebase = () => {
         } catch (error) {
             ErrorHandler(error, "createUser");
         }
-    }, []);
+    }, []) as ({ firstName, lastName, email, userId }: CreateUser) => Promise<any>;
 
-    const getUserDataAsync = useCallback(async (payload: { userId: string }): Promise<any> => {
+    const getUserDataAsync = useCallback(async payload => {
         try {
             const dbRef = ref(getDatabase());
             const userRef = child(dbRef, `users/${payload.userId}`);
@@ -216,9 +210,9 @@ const useFirebase = () => {
         } catch (error) {
             ErrorHandler(error, "getUserDataAsync");
         }
-    }, []);
+    }, []) as (payload: { userId: string }) => Promise<any>;
 
-    const getUserDataByText = useCallback(async (payload: { queryText: string }): Promise<any> => {
+    const getUserDataByText = useCallback(async payload => {
         try {
             const searchTerm = payload.queryText.toLowerCase();
 
@@ -238,121 +232,107 @@ const useFirebase = () => {
             ErrorHandler(error, "getUserDataByText");
         }
         return {};
-    }, []);
+    }, []) as (payload: { queryText: string }) => Promise<string>;
 
-    const onUpdateSignedInUserData = useCallback(
-        async (
-            payload: { userId: string; firstName: string; lastName: string; about: string },
-            onLoading: (isLoading: boolean) => void,
-            onAuthResult: (payload: {
-                firstLast: string;
-                firstName: string;
-                lastName: string;
-                about: string;
-                updateDate: string;
-            }) => void
-        ) => {
-            onLoading(true);
-            try {
-                const dbRef = ref(getDatabase());
-                const userRef = child(dbRef, `users/${payload.userId}`);
-                const firstLast = `${payload.firstName} ${payload.lastName}`.toLowerCase();
-                const firstName = payload.firstName;
-                const lastName = payload.lastName;
-                const about = payload.about;
-                const updateDate = new Date().toISOString();
-                await update(userRef, {
-                    firstLast,
-                    firstName,
-                    lastName,
-                    about,
-                    updateDate
-                });
-                onAuthResult({
-                    firstLast,
-                    firstName,
-                    lastName,
-                    about,
-                    updateDate
-                });
-            } catch (e: any) {
-                ErrorHandler(e, "onUpdateSignedInUserData");
-            }
-            onLoading(false);
-        },
-        []
-    );
-
-    const onUpdateSignedInUserAvatarData = useCallback(
-        async (
-            payload: { userId: string; url: string },
-            onLoading?: (isLoading: boolean) => void,
-            onAuthResult?: (payload: { profilePicture: string; updateDate: string }) => void
-        ) => {
-            onLoading && onLoading(true);
-            try {
-                const dbRef = ref(getDatabase());
-                const userRef = child(dbRef, `users/${payload.userId}`);
-
-                const profilePicture = payload.url;
-                const updateDate = new Date().toISOString();
-
-                await update(userRef, {
-                    profilePicture,
-                    updateDate
-                });
-
-                onAuthResult && onAuthResult({ profilePicture, updateDate });
-            } catch (e: any) {
-                ErrorHandler(e, "onUpdateSignedInUserAvatarData");
-            }
-            onLoading && onLoading(false);
-        },
-        []
-    );
-
-    const onUpdateSignedInUserStatusData = useCallback(
-        async (
-            payload: { userId: string; status: UserStatus; session: any },
-            onUserDataResult?: (payload: { session: any }) => void
-        ) => {
-            try {
-                let unitKey;
-                unitKey = await getItemAsyncSecureStore("unitKey");
-                if (!unitKey) {
-                    unitKey = generateUUID();
-                    await setItemAsyncSecureStore("unitKey", unitKey);
-                }
-
-                const dbRef = ref(getDatabase());
-                const userRef = child(dbRef, `users/${payload.userId}`);
-
-                const status = payload.status;
-                const device = JSON.stringify(DeviceInfo);
-                const lastOnlineDate = new Date().toISOString();
-                const session = {
-                    ...payload.session,
-                    [unitKey]: {
-                        status,
-                        device,
-                        lastOnlineDate
-                    }
-                };
-                await update(userRef, { session });
-                onUserDataResult && onUserDataResult({ session });
-            } catch (e: any) {
-                console.log("onUpdateSignedInUserStatusData: ", e);
-            }
-        },
-        []
-    );
-
-    const onUploadImageAsync = async (
-        uri: string,
+    const onUpdateSignedInUserData = useCallback(async (payload, onLoading, onAuthResult) => {
+        onLoading(true);
+        try {
+            const dbRef = ref(getDatabase());
+            const userRef = child(dbRef, `users/${payload.userId}`);
+            const firstLast = `${payload.firstName} ${payload.lastName}`.toLowerCase();
+            const firstName = payload.firstName;
+            const lastName = payload.lastName;
+            const about = payload.about;
+            const updateDate = new Date().toISOString();
+            await update(userRef, {
+                firstLast,
+                firstName,
+                lastName,
+                about,
+                updateDate
+            });
+            onAuthResult({
+                firstLast,
+                firstName,
+                lastName,
+                about,
+                updateDate
+            });
+        } catch (e: any) {
+            ErrorHandler(e, "onUpdateSignedInUserData");
+        }
+        onLoading(false);
+    }, []) as (
+        payload: { userId: string; firstName: string; lastName: string; about: string },
         onLoading: (isLoading: boolean) => void,
-        onResult: (payload: { url: string }) => void,
-        imageSize?: number
-    ) => {
+        onAuthResult: (payload: {
+            firstLast: string;
+            firstName: string;
+            lastName: string;
+            about: string;
+            updateDate: string;
+        }) => void
+    ) => Promise<void>;
+
+    const onUpdateSignedInUserAvatarData = useCallback(async (payload, onLoading, onAuthResult) => {
+        onLoading && onLoading(true);
+        try {
+            const dbRef = ref(getDatabase());
+            const userRef = child(dbRef, `users/${payload.userId}`);
+
+            const profilePicture = payload.url;
+            const updateDate = new Date().toISOString();
+
+            await update(userRef, {
+                profilePicture,
+                updateDate
+            });
+
+            onAuthResult && onAuthResult({ profilePicture, updateDate });
+        } catch (e: any) {
+            ErrorHandler(e, "onUpdateSignedInUserAvatarData");
+        }
+        onLoading && onLoading(false);
+    }, []) as (
+        payload: { userId: string; url: string },
+        onLoading?: (isLoading: boolean) => void,
+        onAuthResult?: (payload: { profilePicture: string; updateDate: string }) => void
+    ) => Promise<void>;
+
+    const onUpdateSignedInUserStatusData = useCallback(async (payload, onUserDataResult) => {
+        try {
+            let unitKey;
+            unitKey = await getItemAsyncSecureStore("unitKey");
+            if (!unitKey) {
+                unitKey = generateUUID();
+                await setItemAsyncSecureStore("unitKey", unitKey);
+            }
+
+            const dbRef = ref(getDatabase());
+            const userRef = child(dbRef, `users/${payload.userId}`);
+
+            const status = payload.status;
+            const device = JSON.stringify(DeviceInfo);
+            const lastOnlineDate = new Date().toISOString();
+            const session = {
+                ...payload.session,
+                [unitKey]: {
+                    status,
+                    device,
+                    lastOnlineDate
+                }
+            };
+            await update(userRef, { session });
+            onUserDataResult && onUserDataResult({ session });
+        } catch (e: any) {
+            console.log("onUpdateSignedInUserStatusData: ", e);
+        }
+    }, []) as (
+        payload: { userId: string; status: UserStatus; session: any },
+        onUserDataResult?: (payload: { session: any }) => void
+    ) => Promise<void>;
+
+    const onUploadImageAsync = useCallback(async (uri, onLoading, onResult, imageSize) => {
         onLoading(true);
 
         const compressedUri = await compressImageEachSize(uri, 100, imageSize);
@@ -410,9 +390,14 @@ const useFirebase = () => {
         }
 
         onLoading(false);
-    };
+    }, []) as (
+        uri: string,
+        onLoading: (isLoading: boolean) => void,
+        onResult: (payload: { url: string }) => void,
+        imageSize?: number
+    ) => Promise<void>;
 
-    const onCreateChatAsync = async (loggedInUserId: string, chatData: any): Promise<string> => {
+    const onCreateChatAsync = useCallback(async (loggedInUserId, chatData) => {
         try {
             const newChatData = {
                 ...chatData,
@@ -435,9 +420,9 @@ const useFirebase = () => {
             ErrorHandler(e, "onCreateChatAsync");
         }
         return "";
-    };
+    }, []) as (loggedInUserId: string, chatData: any) => Promise<string>;
 
-    const onUserChatsListener = (userId: string, listener: (chatIds: unknown[]) => void) => {
+    const onUserChatsListener = useCallback((userId, listener) => {
         const dbRef = ref(getDatabase());
         const userChatsRef = child(dbRef, `userChats/${userId}`);
 
@@ -454,9 +439,9 @@ const useFirebase = () => {
         );
 
         return userChatsRef;
-    };
+    }, []) as (userId: string, listener: (chatIds: unknown[]) => void) => void;
 
-    const onChatsListener = (chatId: string, listener: (dataSnapshot: DataSnapshot) => void) => {
+    const onChatsListener = useCallback((chatId, listener) => {
         if (!chatId) return;
         const dbRef = ref(getDatabase());
         const chatRef = child(dbRef, `chats/${chatId}`);
@@ -472,19 +457,15 @@ const useFirebase = () => {
         );
 
         return chatRef;
-    };
+    }, []) as (chatId: string, listener: (dataSnapshot: DataSnapshot) => void) => void;
 
-    const onUnSubscribeFromListener = (ref: any) => {
+    const onUnSubscribeFromListener = useCallback(ref => {
         if (ref) {
             off(ref);
         }
-    };
+    }, []) as (ref: any) => void;
 
-    const onSendMessageTextAsync = async (
-        chatId: string,
-        senderId: string,
-        messageText: string
-    ) => {
+    const onSendMessageTextAsync = useCallback(async (chatId, senderId, messageText) => {
         const dbRef = ref(getDatabase());
         const messagesRef = child(dbRef, `messages/${chatId}`);
 
@@ -506,9 +487,9 @@ const useFirebase = () => {
         } catch (error) {
             ErrorHandler(error, "onSendMessageTextAsync");
         }
-    };
+    }, []) as (chatId: string, senderId: string, messageText: string) => Promise<void>;
 
-    const onMessagesListener = (chatId: string, listener: (dataSnapshot: DataSnapshot) => void) => {
+    const onMessagesListener = useCallback((chatId, listener) => {
         const dbRef = ref(getDatabase());
         const messagesRef = child(dbRef, `messages/${chatId}`);
 
@@ -523,7 +504,23 @@ const useFirebase = () => {
         );
 
         return messagesRef;
-    };
+    }, []) as (chatId: string, listener: (dataSnapshot: DataSnapshot) => void) => void;
+
+    const onStarMessageAsync = useCallback(async (userId, chatId, messageId) => {
+        try {
+            const dbRef = ref(getDatabase());
+            const childRef = child(dbRef, `userStarredMessages/${userId}/${chatId}/${messageId}`);
+            const snapshot = await get(childRef);
+
+            if (snapshot.exists()) {
+                // starred item exists - Un-star
+            } else {
+                // starred item does not exists - star
+            }
+        } catch (error) {
+            ErrorHandler(error, "onStarMessageAsync");
+        }
+    }, []) as (userId: string, chatId: string, messageId: string) => Promise<void>;
 
     return {
         onSignUp,
@@ -539,7 +536,8 @@ const useFirebase = () => {
         onUnSubscribeFromListener,
         onChatsListener,
         onSendMessageTextAsync,
-        onMessagesListener
+        onMessagesListener,
+        onStarMessageAsync
     };
 };
 

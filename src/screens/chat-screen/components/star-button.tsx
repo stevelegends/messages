@@ -15,13 +15,13 @@ type Props = {
     style?: ViewStyle;
 };
 
-const CloseButton: FC<Props> = ({
+const StarButton: FC<Props> = ({
     buttonSize,
     size,
     color,
+    backgroundColor,
     onPress,
     isTitle,
-    backgroundColor,
     style
 }) => {
     return (
@@ -38,10 +38,10 @@ const CloseButton: FC<Props> = ({
                 style
             ]}
         >
-            <AntDesign name="close" size={size} color={color} />
+            <AntDesign name="staro" size={size} color={color} />
             {isTitle && (
                 <Text lineBreakMode="tail" numberOfLines={1} style={[styles.title, { color }]}>
-                    Close
+                    <Trans>Star</Trans>
                 </Text>
             )}
         </TouchableOpacity>
@@ -59,11 +59,11 @@ const styles = StyleSheet.create({
     }
 });
 
-CloseButton.defaultProps = {
+StarButton.defaultProps = {
     onPress: () => undefined,
     size: 24,
     color: "black",
     buttonSize: 30
 };
 
-export default CloseButton;
+export default StarButton;

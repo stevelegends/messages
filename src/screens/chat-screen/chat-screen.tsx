@@ -65,9 +65,7 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
 
     const [chatId, setChatId] = useState<string | undefined>(route.params?.chatId);
 
-    const [messageText, setMessageText] = useState<string>(
-        "Hey, Marshall! How are you? Can you please change the color theme of the website to pink and purple?"
-    );
+    const [messageText, setMessageText] = useState<string>("");
 
     const chatData =
         (route.params?.chatId && chats.chatsData[route.params.chatId]) || route.params?.newChatData;
@@ -109,6 +107,15 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
         const y = event.nativeEvent.contentOffset.y;
         animatedScrollY.value = y;
     }, []) as (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
+
+    const handleStartActionOnPress = useCallback(
+        (messageId: string) => {
+            if (messageId && chatId && auth.userData?.userId) {
+                firebase.onStarMessageAsync(auth.userData.userId, chatId, messageId);
+            }
+        },
+        [auth.userData?.userId, chatId]
+    );
 
     useEffect(() => {
         function getChatUser(): { name: string; picture: string; status: UserStatus } {
@@ -157,6 +164,7 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
                                     size={50}
                                     source={{ uri: picture }}
                                     status={status}
+                                    placeholder={name[0].toUpperCase()}
                                 />
                                 <Text style={{ fontSize: 12 }}>{name}</Text>
                             </View>
@@ -189,10 +197,12 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
                             return (
                                 <BubbleView
                                     index={index}
+                                    id={item.key}
                                     text={item.text}
                                     type={type}
                                     time={item.sentAt}
                                     animatedScrollY={animatedScrollY}
+                                    startActionOnPress={handleStartActionOnPress}
                                 />
                             );
                         }}
@@ -222,6 +232,7 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
                         placeholder={i18n._(msg`Type your message...`)}
                         placeholderTextColor={theme.colors.text}
                         maxLength={1000}
+                        autoFocus={false}
                     />
 
                     {messageText.trim().length === 0 && (

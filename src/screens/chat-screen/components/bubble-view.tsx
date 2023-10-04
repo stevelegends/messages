@@ -1,7 +1,7 @@
 import React, { FC, Fragment, useCallback, useMemo } from "react";
 
 // modules
-import { Pressable, StyleSheet, TextStyle, View, ViewStyle } from "react-native";
+import { Dimensions, Pressable, StyleSheet, TextStyle, View, ViewStyle } from "react-native";
 import Animated, {
     interpolate,
     runOnJS,
@@ -9,6 +9,7 @@ import Animated, {
     useAnimatedReaction,
     useAnimatedStyle,
     useSharedValue,
+    withDecay,
     withSpring,
     withTiming
 } from "react-native-reanimated";
@@ -19,6 +20,7 @@ import { Text, OptionButton } from "@components";
 import CloseButton from "./close-button";
 import CopyButton from "./copy-button";
 import ReplyButton from "./reply-button";
+import StarButton from "./star-button";
 
 // hooks
 import { DarkTheme, useTheme } from "@react-navigation/native";
@@ -30,16 +32,18 @@ import { globalColor, globalSize, globalStyles } from "@theme/theme";
 import { onCopyToClipboardAsync } from "@utils";
 
 type Props = {
+    id: string;
     index: number;
     text?: string;
     type?: "owner" | "their";
     time?: string;
     animatedScrollY?: SharedValue<number>;
+    startActionOnPress?: (id: string) => void;
 };
 
 const CLAMP = 20;
 const BUTTON_SIZE = 35;
-const WIDTH = BUTTON_SIZE * 3 + globalSize["space-8"] * 3;
+const CALC_WIDTH = (size: number) => BUTTON_SIZE * size + globalSize["space-8"] * size;
 
 const BubbleView: FC<Props> = props => {
     const theme = useTheme();
@@ -105,6 +109,66 @@ const BubbleView: FC<Props> = props => {
             break;
     }
 
+    const handleCloseOptionButtonOnPress = useCallback(() => {
+        offsetX.value = withTiming(0);
+    }, []) as () => void;
+
+    const handleCopyOptionButtonOnPress = useCallback(() => {
+        handleCloseOptionButtonOnPress();
+        onCopyToClipboardAsync(props.text);
+    }, []) as () => void;
+
+    const handleReplyOptionButtonOnPress = useCallback(() => {
+        handleCloseOptionButtonOnPress();
+    }, []) as () => void;
+
+    const handleStarOptionButtonOnPress = useCallback(() => {
+        handleCloseOptionButtonOnPress();
+        props.startActionOnPress && props.startActionOnPress(props.id);
+    }, []) as () => void;
+
+    const RenderButtons = useMemo(() => {
+        const buttons = [
+            <CloseButton
+                color={theme.colors.notification}
+                backgroundColor={theme.colors.card}
+                buttonSize={BUTTON_SIZE}
+                size={15}
+                onPress={handleCloseOptionButtonOnPress}
+            />,
+            <View style={{ width: globalSize["space-8"] }} />,
+            <ReplyButton
+                color={theme.colors.primary}
+                backgroundColor={theme.colors.card}
+                buttonSize={BUTTON_SIZE}
+                size={15}
+                onPress={handleReplyOptionButtonOnPress}
+            />,
+            <View style={{ width: globalSize["space-8"] }} />,
+            <CopyButton
+                color={theme.colors.primary}
+                backgroundColor={theme.colors.card}
+                buttonSize={BUTTON_SIZE}
+                size={15}
+                onPress={handleCopyOptionButtonOnPress}
+            />,
+            <View style={{ width: globalSize["space-8"] }} />,
+            <StarButton
+                color={theme.colors.primary}
+                backgroundColor={theme.colors.card}
+                buttonSize={BUTTON_SIZE}
+                size={15}
+                onPress={handleStarOptionButtonOnPress}
+            />
+        ];
+        return props.type === "their" ? buttons : buttons.reverse();
+    }, [theme.dark]);
+
+    const WIDTH = useMemo(
+        () => CALC_WIDTH(RenderButtons.length - Math.floor(RenderButtons.length / 2)),
+        [RenderButtons.length]
+    );
+
     const offsetX = useSharedValue(0);
 
     const panGesture = Gesture.Pan()
@@ -120,7 +184,10 @@ const BubbleView: FC<Props> = props => {
                 offsetX.value = offsetDelta > 0 ? offsetDelta : withSpring(clamp);
             }
         })
-        .onFinalize(() => {
+        .onFinalize(event => {
+            // offsetX.value = withDecay({
+            //     velocity: event.velocityX,
+            // })
             if (props.type === "owner") {
                 if (offsetX.value <= -WIDTH / 3) {
                     offsetX.value = withSpring(-WIDTH);
@@ -155,7 +222,7 @@ const BubbleView: FC<Props> = props => {
                 [0, 1]
             )
         };
-    }, []);
+    }, [WIDTH]);
 
     const animatedOptionButtonStyle = useAnimatedStyle(() => {
         return {
@@ -165,7 +232,7 @@ const BubbleView: FC<Props> = props => {
                 [1, 0]
             )
         };
-    }, []);
+    }, [WIDTH]);
 
     const handleOnPress = () => {};
 
@@ -176,61 +243,19 @@ const BubbleView: FC<Props> = props => {
         if (props.type === "their") {
             offsetX.value = withSpring(WIDTH);
         }
-    }, []) as () => void;
-
-    const handleCloseOptionViewOnPress = useCallback(() => {
-        offsetX.value = withTiming(0);
-    }, []) as () => void;
-
-    const handleCopyOptionViewOnPress = useCallback(() => {
-        handleCloseOptionViewOnPress();
-        onCopyToClipboardAsync(props.text);
-    }, []) as () => void;
-
-    const handleReplyOptionViewOnPress = useCallback(() => {
-        handleCloseOptionViewOnPress();
-    }, []) as () => void;
+    }, [WIDTH]) as () => void;
 
     useAnimatedReaction(
         () => props.animatedScrollY,
         (prepareResult, preparePreviousResult) => {
             if (prepareResult && preparePreviousResult) {
                 if (offsetX.value !== 0) {
-                    runOnJS(handleCloseOptionViewOnPress)();
+                    runOnJS(handleCloseOptionButtonOnPress)();
                 }
             }
         },
         []
     );
-
-    const RenderButtons = useMemo(() => {
-        const buttons = [
-            <CloseButton
-                color={theme.colors.notification}
-                backgroundColor={theme.colors.card}
-                buttonSize={BUTTON_SIZE}
-                size={15}
-                onPress={handleCloseOptionViewOnPress}
-            />,
-            <View style={{ width: globalSize["space-8"] }} />,
-            <ReplyButton
-                color={theme.colors.primary}
-                backgroundColor={theme.colors.card}
-                buttonSize={BUTTON_SIZE}
-                size={15}
-                onPress={handleReplyOptionViewOnPress}
-            />,
-            <View style={{ width: globalSize["space-8"] }} />,
-            <CopyButton
-                color={theme.colors.primary}
-                backgroundColor={theme.colors.card}
-                buttonSize={BUTTON_SIZE}
-                size={15}
-                onPress={handleCopyOptionViewOnPress}
-            />
-        ];
-        return props.type === "their" ? buttons : buttons.reverse();
-    }, [theme.dark]);
 
     const RenderOptionButton = useMemo(() => {
         return (
