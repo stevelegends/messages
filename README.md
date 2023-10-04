@@ -174,3 +174,46 @@ const loadAndActivateLocale = () => {
 In the Diffie–Hellman key exchange scheme, each party generates a public/private key pair and distributes the public key. After obtaining an authentic copy of each other's public keys, Alice and Bob can compute a shared secret offline. The shared secret can be used, for instance, as the key for a symmetric cipher.
 
 ![img_1.png](img_1.png)
+
+```js
+const crypto = require("crypto");
+
+// Step 1: Agree on prime numbers and base
+const prime = 23; // Prime number
+const base = 5; // Primitive root modulo prime
+
+// Step 2: Generate private and public keys
+const alicePrivate = 6;
+const bobPrivate = 15;
+
+const alicePublic = Math.pow(base, alicePrivate) % prime;
+const bobPublic = Math.pow(base, bobPrivate) % prime;
+
+// Step 3: Compute shared secret
+const aliceSharedSecret = Math.pow(bobPublic, alicePrivate) % prime;
+const bobSharedSecret = Math.pow(alicePublic, bobPrivate) % prime;
+
+// Step 4: Encryption and Decryption
+const message = "Hello, Bob!"; // Message to be encrypted
+
+// Encryption (Alice)
+const cipher = crypto.createCipheriv(
+    "aes-256-cbc",
+    Buffer.from(aliceSharedSecret.toString()),
+    crypto.randomBytes(16)
+);
+let encryptedMessage = cipher.update(message, "utf8", "hex");
+encryptedMessage += cipher.final("hex");
+
+// Decryption (Bob)
+const decipher = crypto.createDecipheriv(
+    "aes-256-cbc",
+    Buffer.from(bobSharedSecret.toString()),
+    crypto.randomBytes(16)
+);
+let decryptedMessage = decipher.update(encryptedMessage, "hex", "utf8");
+decryptedMessage += decipher.final("utf8");
+
+console.log("Encrypted Message:", encryptedMessage); // Sent over the insecure channel
+console.log("Decrypted Message:", decryptedMessage); // Decrypted by the receiver
+```
