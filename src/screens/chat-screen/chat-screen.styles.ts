@@ -6,16 +6,18 @@ const styles = StyleSheet.create({
     },
     inputContainer: {
         flexDirection: "row",
-        paddingVertical: 8,
+        justifyContent: "center",
+        alignItems: "center",
         paddingHorizontal: 10,
-        height: 50
+        paddingVertical: 8,
+        borderRadius: 5,
+        marginHorizontal: 8
     },
     textBox: {
         flex: 1,
-        borderWidth: 1,
-        borderRadius: 50,
         marginHorizontal: 15,
-        paddingHorizontal: 12
+        paddingHorizontal: 12,
+        paddingVertical: 8
     },
     mediaButton: {
         justifyContent: "center",

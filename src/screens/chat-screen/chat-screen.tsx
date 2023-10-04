@@ -1,11 +1,12 @@
 // react
-import React, { FC, Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 
 // modules
 import {
     FlatList,
-    ImageBackground,
     KeyboardAvoidingView,
+    NativeScrollEvent,
+    NativeSyntheticEvent,
     Platform,
     TextInput,
     TouchableOpacity,
@@ -14,8 +15,9 @@ import {
 import { StackNavigationProp } from "@react-navigation/stack";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
-import Animated, { FadeIn, FadeOut, ZoomIn, ZoomOut } from "react-native-reanimated";
+import Animated, { useSharedValue, ZoomIn, ZoomOut } from "react-native-reanimated";
 import { i18n } from "@lingui/core";
+import { msg } from "@lingui/macro";
 
 // navigation
 import { StackNavigatorParams } from "@navigation/main-navigator";
@@ -25,10 +27,9 @@ import styles from "./chat-screen.styles";
 
 // theme
 import { globalStyles } from "@theme/theme";
-import { images } from "@theme/images";
 
 // components
-import { ToggleThemeButton } from "@components";
+import { BackButton, CircleImage, Text, ToggleThemeButton } from "@components";
 import BubbleView from "./components/bubble-view";
 
 // hooks
@@ -44,6 +45,9 @@ import useMessages from "@store/features/messages/use-messages";
 
 // utils
 import { ErrorMessage } from "@utils";
+
+// constants
+import { UserStatus } from "@constants/user-status";
 
 type ChatScreenProps = {
     navigation: StackNavigationProp<StackNavigatorParams, "ChatScreen">;
@@ -61,7 +65,9 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
 
     const [chatId, setChatId] = useState<string | undefined>(route.params?.chatId);
 
-    const [messageText, setMessageText] = useState<string>("");
+    const [messageText, setMessageText] = useState<string>(
+        "Hey, Marshall! How are you? Can you please change the color theme of the website to pink and purple?"
+    );
 
     const chatData =
         (route.params?.chatId && chats.chatsData[route.params.chatId]) || route.params?.newChatData;
@@ -70,7 +76,9 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
         if (!chatId || !messages.messagesData) return [];
         const messagesData = messages.messagesData[chatId] || {};
         return Object.keys(messagesData).map(key => ({ key, ...messagesData[key] }));
-    }, [chatId, messages.messagesData && Object.keys(messages.messagesData).length]);
+    }, [chatId, messages.messagesData]);
+
+    const animatedScrollY = useSharedValue<number>(0);
 
     const sendMessageOnPress = useCallback(async () => {
         if (!auth.userData?.userId) return;
@@ -93,67 +101,114 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
                 status: "error"
             });
         }
+
         setMessageText("");
     }, [messageText, chatId, auth.userData?.userId, chatData]);
 
+    const onScroll = useCallback(event => {
+        const y = event.nativeEvent.contentOffset.y;
+        animatedScrollY.value = y;
+    }, []) as (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
+
     useEffect(() => {
-        function getChatTitleFromName() {
+        function getChatUser(): { name: string; picture: string; status: UserStatus } {
             const chatUsers = chatData?.users;
             if (Array.isArray(chatUsers)) {
                 const otherUserId = chatUsers.find(uid => uid !== auth.userData.userId);
                 if (otherUserId) {
                     const otherUserData = user.storedUsers[otherUserId];
-                    return `${otherUserData.firstName} ${otherUserData.lastName}`;
+                    const statuses = Object.values(otherUserData.session).map(
+                        ss => (ss as any).status
+                    );
+                    const status = statuses.includes(UserStatus.active)
+                        ? UserStatus.active
+                        : UserStatus.inactive;
+                    return {
+                        name: `${otherUserData.firstName} ${otherUserData.lastName}`,
+                        picture: otherUserData.profilePicture,
+                        status
+                    };
                 }
             }
+            return { name: "", picture: "", status: UserStatus.inactive };
         }
 
         function onHandleSetNavigationOptions() {
-            const title = getChatTitleFromName();
+            const { name, picture, status } = getChatUser();
             navigation.setOptions({
-                headerTitle: title,
-                headerRight: () => <ToggleThemeButton />
+                header: props => (
+                    <SafeAreaView
+                        edges={["top", "left", "right"]}
+                        style={[{ backgroundColor: theme.colors.card }]}
+                    >
+                        <View
+                            style={[
+                                globalStyles["flex-row"],
+                                globalStyles["flex-center"],
+                                globalStyles["space-between"]
+                            ]}
+                        >
+                            <BackButton onPress={props.navigation.goBack} />
+                            <View
+                                style={[globalStyles["flex-center"], globalStyles["paddingV-10"]]}
+                            >
+                                <CircleImage
+                                    cached
+                                    size={50}
+                                    source={{ uri: picture }}
+                                    status={status}
+                                />
+                                <Text style={{ fontSize: 12 }}>{name}</Text>
+                            </View>
+
+                            <ToggleThemeButton />
+                        </View>
+                    </SafeAreaView>
+                )
             });
         }
 
         onHandleSetNavigationOptions();
         return () => {};
-    }, []);
+    }, [theme.dark]);
 
     return (
         <SafeAreaView edges={["left", "right", "bottom"]} style={styles.container}>
             <KeyboardAvoidingView
                 behavior={Platform.select({ ios: "padding" })}
-                keyboardVerticalOffset={100}
+                keyboardVerticalOffset={140}
                 style={globalStyles["flex-1"]}
             >
-                <ImageBackground source={images.droplet} style={globalStyles["flex-1"]}>
-                    <View style={[globalStyles["flex-1"]]}>
-                        <FlatList
-                            data={chatMessages}
-                            renderItem={({ item, index }) => {
-                                const isOwnMessage = item.sentBy === auth.userData.userId;
-                                const type = isOwnMessage ? "owner" : "their";
-                                return (
-                                    <Fragment>
-                                        <BubbleView
-                                            text={item.text}
-                                            type={type}
-                                            time={item.sentAt}
-                                        />
-                                    </Fragment>
-                                );
-                            }}
-                            keyExtractor={(item, index) => item.key || index.toString()}
-                            ListHeaderComponent={<View style={styles.separatorChatList} />}
-                            ItemSeparatorComponent={<View style={styles.separatorChatList} />}
-                        />
-                    </View>
-                </ImageBackground>
-                <View style={styles.inputContainer}>
+                {/*<ImageBackground source={images.droplet} style={globalStyles["flex-1"]}>*/}
+                <View style={[globalStyles["flex-1"]]}>
+                    <FlatList
+                        data={chatMessages}
+                        renderItem={({ item, index }) => {
+                            const isOwnMessage = item.sentBy === auth.userData.userId;
+                            const type = isOwnMessage ? "owner" : "their";
+                            return (
+                                <BubbleView
+                                    index={index}
+                                    text={item.text}
+                                    type={type}
+                                    time={item.sentAt}
+                                    animatedScrollY={animatedScrollY}
+                                />
+                            );
+                        }}
+                        onScroll={onScroll}
+                        keyExtractor={(item, index) => item.key || index.toString()}
+                        ListHeaderComponent={<View style={styles.separatorChatList} />}
+                        ItemSeparatorComponent={(<View style={styles.separatorChatList} />) as any}
+                        showsVerticalScrollIndicator={false}
+                    />
+                </View>
+                {/*</ImageBackground>*/}
+                <View style={[styles.inputContainer, { backgroundColor: theme.colors.border }]}>
                     <TouchableOpacity style={styles.mediaButton}>
                         <Feather name="plus" size={24} color={theme.colors.primary} />
                     </TouchableOpacity>
+
                     <TextInput
                         style={[
                             styles.textBox,
@@ -163,6 +218,10 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
                         onChangeText={setMessageText}
                         onSubmitEditing={sendMessageOnPress}
                         autoCapitalize="none"
+                        multiline
+                        placeholder={i18n._(msg`Type your message...`)}
+                        placeholderTextColor={theme.colors.text}
+                        maxLength={1000}
                     />
 
                     {messageText.trim().length === 0 && (

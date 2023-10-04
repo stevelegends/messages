@@ -15,3 +15,4 @@ export { default as CachedImageV2 } from "./cached-image-v2";
 export { default as NotificationView } from "./notification-view";
 export { default as ToggleThemeButton } from "./toggle-theme-button";
 export { default as NotificationPopup } from "./notification-popup/notification-popup";
+export { default as OptionButton } from "./option-button";

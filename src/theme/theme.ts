@@ -11,6 +11,12 @@ export const globalStyles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center"
     },
+    "flex-row": {
+        flexDirection: "row"
+    },
+    "space-between": {
+        justifyContent: "space-between"
+    },
     "flex-1-center": {
         flex: 1,
         justifyContent: "center",
@@ -111,6 +117,9 @@ export const globalStyles = StyleSheet.create({
     "paddingV-20": {
         paddingVertical: 20
     },
+    "paddingV-10": {
+        paddingVertical: 10
+    },
     "marginH-8": {
         marginHorizontal: 8
     },
@@ -147,18 +156,21 @@ export const globalSize = {
     button: 50,
     paddingButton: 15,
     box: 30,
-    box40: 40
+    box40: 40,
+    "space-8": 8
 };
 
 export const globalColor = {
     "black-0.9": "rgba(1,1,1, 0.9)",
     "black-2": "#2F3032",
     "white-1.0": "#FFFFFF",
+    "white-0.5": "rgba(255,255,255,0.5)",
     "white-2": "#E5FAF6",
     white3: "#FDF8E8",
     "white-3e": "#EEEEFE",
     white: "rgb(255,255,255)",
     "light-grey-1": "#FDEEEE",
+    "dark-grey": "#808080",
     "green-active": "#45CC99",
     "red-error": "#EB5757",
     "yellow-warn": "#F2C84C",

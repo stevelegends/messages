@@ -11,3 +11,4 @@ export * from "./app-constants";
 export * from "./file-system";
 export * from "./image-manipulator";
 export * from "./color";
+export * from "./clipboard";

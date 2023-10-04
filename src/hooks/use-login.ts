@@ -36,7 +36,7 @@ const useLogin = () => {
                     throw { code: "permission_denied" };
                 }
             } catch (e) {
-                ErrorHandler(e, "onCheckLogin");
+                ErrorHandler(e, "onCheckLogin", true);
             }
         }
     }, []);

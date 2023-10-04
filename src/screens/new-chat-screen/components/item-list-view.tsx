@@ -53,7 +53,11 @@ const ItemListView: FC<Props> = ({ index, id, title, subTitle, image, onPress, s
                         {title}
                     </Text>
                     {subTitle !== null && subTitle !== undefined && (
-                        <Text style={{ ...styles.subTitle, fontFamily: "Roboto-Regular" }}>
+                        <Text
+                            lineBreakMode="tail"
+                            numberOfLines={1}
+                            style={{ ...styles.subTitle, fontFamily: "Roboto-Regular" }}
+                        >
                             {subTitle}
                         </Text>
                     )}
@@ -73,7 +77,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 14
     },
     textContainer: {
-        marginLeft: 14
+        marginLeft: 14,
+        flex: 1
     },
     title: {
         fontSize: 16,
