@@ -1,8 +1,10 @@
 import React, { FC, Fragment, useCallback, useMemo } from "react";
 
 // modules
-import { Dimensions, Pressable, StyleSheet, TextStyle, View, ViewStyle } from "react-native";
+import { Pressable, StyleSheet, TextStyle, View, ViewStyle } from "react-native";
 import Animated, {
+    BounceIn,
+    BounceOut,
     interpolate,
     runOnJS,
     SharedValue,
@@ -14,6 +16,7 @@ import Animated, {
     withTiming
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import { AntDesign } from "@expo/vector-icons";
 
 // components
 import { Text, OptionButton } from "@components";
@@ -30,6 +33,7 @@ import { globalColor, globalSize, globalStyles } from "@theme/theme";
 
 // utils
 import { onCopyToClipboardAsync } from "@utils";
+import ReplyToView from "./reply-to-view";
 
 type Props = {
     id: string;
@@ -39,11 +43,18 @@ type Props = {
     time?: string;
     animatedScrollY?: SharedValue<number>;
     startActionOnPress?: (id: string) => void;
+    replyActionOnPress?: (id: string, text?: string) => void;
+    isStarred?: boolean;
+    replying: {
+        to: any;
+        user: any;
+    };
 };
 
 const CLAMP = 20;
 const BUTTON_SIZE = 35;
 const CALC_WIDTH = (size: number) => BUTTON_SIZE * size + globalSize["space-8"] * size;
+const ACTIVE_OFFSET_X = [-10, 10];
 
 const BubbleView: FC<Props> = props => {
     const theme = useTheme();
@@ -77,8 +88,8 @@ const BubbleView: FC<Props> = props => {
     const textTimeStyle: TextStyle = {
         ...styles.textTime
     };
-    const wrapTextTimeStyle: TextStyle = {
-        ...styles.wrapTextTime
+    const wrapStatusViewStyle: TextStyle = {
+        ...styles.wrapStatusView
     };
 
     switch (props.type) {
@@ -104,8 +115,7 @@ const BubbleView: FC<Props> = props => {
 
             textStyle.color = theme.dark ? globalColor.white : theme.colors.primary;
 
-            wrapTextTimeStyle.alignItems = "flex-start";
-            wrapTextTimeStyle.justifyContent = "flex-start";
+            wrapStatusViewStyle.flexDirection = "row-reverse";
             break;
     }
 
@@ -120,6 +130,7 @@ const BubbleView: FC<Props> = props => {
 
     const handleReplyOptionButtonOnPress = useCallback(() => {
         handleCloseOptionButtonOnPress();
+        props.replyActionOnPress && props.replyActionOnPress(props.id, props.text);
     }, []) as () => void;
 
     const handleStarOptionButtonOnPress = useCallback(() => {
@@ -154,15 +165,16 @@ const BubbleView: FC<Props> = props => {
             />,
             <View style={{ width: globalSize["space-8"] }} />,
             <StarButton
-                color={theme.colors.primary}
+                color={props.isStarred ? globalColor["yellow-warn"] : theme.colors.primary}
                 backgroundColor={theme.colors.card}
                 buttonSize={BUTTON_SIZE}
                 size={15}
                 onPress={handleStarOptionButtonOnPress}
+                fill={props.isStarred}
             />
         ];
         return props.type === "their" ? buttons : buttons.reverse();
-    }, [theme.dark]);
+    }, [theme.dark, props.isStarred]);
 
     const WIDTH = useMemo(
         () => CALC_WIDTH(RenderButtons.length - Math.floor(RenderButtons.length / 2)),
@@ -202,7 +214,8 @@ const BubbleView: FC<Props> = props => {
                     offsetX.value = withSpring(0);
                 }
             }
-        });
+        })
+        .activeOffsetX(ACTIVE_OFFSET_X);
 
     const translateX = useAnimatedStyle(() => {
         return {
@@ -276,6 +289,8 @@ const BubbleView: FC<Props> = props => {
         );
     }, [theme.dark]);
 
+    console.log(props.replying);
+
     return (
         <Fragment>
             {/*{props.time && <Text style={styles.sessionTime}>{new Date(props.time).toDateString()}</Text>}*/}
@@ -291,20 +306,39 @@ const BubbleView: FC<Props> = props => {
                     <View style={containerStyle}>
                         <Pressable style={[styles.button, buttonStyle]} onPress={handleOnPress}>
                             <View style={bubbleStyle}>
-                                {props.type === "their" && RenderOptionButton}
-                                <Text style={textStyle as any}>{props.text}</Text>
-                                {props.type === "owner" && RenderOptionButton}
+                                {props.replying.to && (
+                                    <ReplyToView
+                                        text={props.replying.to?.text}
+                                        user={props.replying.user}
+                                    />
+                                )}
+
+                                <View style={globalStyles["flex-row"]}>
+                                    {props.type === "their" && RenderOptionButton}
+                                    <Text style={textStyle as any}>{props.text}</Text>
+                                    {props.type === "owner" && RenderOptionButton}
+                                </View>
                             </View>
                         </Pressable>
                     </View>
 
-                    {props.time && (
-                        <Animated.View style={wrapTextTimeStyle}>
+                    <View style={wrapStatusViewStyle}>
+                        {props.isStarred && (
+                            <Animated.View entering={BounceIn} exiting={BounceOut}>
+                                <AntDesign
+                                    name="star"
+                                    size={10}
+                                    color={globalColor["yellow-warn"]}
+                                    style={globalStyles["marginH-5"]}
+                                />
+                            </Animated.View>
+                        )}
+                        {props.time && (
                             <Text numberOfLines={1} style={textTimeStyle as any}>
                                 {new Date(props.time).toLocaleTimeString()}
                             </Text>
-                        </Animated.View>
-                    )}
+                        )}
+                    </View>
                 </Animated.View>
             </GestureDetector>
         </Fragment>
@@ -323,8 +357,7 @@ const styles = StyleSheet.create({
     wrap: {
         borderRadius: 6,
         paddingVertical: 8,
-        borderWidth: 1,
-        flexDirection: "row"
+        borderWidth: 1
     },
     text: {
         letterSpacing: 0.3,
@@ -340,8 +373,9 @@ const styles = StyleSheet.create({
         textAlign: "center",
         marginVertical: 10
     },
-    wrapTextTime: {
-        alignItems: "flex-end",
+    wrapStatusView: {
+        flexDirection: "row",
+        alignItems: "center",
         justifyContent: "flex-end",
         marginHorizontal: 10,
         marginVertical: 5

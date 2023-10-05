@@ -109,11 +109,12 @@ const MainNavigator = () => {
         onUnSubscribeFromListener,
         onChatsListener,
         getUserDataAsync,
-        onMessagesListener
+        onMessagesListener,
+        onUserStarredMessagesListener
     } = useFirebase();
     const chats = useChats();
     const { setStoredUsersOverrideAction, storedUsers } = useUser();
-    const { setMessagesDataAction } = useMessages();
+    const { setMessagesDataAction, setStarredMessagesAction } = useMessages();
 
     const onUserStatus = useCallback((status, deps) => {
         if (!deps?.userId) return;
@@ -130,8 +131,6 @@ const MainNavigator = () => {
                 console.log("Subscribing to firebase listeners with userId: ", userData?.userId);
             const refs: any[] = [];
             const userChatsListener = onUserChatsListener(userData.userId, chatIds => {
-                console.log("chatIds", chatIds);
-
                 const chatsData: { [key: string]: any } = {};
                 let chatsFoundCount = 0;
 
@@ -177,6 +176,15 @@ const MainNavigator = () => {
                     refs.push(chatRef);
                 }
             });
+
+            const userStarredMessagesListener = onUserStarredMessagesListener(
+                userData.userId,
+                dataSnapshot => {
+                    setStarredMessagesAction(dataSnapshot.val() || {});
+                }
+            );
+
+            refs.push(userStarredMessagesListener);
 
             refs.push(userChatsListener);
 

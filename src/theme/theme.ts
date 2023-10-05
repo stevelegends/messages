@@ -123,6 +123,9 @@ export const globalStyles = StyleSheet.create({
     "marginH-8": {
         marginHorizontal: 8
     },
+    "marginH-5": {
+        marginHorizontal: 5
+    },
     "marginH-10": {
         marginHorizontal: 10
     },
@@ -140,6 +143,9 @@ export const globalStyles = StyleSheet.create({
     },
     "marginV-8": {
         marginVertical: 8
+    },
+    "marginV-5": {
+        marginVertical: 5
     },
     "marginH-14": {
         marginHorizontal: 14

@@ -35,7 +35,9 @@ import {
     push,
     onValue,
     off,
-    DataSnapshot
+    remove,
+    DataSnapshot,
+    DatabaseReference
 } from "firebase/database";
 import {
     getDownloadURL,
@@ -465,7 +467,7 @@ const useFirebase = () => {
         }
     }, []) as (ref: any) => void;
 
-    const onSendMessageTextAsync = useCallback(async (chatId, senderId, messageText) => {
+    const onSendMessageTextAsync = useCallback(async (chatId, senderId, messageText, replyTo) => {
         const dbRef = ref(getDatabase());
         const messagesRef = child(dbRef, `messages/${chatId}`);
 
@@ -474,6 +476,9 @@ const useFirebase = () => {
             sentAt: new Date().toISOString(),
             text: messageText
         };
+        if (replyTo) {
+            (messageData as typeof messageData & { replyTo: string }).replyTo = replyTo;
+        }
 
         try {
             await push(messagesRef, messageData);
@@ -487,7 +492,12 @@ const useFirebase = () => {
         } catch (error) {
             ErrorHandler(error, "onSendMessageTextAsync");
         }
-    }, []) as (chatId: string, senderId: string, messageText: string) => Promise<void>;
+    }, []) as (
+        chatId: string,
+        senderId: string,
+        messageText: string,
+        replyTo?: string
+    ) => Promise<void>;
 
     const onMessagesListener = useCallback((chatId, listener) => {
         const dbRef = ref(getDatabase());
@@ -514,13 +524,37 @@ const useFirebase = () => {
 
             if (snapshot.exists()) {
                 // starred item exists - Un-star
+                await remove(childRef);
             } else {
                 // starred item does not exists - star
+                const starredMessageData = {
+                    messageId,
+                    chatId,
+                    starredAt: new Date().toISOString()
+                };
+                await set(childRef, starredMessageData);
             }
         } catch (error) {
             ErrorHandler(error, "onStarMessageAsync");
         }
     }, []) as (userId: string, chatId: string, messageId: string) => Promise<void>;
+
+    const onUserStarredMessagesListener = useCallback((userId, listener) => {
+        const dbRef = ref(getDatabase());
+        const userStarredMessagesRef = child(dbRef, `userStarredMessages/${userId}`);
+
+        onValue(
+            userStarredMessagesRef,
+            dataSnapshot => {
+                listener(dataSnapshot);
+            },
+            error => {
+                ErrorHandler(error, "onUserChatsListener");
+            }
+        );
+
+        return userStarredMessagesRef;
+    }, []) as (userId: string, listener: (dataSnapshot: DataSnapshot) => void) => DatabaseReference;
 
     return {
         onSignUp,
@@ -537,7 +571,8 @@ const useFirebase = () => {
         onChatsListener,
         onSendMessageTextAsync,
         onMessagesListener,
-        onStarMessageAsync
+        onStarMessageAsync,
+        onUserStarredMessagesListener
     };
 };
 

@@ -10,9 +10,11 @@ type Props = {
     size?: number;
     color?: string;
     backgroundColor?: string;
-    onPress: () => void;
+    onPress?: () => void;
     isTitle?: boolean;
     style?: ViewStyle;
+    fill?: boolean;
+    disabled?: boolean;
 };
 
 const StarButton: FC<Props> = ({
@@ -22,10 +24,13 @@ const StarButton: FC<Props> = ({
     backgroundColor,
     onPress,
     isTitle,
-    style
+    style,
+    fill,
+    disabled
 }) => {
     return (
         <TouchableOpacity
+            disabled={disabled}
             onPress={onPress}
             style={[
                 styles.button,
@@ -38,7 +43,7 @@ const StarButton: FC<Props> = ({
                 style
             ]}
         >
-            <AntDesign name="staro" size={size} color={color} />
+            <AntDesign name={fill ? "star" : "staro"} size={size} color={color} />
             {isTitle && (
                 <Text lineBreakMode="tail" numberOfLines={1} style={[styles.title, { color }]}>
                     <Trans>Star</Trans>
@@ -46,6 +51,10 @@ const StarButton: FC<Props> = ({
             )}
         </TouchableOpacity>
     );
+};
+
+StarButton.defaultProps = {
+    onPress: () => undefined
 };
 
 const styles = StyleSheet.create({

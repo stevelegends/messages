@@ -12,13 +12,13 @@ type BackButtonProps = {
     size?: number;
 } & TouchableOpacityProps;
 
-const CloseButton: FC<BackButtonProps> = props => {
+const CloseButtonBorder: FC<BackButtonProps> = props => {
     const theme = useTheme();
 
     return (
         <TouchableOpacity {...props} onPress={props.onPress}>
             <AntDesign
-                name="close"
+                name="closecircleo"
                 size={props.size}
                 color={theme.colors.primary}
                 style={{ alignSelf: "center" }}
@@ -27,9 +27,9 @@ const CloseButton: FC<BackButtonProps> = props => {
     );
 };
 
-CloseButton.defaultProps = {
+CloseButtonBorder.defaultProps = {
     onPress: () => undefined,
     size: 30
 };
 
-export default CloseButton;
+export default CloseButtonBorder;

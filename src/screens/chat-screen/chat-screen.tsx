@@ -31,6 +31,8 @@ import { globalStyles } from "@theme/theme";
 // components
 import { BackButton, CircleImage, Text, ToggleThemeButton } from "@components";
 import BubbleView from "./components/bubble-view";
+import ReplyToView from "./components/reply-to-view";
+import EndToEndEncryptedNotifyView from "./components/end-to-end-encrypted-notify-view";
 
 // hooks
 import { RouteProp, useTheme } from "@react-navigation/native";
@@ -64,8 +66,10 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
     const messages = useMessages();
 
     const [chatId, setChatId] = useState<string | undefined>(route.params?.chatId);
-
     const [messageText, setMessageText] = useState<string>("");
+    const [replyingTo, setReplyingTo] = useState<
+        { text?: string; sentBy: string; key: string } | undefined
+    >(undefined);
 
     const chatData =
         (route.params?.chatId && chats.chatsData[route.params.chatId]) || route.params?.newChatData;
@@ -73,8 +77,19 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
     const chatMessages = useMemo(() => {
         if (!chatId || !messages.messagesData) return [];
         const messagesData = messages.messagesData[chatId] || {};
-        return Object.keys(messagesData).map(key => ({ key, ...messagesData[key] }));
-    }, [chatId, messages.messagesData]);
+
+        return Object.keys(messagesData).map(key => {
+            const starredMessage = messages.starredMessages[chatId] || {};
+            const replyingTo = messagesData[key].replyTo && messagesData[messagesData[key].replyTo];
+            const replyingToUser = replyingTo && user.storedUsers?.[replyingTo.sentBy];
+            return {
+                key,
+                isStarred: starredMessage[key] !== undefined,
+                replying: { to: replyingTo, user: replyingToUser },
+                ...messagesData[key]
+            };
+        });
+    }, [chatId, messages.messagesData, messages.starredMessages, user.storedUsers]);
 
     const animatedScrollY = useSharedValue<number>(0);
 
@@ -91,7 +106,12 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
         }
 
         if (uniqChatId) {
-            await firebase.onSendMessageTextAsync(uniqChatId, auth.userData.userId, messageText);
+            await firebase.onSendMessageTextAsync(
+                uniqChatId,
+                auth.userData.userId,
+                messageText,
+                replyingTo?.key
+            );
         } else {
             notification.addStack({
                 title: i18n._(ErrorMessage.default),
@@ -101,7 +121,11 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
         }
 
         setMessageText("");
-    }, [messageText, chatId, auth.userData?.userId, chatData]);
+
+        if (replyingTo) {
+            setReplyingTo(undefined);
+        }
+    }, [messageText, chatId, auth.userData?.userId, chatData, replyingTo]);
 
     const onScroll = useCallback(event => {
         const y = event.nativeEvent.contentOffset.y;
@@ -109,13 +133,23 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
     }, []) as (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
 
     const handleStartActionOnPress = useCallback(
-        (messageId: string) => {
+        messageId => {
             if (messageId && chatId && auth.userData?.userId) {
                 firebase.onStarMessageAsync(auth.userData.userId, chatId, messageId);
             }
         },
         [auth.userData?.userId, chatId]
-    );
+    ) as (id: string) => void;
+
+    const handleReplyActionOnPress = useCallback(
+        (id, text) => {
+            const selectedReply = chatMessages.find(({ key }) => key === id);
+            if (selectedReply) {
+                setReplyingTo({ text, sentBy: selectedReply.sentBy, key: selectedReply.key });
+            }
+        },
+        [chatMessages]
+    ) as (id: string, text?: string) => void;
 
     useEffect(() => {
         function getChatUser(): { name: string; picture: string; status: UserStatus } {
@@ -157,7 +191,11 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
                         >
                             <BackButton onPress={props.navigation.goBack} />
                             <View
-                                style={[globalStyles["flex-center"], globalStyles["paddingV-10"]]}
+                                style={[
+                                    globalStyles["flex-1"],
+                                    globalStyles["flex-center"],
+                                    globalStyles["paddingV-10"]
+                                ]}
                             >
                                 <CircleImage
                                     cached
@@ -167,17 +205,6 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
                                     placeholder={name[0].toUpperCase()}
                                 />
                                 <Text style={{ fontSize: 12 }}>{name}</Text>
-                                <Text style={{ fontSize: 12 }}>
-                                    <Trans>End-to-end encrypted</Trans>
-                                </Text>
-                                <Text style={{ fontSize: 12 }}>
-                                    <Trans>
-                                        Messages and others are secured with end-to-end encryption.
-                                    </Trans>
-                                </Text>
-                                <Text style={{ fontSize: 12 }}>
-                                    <Trans>Learn more</Trans>
-                                </Text>
                             </View>
 
                             <ToggleThemeButton />
@@ -199,6 +226,7 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
                 style={globalStyles["flex-1"]}
             >
                 {/*<ImageBackground source={images.droplet} style={globalStyles["flex-1"]}>*/}
+                <EndToEndEncryptedNotifyView />
                 <View style={[globalStyles["flex-1"]]}>
                     <FlatList
                         data={chatMessages}
@@ -214,6 +242,9 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
                                     time={item.sentAt}
                                     animatedScrollY={animatedScrollY}
                                     startActionOnPress={handleStartActionOnPress}
+                                    replyActionOnPress={handleReplyActionOnPress}
+                                    isStarred={item.isStarred}
+                                    replying={item.replying}
                                 />
                             );
                         }}
@@ -224,6 +255,15 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
                         showsVerticalScrollIndicator={false}
                     />
                 </View>
+
+                {replyingTo !== null && replyingTo !== undefined && (
+                    <ReplyToView
+                        text={replyingTo.text}
+                        user={user.storedUsers?.[replyingTo.sentBy]}
+                        onCancel={setReplyingTo}
+                    />
+                )}
+
                 {/*</ImageBackground>*/}
                 <View style={[styles.inputContainer, { backgroundColor: theme.colors.border }]}>
                     <TouchableOpacity style={styles.mediaButton}>

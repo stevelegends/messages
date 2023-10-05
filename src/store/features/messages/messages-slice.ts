@@ -4,10 +4,12 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 
 export interface MessagesState {
     messagesData: { [key: string]: any };
+    starredMessages: { [key: string]: any };
 }
 
 const initialState: MessagesState = {
-    messagesData: {}
+    messagesData: {},
+    starredMessages: {}
 };
 
 export const messagesSlice = createSlice({
@@ -21,11 +23,24 @@ export const messagesSlice = createSlice({
             existingMessagesData[chatId] = messagesData;
 
             state.messagesData = existingMessagesData;
+        },
+        addStarredMessages: (
+            state,
+            action: PayloadAction<{ messageId: string; starredMessages: { [key: string]: any } }>
+        ) => {
+            state.starredMessages[action.payload.messageId] = action.payload.starredMessages;
+        },
+        removeStarredMessages: (state, action: PayloadAction<{ messageId: string }>) => {
+            delete state.starredMessages[action.payload.messageId];
+        },
+        setStarredMessages: (state, action: PayloadAction<{ [key: string]: any }>) => {
+            state.starredMessages = { ...action.payload };
         }
     }
 });
 
 // Action creators are generated for each case reducer function
-export const { setMessagesData } = messagesSlice.actions;
+export const { setMessagesData, addStarredMessages, removeStarredMessages, setStarredMessages } =
+    messagesSlice.actions;
 
 export default messagesSlice.reducer;
