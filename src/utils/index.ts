@@ -12,3 +12,4 @@ export * from "./file-system";
 export * from "./image-manipulator";
 export * from "./color";
 export * from "./clipboard";
+export * from "./time";

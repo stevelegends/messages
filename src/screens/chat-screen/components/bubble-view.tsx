@@ -11,7 +11,6 @@ import Animated, {
     useAnimatedReaction,
     useAnimatedStyle,
     useSharedValue,
-    withDecay,
     withSpring,
     withTiming
 } from "react-native-reanimated";
@@ -24,22 +23,24 @@ import CloseButton from "./close-button";
 import CopyButton from "./copy-button";
 import ReplyButton from "./reply-button";
 import StarButton from "./star-button";
+import ReplyToView from "./reply-to-view";
 
 // hooks
-import { DarkTheme, useTheme } from "@react-navigation/native";
+import { DarkTheme, Theme, useTheme } from "@react-navigation/native";
 
 // theme
 import { globalColor, globalSize, globalStyles } from "@theme/theme";
 
 // utils
-import { onCopyToClipboardAsync } from "@utils";
-import ReplyToView from "./reply-to-view";
+import { onCopyToClipboardAsync, onFormatDateTimeString } from "@utils";
+
+export type MessageType = "owner" | "their";
 
 type Props = {
     id: string;
     index: number;
     text?: string;
-    type?: "owner" | "their";
+    type?: MessageType;
     time?: string;
     animatedScrollY?: SharedValue<number>;
     startActionOnPress?: (id: string) => void;
@@ -58,66 +59,6 @@ const ACTIVE_OFFSET_X = [-10, 10];
 
 const BubbleView: FC<Props> = props => {
     const theme = useTheme();
-
-    const actionStyle: ViewStyle = {
-        alignItems: "flex-start",
-        justifyContent: "center",
-        marginHorizontal: 10,
-        marginBottom: 22
-    };
-
-    const containerStyle: ViewStyle = {
-        ...styles.container
-    };
-
-    const buttonStyle: ViewStyle = {
-        justifyContent: "center"
-    };
-
-    const bubbleStyle: ViewStyle = {
-        ...styles.wrap,
-        backgroundColor: theme.dark ? DarkTheme.colors.primary : theme.colors.primary,
-        borderColor: theme.dark ? DarkTheme.colors.primary : theme.colors.primary
-    };
-
-    const textStyle: TextStyle = {
-        ...styles.text,
-        color: theme.dark ? globalColor.white : globalColor.white
-    };
-
-    const textTimeStyle: TextStyle = {
-        ...styles.textTime
-    };
-    const wrapStatusViewStyle: TextStyle = {
-        ...styles.wrapStatusView
-    };
-
-    switch (props.type) {
-        case "owner":
-            containerStyle.justifyContent = "flex-end";
-            containerStyle.marginLeft = 50;
-            containerStyle.marginRight = 10;
-
-            bubbleStyle.alignItems = "flex-end";
-            bubbleStyle.paddingLeft = 10;
-
-            actionStyle.alignItems = "flex-end";
-            break;
-        case "their":
-            containerStyle.justifyContent = "flex-start";
-            containerStyle.marginRight = 50;
-            containerStyle.marginLeft = 10;
-
-            bubbleStyle.alignItems = "flex-end";
-            bubbleStyle.backgroundColor = theme.dark ? globalColor["dark-grey"] : globalColor.white;
-            bubbleStyle.borderColor = theme.dark ? globalColor["dark-grey"] : globalColor.white;
-            bubbleStyle.paddingRight = 10;
-
-            textStyle.color = theme.dark ? globalColor.white : theme.colors.primary;
-
-            wrapStatusViewStyle.flexDirection = "row-reverse";
-            break;
-    }
 
     const handleCloseOptionButtonOnPress = useCallback(() => {
         offsetX.value = withTiming(0);
@@ -289,12 +230,9 @@ const BubbleView: FC<Props> = props => {
         );
     }, [theme.dark]);
 
-    console.log(props.replying);
-
     return (
         <Fragment>
-            {/*{props.time && <Text style={styles.sessionTime}>{new Date(props.time).toDateString()}</Text>}*/}
-            <View style={[StyleSheet.absoluteFill, actionStyle]}>
+            <View style={[StyleSheet.absoluteFill, actionStyle(props.type)]}>
                 <Animated.View style={[globalStyles["flex-row"], animatedButtonsStyle]}>
                     {RenderButtons.map((button, index) => (
                         <Fragment key={index.toString()}>{button}</Fragment>
@@ -303,26 +241,30 @@ const BubbleView: FC<Props> = props => {
             </View>
             <GestureDetector gesture={panGesture}>
                 <Animated.View style={[translateX]}>
-                    <View style={containerStyle}>
-                        <Pressable style={[styles.button, buttonStyle]} onPress={handleOnPress}>
-                            <View style={bubbleStyle}>
+                    <View style={containerStyle(props.type)}>
+                        <Pressable style={[styles.button]} onPress={handleOnPress}>
+                            <View style={bubbleStyle(theme, props.type)}>
                                 {props.replying.to && (
                                     <ReplyToView
+                                        time={props.replying.to.sentAt}
                                         text={props.replying.to?.text}
                                         user={props.replying.user}
+                                        type={props.type}
                                     />
                                 )}
 
-                                <View style={globalStyles["flex-row"]}>
+                                <View style={messageStyle(props.type)}>
                                     {props.type === "their" && RenderOptionButton}
-                                    <Text style={textStyle as any}>{props.text}</Text>
+                                    <Text style={textStyle(theme, props.type) as any}>
+                                        {props.text}
+                                    </Text>
                                     {props.type === "owner" && RenderOptionButton}
                                 </View>
                             </View>
                         </Pressable>
                     </View>
 
-                    <View style={wrapStatusViewStyle}>
+                    <View style={wrapStatusViewStyle(props.type)}>
                         {props.isStarred && (
                             <Animated.View entering={BounceIn} exiting={BounceOut}>
                                 <AntDesign
@@ -334,8 +276,8 @@ const BubbleView: FC<Props> = props => {
                             </Animated.View>
                         )}
                         {props.time && (
-                            <Text numberOfLines={1} style={textTimeStyle as any}>
-                                {new Date(props.time).toLocaleTimeString()}
+                            <Text numberOfLines={1} style={styles.textTime}>
+                                {onFormatDateTimeString(props.time)}
                             </Text>
                         )}
                     </View>
@@ -372,14 +314,73 @@ const styles = StyleSheet.create({
         fontSize: 14,
         textAlign: "center",
         marginVertical: 10
-    },
-    wrapStatusView: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "flex-end",
-        marginHorizontal: 10,
-        marginVertical: 5
     }
+});
+
+const messageStyle = (type?: MessageType): ViewStyle => ({
+    flexDirection: "row",
+    alignSelf: type === "their" ? "flex-start" : "flex-end"
+});
+
+const actionStyle = (type?: MessageType): ViewStyle => ({
+    justifyContent: "center",
+    marginHorizontal: 10,
+    marginBottom: 22,
+    alignItems: type === "their" ? "flex-start" : "flex-end"
+});
+
+const containerStyle = (type?: MessageType): ViewStyle => ({
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: type === "their" ? "flex-start" : "flex-end",
+    marginLeft: type === "their" ? 10 : 50,
+    marginRight: type === "their" ? 50 : 10
+});
+
+const bubbleStyle = (theme: Theme, type?: MessageType): ViewStyle => ({
+    borderRadius: 6,
+    paddingVertical: 8,
+    borderWidth: 1,
+    alignItems: "flex-end",
+    paddingLeft: type === "their" ? 0 : 10,
+    paddingRight: type === "their" ? 10 : 0,
+    backgroundColor:
+        type === "their"
+            ? theme.dark
+                ? globalColor["dark-grey"]
+                : globalColor.white
+            : theme.dark
+            ? DarkTheme.colors.primary
+            : theme.colors.primary,
+    borderColor:
+        type === "their"
+            ? theme.dark
+                ? globalColor["dark-grey"]
+                : globalColor.white
+            : theme.dark
+            ? DarkTheme.colors.primary
+            : theme.colors.primary
+});
+
+const wrapStatusViewStyle = (type?: MessageType): ViewStyle => ({
+    alignItems: "center",
+    justifyContent: "flex-end",
+    marginHorizontal: 10,
+    marginVertical: 5,
+    flexDirection: type === "their" ? "row-reverse" : "row"
+});
+
+const textStyle = (theme: Theme, type?: MessageType): TextStyle => ({
+    letterSpacing: 0.3,
+    fontSize: 16,
+    color:
+        type === "their"
+            ? theme.dark
+                ? globalColor.white
+                : theme.colors.primary
+            : theme.dark
+            ? globalColor.white
+            : globalColor.white
 });
 
 export default BubbleView;

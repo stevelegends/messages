@@ -68,7 +68,7 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
     const [chatId, setChatId] = useState<string | undefined>(route.params?.chatId);
     const [messageText, setMessageText] = useState<string>("");
     const [replyingTo, setReplyingTo] = useState<
-        { text?: string; sentBy: string; key: string } | undefined
+        { text?: string; sentBy: string; sentAt: string; key: string } | undefined
     >(undefined);
 
     const chatData =
@@ -145,7 +145,12 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
         (id, text) => {
             const selectedReply = chatMessages.find(({ key }) => key === id);
             if (selectedReply) {
-                setReplyingTo({ text, sentBy: selectedReply.sentBy, key: selectedReply.key });
+                setReplyingTo({
+                    text,
+                    sentBy: selectedReply.sentBy,
+                    sentAt: selectedReply.sentAt,
+                    key: selectedReply.key
+                });
             }
         },
         [chatMessages]
@@ -259,6 +264,7 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
                 {replyingTo !== null && replyingTo !== undefined && (
                     <ReplyToView
                         text={replyingTo.text}
+                        time={replyingTo.sentAt}
                         user={user.storedUsers?.[replyingTo.sentBy]}
                         onCancel={setReplyingTo}
                     />
