@@ -334,7 +334,7 @@ const useFirebase = () => {
         onUserDataResult?: (payload: { session: any }) => void
     ) => Promise<void>;
 
-    const onUploadImageAsync = useCallback(async (uri, onLoading, onResult, imageSize) => {
+    const onUploadImageAsync = useCallback(async (uri, onLoading, onResult, path, imageSize) => {
         onLoading(true);
 
         const compressedUri = await compressImageEachSize(uri, 100, imageSize);
@@ -366,7 +366,6 @@ const useFirebase = () => {
         }
 
         try {
-            const path = "profilePics";
             const uuid = generateUUID();
             sRef = storageRef(getStorage(), `${path}/${uuid}`);
             await uploadBytesResumable(sRef, blob);
@@ -396,6 +395,7 @@ const useFirebase = () => {
         uri: string,
         onLoading: (isLoading: boolean) => void,
         onResult: (payload: { url: string }) => void,
+        path: "profilePics" | "chatImages",
         imageSize?: number
     ) => Promise<void>;
 
@@ -467,37 +467,45 @@ const useFirebase = () => {
         }
     }, []) as (ref: any) => void;
 
-    const onSendMessageTextAsync = useCallback(async (chatId, senderId, messageText, replyTo) => {
-        const dbRef = ref(getDatabase());
-        const messagesRef = child(dbRef, `messages/${chatId}`);
+    const onSendMessageTextAsync = useCallback(
+        async ({ chatId, senderId, messageText, replyTo, imageUrls }) => {
+            const dbRef = ref(getDatabase());
+            const messagesRef = child(dbRef, `messages/${chatId}`);
 
-        const messageData = {
-            sentBy: senderId,
-            sentAt: new Date().toISOString(),
-            text: messageText
-        };
-        if (replyTo) {
-            (messageData as typeof messageData & { replyTo: string }).replyTo = replyTo;
-        }
+            const messageData = {
+                sentBy: senderId,
+                sentAt: new Date().toISOString(),
+                text: messageText
+            };
+            if (replyTo) {
+                (messageData as typeof messageData & { replyTo: string }).replyTo = replyTo;
+            }
+            if (imageUrls) {
+                (messageData as typeof messageData & { imageUrls: Array<string> }).imageUrls =
+                    imageUrls;
+            }
 
-        try {
-            await push(messagesRef, messageData);
+            try {
+                await push(messagesRef, messageData);
 
-            const chatRef = child(dbRef, `chats/${chatId}`);
-            await update(chatRef, {
-                updatedBy: senderId,
-                updatedAt: new Date().toISOString(),
-                latestMessageText: messageText
-            });
-        } catch (error) {
-            ErrorHandler(error, "onSendMessageTextAsync");
-        }
-    }, []) as (
-        chatId: string,
-        senderId: string,
-        messageText: string,
-        replyTo?: string
-    ) => Promise<void>;
+                const chatRef = child(dbRef, `chats/${chatId}`);
+                await update(chatRef, {
+                    updatedBy: senderId,
+                    updatedAt: new Date().toISOString(),
+                    latestMessageText: messageText
+                });
+            } catch (error) {
+                ErrorHandler(error, "onSendMessageTextAsync");
+            }
+        },
+        []
+    ) as (payload: {
+        chatId: string;
+        senderId: string;
+        messageText: string;
+        replyTo?: string;
+        imageUrls?: Array<string>;
+    }) => Promise<void>;
 
     const onMessagesListener = useCallback((chatId, listener) => {
         const dbRef = ref(getDatabase());

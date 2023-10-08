@@ -1,7 +1,7 @@
 import React, { FC, Fragment, useCallback, useMemo } from "react";
 
 // modules
-import { Pressable, StyleSheet, TextStyle, View, ViewStyle } from "react-native";
+import { Image, StyleSheet, TextStyle, View, ViewStyle } from "react-native";
 import Animated, {
     BounceIn,
     BounceOut,
@@ -18,7 +18,7 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { AntDesign } from "@expo/vector-icons";
 
 // components
-import { Text, OptionButton } from "@components";
+import { Text, OptionButton, ImageAuto } from "@components";
 import CloseButton from "./close-button";
 import CopyButton from "./copy-button";
 import ReplyButton from "./reply-button";
@@ -32,7 +32,8 @@ import { DarkTheme, Theme, useTheme } from "@react-navigation/native";
 import { globalColor, globalSize, globalStyles } from "@theme/theme";
 
 // utils
-import { onCopyToClipboardAsync, onFormatDateTimeString } from "@utils";
+import { categorizeLinks, onCopyToClipboardAsync, onFormatDateTimeString } from "@utils";
+import ImageAttachesView from "./image-attaches-view";
 
 export type MessageType = "owner" | "their";
 
@@ -42,6 +43,7 @@ type Props = {
     text?: string;
     type?: MessageType;
     time?: string;
+    images?: Array<string>;
     animatedScrollY?: SharedValue<number>;
     startActionOnPress?: (id: string) => void;
     replyActionOnPress?: (id: string, text?: string) => void;
@@ -188,7 +190,13 @@ const BubbleView: FC<Props> = props => {
         };
     }, [WIDTH]);
 
-    const handleOnPress = () => {};
+    const attaches = useMemo(() => {
+        if (props.text) {
+            const links = categorizeLinks(props.text);
+            return links;
+        }
+        return {};
+    }, [props.text, props.images]) as { imageUrl: string[]; url: string[] };
 
     const handleOpenOptionViewOnPress = useCallback(() => {
         if (props.type === "owner") {
@@ -213,9 +221,11 @@ const BubbleView: FC<Props> = props => {
 
     const RenderOptionButton = useMemo(() => {
         return (
-            <Animated.View style={[animatedOptionButtonStyle, globalStyles["align-self-center"]]}>
+            <Animated.View
+                style={[animatedOptionButtonStyle, optionButtonStyle(theme, props.type)]}
+            >
                 <OptionButton
-                    buttonSize={20}
+                    buttonSize={25}
                     size={12}
                     onPress={handleOpenOptionViewOnPress}
                     color={
@@ -240,28 +250,51 @@ const BubbleView: FC<Props> = props => {
                 </Animated.View>
             </View>
             <GestureDetector gesture={panGesture}>
-                <Animated.View style={[translateX]}>
+                <Animated.View style={[translateX, { flex: 1 }]}>
                     <View style={containerStyle(props.type)}>
-                        <Pressable style={[styles.button]} onPress={handleOnPress}>
-                            <View style={bubbleStyle(theme, props.type)}>
-                                {props.replying.to && (
-                                    <ReplyToView
-                                        time={props.replying.to.sentAt}
-                                        text={props.replying.to?.text}
-                                        user={props.replying.user}
-                                        type={props.type}
-                                    />
-                                )}
-
-                                <View style={messageStyle(props.type)}>
-                                    {props.type === "their" && RenderOptionButton}
-                                    <Text style={textStyle(theme, props.type) as any}>
-                                        {props.text}
-                                    </Text>
-                                    {props.type === "owner" && RenderOptionButton}
+                        {props.type === "owner" && <View style={globalStyles["flex-1"]} />}
+                        <View style={bubbleStyle(theme, props.type)}>
+                            {props.replying.to && (
+                                <ReplyToView
+                                    time={props.replying.to.sentAt}
+                                    text={props.replying.to?.text}
+                                    user={props.replying.user}
+                                    type={props.type}
+                                />
+                            )}
+                            {Array.isArray(attaches.imageUrl) && attaches.imageUrl.length > 0 && (
+                                <View
+                                    style={{
+                                        flexDirection: "row",
+                                        flexWrap: "wrap",
+                                        backgroundColor: globalColor["black-0.7"],
+                                        marginHorizontal: 8,
+                                        marginBottom: 4,
+                                        borderRadius: 5,
+                                        overflow: "hidden"
+                                    }}
+                                >
+                                    {attaches.imageUrl.map((url, index) => (
+                                        <View key={index.toString()}>
+                                            <ImageAuto resizeMode="center" source={{ uri: url }} />
+                                            {/*<Text style={{color: theme.colors.primary}}>*/}
+                                            {/*    {url}*/}
+                                            {/*</Text>*/}
+                                        </View>
+                                    ))}
                                 </View>
+                            )}
+                            <ImageAttachesView attaches={props.images} removeOnPress={() => {}} />
+
+                            <View style={messageStyle(props.type)}>
+                                {props.type === "their" && RenderOptionButton}
+                                <Text style={textStyle(theme, props.type) as any}>
+                                    {props.text}
+                                </Text>
+                                {props.type === "owner" && RenderOptionButton}
                             </View>
-                        </Pressable>
+                        </View>
+                        {props.type === "their" && <View style={globalStyles["flex-1"]} />}
                     </View>
 
                     <View style={wrapStatusViewStyle(props.type)}>
@@ -319,7 +352,9 @@ const styles = StyleSheet.create({
 
 const messageStyle = (type?: MessageType): ViewStyle => ({
     flexDirection: "row",
-    alignSelf: type === "their" ? "flex-start" : "flex-end"
+    justifyContent: type === "their" ? "flex-start" : "flex-end",
+    marginRight: type === "owner" ? 20 : 10,
+    marginLeft: type === "their" ? 20 : 10
 });
 
 const actionStyle = (type?: MessageType): ViewStyle => ({
@@ -332,18 +367,16 @@ const actionStyle = (type?: MessageType): ViewStyle => ({
 const containerStyle = (type?: MessageType): ViewStyle => ({
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: type === "their" ? "flex-start" : "flex-end",
-    marginLeft: type === "their" ? 10 : 50,
-    marginRight: type === "their" ? 50 : 10
+    flex: 1
 });
 
 const bubbleStyle = (theme: Theme, type?: MessageType): ViewStyle => ({
     borderRadius: 6,
     paddingVertical: 8,
     borderWidth: 1,
-    alignItems: "flex-end",
-    paddingLeft: type === "their" ? 0 : 10,
-    paddingRight: type === "their" ? 10 : 0,
+    marginRight: type === "owner" ? 8 : 0,
+    marginLeft: type === "their" ? 8 : 0,
+    maxWidth: "90%",
     backgroundColor:
         type === "their"
             ? theme.dark
@@ -381,6 +414,12 @@ const textStyle = (theme: Theme, type?: MessageType): TextStyle => ({
             : theme.dark
             ? globalColor.white
             : globalColor.white
+});
+
+const optionButtonStyle = (theme: Theme, type?: MessageType): TextStyle => ({
+    position: "absolute",
+    alignSelf: "center",
+    [type === "their" ? "left" : "right"]: -20
 });
 
 export default BubbleView;

@@ -10,6 +10,7 @@ import { useTheme } from "@react-navigation/native";
 type BackButtonProps = {
     onPress: () => void;
     size?: number;
+    color?: string;
 } & TouchableOpacityProps;
 
 const CloseButtonBorder: FC<BackButtonProps> = props => {
@@ -20,7 +21,7 @@ const CloseButtonBorder: FC<BackButtonProps> = props => {
             <AntDesign
                 name="closecircleo"
                 size={props.size}
-                color={theme.colors.primary}
+                color={props.color || theme.colors.primary}
                 style={{ alignSelf: "center" }}
             />
         </TouchableOpacity>

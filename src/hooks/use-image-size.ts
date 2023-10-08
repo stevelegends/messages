@@ -16,10 +16,10 @@ const useImageSize = () => {
                         optimizeSize <= Resolution.XGA[0] ? Resolution.XGA[0] : optimizeSize;
                 }
 
-                resolve(Math.floor(resizeWidth));
+                resolve({ size: Math.floor(resizeWidth), origin: { width, height } });
             });
         });
-    }, []) as (uri: string) => Promise<number>;
+    }, []) as (uri: string) => Promise<{ size: number; origin: { width: number; height: number } }>;
     return { getImageOptimizedSize };
 };
 

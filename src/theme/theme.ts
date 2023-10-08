@@ -168,6 +168,9 @@ export const globalSize = {
 
 export const globalColor = {
     "black-0.9": "rgba(1,1,1, 0.9)",
+    "black-0.7": "rgba(1,1,1, 0.7)",
+    "black-0.2": "rgba(1,1,1, 0.2)",
+    "black-0.5": "rgba(1,1,1, 0.5)",
     "black-2": "#2F3032",
     "white-1.0": "#FFFFFF",
     "white-0.5": "rgba(255,255,255,0.5)",

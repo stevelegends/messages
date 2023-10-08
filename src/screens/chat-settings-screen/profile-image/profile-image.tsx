@@ -73,7 +73,8 @@ const ProfileImage: FC<ProfileImageProps> = () => {
                             }
                         );
                     },
-                    optimizedSize
+                    "profilePics",
+                    optimizedSize.size
                 );
 
                 return;

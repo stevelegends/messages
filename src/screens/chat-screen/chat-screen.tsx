@@ -4,10 +4,12 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
 // modules
 import {
     FlatList,
+    Image,
     KeyboardAvoidingView,
     NativeScrollEvent,
     NativeSyntheticEvent,
     Platform,
+    ScrollView,
     TextInput,
     TouchableOpacity,
     View
@@ -17,7 +19,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Feather } from "@expo/vector-icons";
 import Animated, { useSharedValue, ZoomIn, ZoomOut } from "react-native-reanimated";
 import { i18n } from "@lingui/core";
-import { msg, Trans } from "@lingui/macro";
+import { msg } from "@lingui/macro";
+import { randomUUID } from "expo-crypto";
 
 // navigation
 import { StackNavigatorParams } from "@navigation/main-navigator";
@@ -26,17 +29,18 @@ import { StackNavigatorParams } from "@navigation/main-navigator";
 import styles from "./chat-screen.styles";
 
 // theme
-import { globalStyles } from "@theme/theme";
+import { globalSize, globalStyles } from "@theme/theme";
 
 // components
 import { BackButton, CircleImage, Text, ToggleThemeButton } from "@components";
 import BubbleView from "./components/bubble-view";
 import ReplyToView from "./components/reply-to-view";
 import EndToEndEncryptedNotifyView from "./components/end-to-end-encrypted-notify-view";
+import ImageAttachesView, { ImageAttaches } from "./components/image-attaches-view";
 
 // hooks
 import { RouteProp, useTheme } from "@react-navigation/native";
-import { useFirebase } from "@hooks/index";
+import { useFirebase, useImageSize } from "@hooks/index";
 import { useNotificationProvider } from "@contexts/notification-context";
 
 // store
@@ -46,10 +50,11 @@ import useChats from "@store/features/chats/use-chats";
 import useMessages from "@store/features/messages/use-messages";
 
 // utils
-import { ErrorMessage } from "@utils";
+import { ErrorHandler, ErrorMessage, onLaunchImageLibraryAsync } from "@utils";
 
 // constants
 import { UserStatus } from "@constants/user-status";
+import imageAttachesView from "./components/image-attaches-view";
 
 type ChatScreenProps = {
     navigation: StackNavigationProp<StackNavigatorParams, "ChatScreen">;
@@ -64,12 +69,15 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
     const chats = useChats();
     const notification = useNotificationProvider();
     const messages = useMessages();
+    const imageSize = useImageSize();
 
     const [chatId, setChatId] = useState<string | undefined>(route.params?.chatId);
     const [messageText, setMessageText] = useState<string>("");
     const [replyingTo, setReplyingTo] = useState<
         { text?: string; sentBy: string; sentAt: string; key: string } | undefined
     >(undefined);
+
+    const [tempImageUris, setTempImageUris] = useState<Array<ImageAttaches>>([]);
 
     const chatData =
         (route.params?.chatId && chats.chatsData[route.params.chatId]) || route.params?.newChatData;
@@ -106,12 +114,35 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
         }
 
         if (uniqChatId) {
-            await firebase.onSendMessageTextAsync(
-                uniqChatId,
-                auth.userData.userId,
-                messageText,
-                replyingTo?.key
-            );
+            let imagesResults: Array<string> = [];
+
+            if (tempImageUris.length > 0) {
+                const imageUploadPromises: Promise<string>[] = [];
+                for (const temp of tempImageUris) {
+                    const urlResult = new Promise<string>(resolve => {
+                        firebase.onUploadImageAsync(
+                            temp.uri,
+                            () => {},
+                            payload => {
+                                resolve(payload.url);
+                            },
+                            "chatImages",
+                            temp.resize.size
+                        );
+                    });
+                    imageUploadPromises.push(urlResult);
+                }
+                imagesResults = await Promise.all(imageUploadPromises);
+                setTempImageUris([]);
+            }
+
+            await firebase.onSendMessageTextAsync({
+                chatId: uniqChatId,
+                senderId: auth.userData.userId,
+                messageText: messageText,
+                replyTo: replyingTo?.key,
+                imageUrls: imagesResults
+            });
         } else {
             notification.addStack({
                 title: i18n._(ErrorMessage.default),
@@ -125,7 +156,7 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
         if (replyingTo) {
             setReplyingTo(undefined);
         }
-    }, [messageText, chatId, auth.userData?.userId, chatData, replyingTo]);
+    }, [messageText, chatId, auth.userData?.userId, chatData, replyingTo, tempImageUris]);
 
     const onScroll = useCallback(event => {
         const y = event.nativeEvent.contentOffset.y;
@@ -155,6 +186,35 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
         },
         [chatMessages]
     ) as (id: string, text?: string) => void;
+
+    const handlePickImageOnPress = useCallback(async () => {
+        try {
+            const result = await onLaunchImageLibraryAsync("photo", true, false, true);
+            if (result.canceled) {
+                return;
+            }
+
+            const assetUri = result.assets[0].uri;
+            if (assetUri) {
+                const optimizedSize = await imageSize.getImageOptimizedSize(assetUri);
+                setTempImageUris(prevState => {
+                    if (prevState.length < 5) {
+                        return [
+                            ...prevState,
+                            { key: randomUUID(), uri: assetUri, resize: optimizedSize }
+                        ];
+                    }
+                    return prevState;
+                });
+            }
+        } catch (e) {
+            ErrorHandler(e, "handlePickImageOnPress");
+        }
+    }, []) as () => Promise<void>;
+
+    const handleRemoveAttacheOnPress = (key: string) => {
+        setTempImageUris(prevState => prevState.filter(value => value.key !== key));
+    };
 
     useEffect(() => {
         function getChatUser(): { name: string; picture: string; status: UserStatus } {
@@ -223,6 +283,8 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
         return () => {};
     }, [theme.dark]);
 
+    const isSendValid = messageText.trim().length > 0 || tempImageUris.length > 0;
+
     return (
         <SafeAreaView edges={["left", "right", "bottom"]} style={styles.container}>
             <KeyboardAvoidingView
@@ -250,6 +312,7 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
                                     replyActionOnPress={handleReplyActionOnPress}
                                     isStarred={item.isStarred}
                                     replying={item.replying}
+                                    images={item.imageUrls || []}
                                 />
                             );
                         }}
@@ -260,6 +323,11 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
                         showsVerticalScrollIndicator={false}
                     />
                 </View>
+
+                <ImageAttachesView
+                    images={tempImageUris}
+                    removeOnPress={handleRemoveAttacheOnPress}
+                />
 
                 {replyingTo !== null && replyingTo !== undefined && (
                     <ReplyToView
@@ -272,7 +340,7 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
 
                 {/*</ImageBackground>*/}
                 <View style={[styles.inputContainer, { backgroundColor: theme.colors.border }]}>
-                    <TouchableOpacity style={styles.mediaButton}>
+                    <TouchableOpacity style={styles.mediaButton} onPress={handlePickImageOnPress}>
                         <Feather name="plus" size={24} color={theme.colors.primary} />
                     </TouchableOpacity>
 
@@ -292,18 +360,21 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
                         autoFocus={false}
                     />
 
-                    {messageText.trim().length === 0 && (
+                    {!isSendValid && (
                         <Animated.View
                             entering={ZoomIn}
                             exiting={ZoomOut}
                             style={styles.mediaButton}
                         >
-                            <TouchableOpacity style={globalStyles["flex-center"]}>
+                            <TouchableOpacity
+                                style={globalStyles["flex-center"]}
+                                onPress={handlePickImageOnPress}
+                            >
                                 <Feather name="camera" size={24} color={theme.colors.primary} />
                             </TouchableOpacity>
                         </Animated.View>
                     )}
-                    {messageText.trim().length !== 0 && (
+                    {isSendValid && (
                         <Animated.View
                             entering={ZoomIn}
                             exiting={ZoomOut}
