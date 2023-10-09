@@ -75,7 +75,6 @@ const containerStyle = (isCancel: boolean, theme: Theme, type: MessageType): Vie
     marginVertical: 8,
     borderRadius: 3,
     flexDirection: "row",
-    justifyContent: "center",
     alignItems: "center",
 
     paddingVertical: isCancel ? 8 : 0,

@@ -35,12 +35,20 @@ export const messagesSlice = createSlice({
         },
         setStarredMessages: (state, action: PayloadAction<{ [key: string]: any }>) => {
             state.starredMessages = { ...action.payload };
+        },
+        resetState: () => {
+            return initialState;
         }
     }
 });
 
 // Action creators are generated for each case reducer function
-export const { setMessagesData, addStarredMessages, removeStarredMessages, setStarredMessages } =
-    messagesSlice.actions;
+export const {
+    resetState,
+    setMessagesData,
+    addStarredMessages,
+    removeStarredMessages,
+    setStarredMessages
+} = messagesSlice.actions;
 
 export default messagesSlice.reducer;

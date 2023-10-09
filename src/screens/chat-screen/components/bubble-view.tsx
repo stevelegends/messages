@@ -265,6 +265,7 @@ const BubbleView: FC<Props> = props => {
                             {Array.isArray(attaches.imageUrl) && attaches.imageUrl.length > 0 && (
                                 <View
                                     style={{
+                                        // TODO
                                         flexDirection: "row",
                                         flexWrap: "wrap",
                                         backgroundColor: globalColor["black-0.7"],

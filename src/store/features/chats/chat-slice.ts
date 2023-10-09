@@ -16,11 +16,14 @@ export const chatSlice = createSlice({
     reducers: {
         setChatsData: (state, action: PayloadAction<{ [key: string]: any }>) => {
             state.chatsData = { ...action.payload };
+        },
+        resetState: () => {
+            return initialState;
         }
     }
 });
 
 // Action creators are generated for each case reducer function
-export const { setChatsData } = chatSlice.actions;
+export const { setChatsData, resetState } = chatSlice.actions;
 
 export default chatSlice.reducer;

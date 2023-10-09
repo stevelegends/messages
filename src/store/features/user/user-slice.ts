@@ -28,11 +28,14 @@ export const userSlice = createSlice({
         },
         setStoredUsers: (state, action: PayloadAction<{ [key: string]: any }>) => {
             state.storedUsers = action.payload;
+        },
+        resetState: () => {
+            return initialState;
         }
     }
 });
 
 // Action creators are generated for each case reducer function
-export const { setStoredUsersOverride, setStoredUsers } = userSlice.actions;
+export const { resetState, setStoredUsersOverride, setStoredUsers } = userSlice.actions;
 
 export default userSlice.reducer;

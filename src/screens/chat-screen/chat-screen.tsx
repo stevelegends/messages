@@ -136,10 +136,13 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
                 setTempImageUris([]);
             }
 
+            const message =
+                imagesResults.length > 0 ? messageText || i18n._(msg`Image(s)`) : messageText;
+
             await firebase.onSendMessageTextAsync({
                 chatId: uniqChatId,
                 senderId: auth.userData.userId,
-                messageText: messageText,
+                messageText: message,
                 replyTo: replyingTo?.key,
                 imageUrls: imagesResults
             });
