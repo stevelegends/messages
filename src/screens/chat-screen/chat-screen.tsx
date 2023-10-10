@@ -50,7 +50,7 @@ import useChats from "@store/features/chats/use-chats";
 import useMessages from "@store/features/messages/use-messages";
 
 // utils
-import { ErrorHandler, ErrorMessage, onLaunchImageLibraryAsync } from "@utils";
+import { ErrorHandler, ErrorMessage, onLaunchCameraAsync, onLaunchImageLibraryAsync } from "@utils";
 
 // constants
 import { UserStatus } from "@constants/user-status";
@@ -193,7 +193,7 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
     const handlePickImageOnPress = useCallback(async () => {
         try {
             const result = await onLaunchImageLibraryAsync("photo", true, false, true);
-            if (result.canceled) {
+            if (result?.canceled) {
                 return;
             }
 
@@ -212,6 +212,32 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
             }
         } catch (e) {
             ErrorHandler(e, "handlePickImageOnPress");
+        }
+    }, []) as () => Promise<void>;
+
+    const handleOpenCameraOnPress = useCallback(async () => {
+        try {
+            const result = await onLaunchCameraAsync("photo");
+            console.log("result", result);
+            if (!result || result?.canceled) {
+                return;
+            }
+
+            const assetUri = result.assets[0].uri;
+            if (assetUri) {
+                const optimizedSize = await imageSize.getImageOptimizedSize(assetUri);
+                setTempImageUris(prevState => {
+                    if (prevState.length < 5) {
+                        return [
+                            ...prevState,
+                            { key: randomUUID(), uri: assetUri, resize: optimizedSize }
+                        ];
+                    }
+                    return prevState;
+                });
+            }
+        } catch (e) {
+            ErrorHandler(e, "handleOpenCameraOnPress");
         }
     }, []) as () => Promise<void>;
 
@@ -371,7 +397,7 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
                         >
                             <TouchableOpacity
                                 style={globalStyles["flex-center"]}
-                                onPress={handlePickImageOnPress}
+                                onPress={handleOpenCameraOnPress}
                             >
                                 <Feather name="camera" size={24} color={theme.colors.primary} />
                             </TouchableOpacity>

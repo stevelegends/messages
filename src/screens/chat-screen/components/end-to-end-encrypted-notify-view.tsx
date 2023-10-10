@@ -2,7 +2,7 @@ import React, { memo, useCallback } from "react";
 
 // modules
 import { Trans } from "@lingui/macro";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Platform, Pressable, StyleSheet, View } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 
 // components
@@ -14,7 +14,7 @@ import { useTheme } from "@react-navigation/native";
 // theme
 import { globalSize, globalStyles } from "@theme/theme";
 
-const HEIGHT = 80;
+const HEIGHT = Platform.select({ ios: 80, android: 110 });
 
 const EndToEndEncryptedNotifyView = memo(() => {
     const theme = useTheme();
