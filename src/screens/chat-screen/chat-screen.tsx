@@ -1,5 +1,5 @@
 // react
-import React, { FC, useCallback, useEffect, useMemo, useState } from "react";
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 // modules
 import {
@@ -29,7 +29,7 @@ import { StackNavigatorParams } from "@navigation/main-navigator";
 import styles from "./chat-screen.styles";
 
 // theme
-import { globalSize, globalStyles } from "@theme/theme";
+import { globalStyles } from "@theme/theme";
 
 // components
 import { BackButton, CircleImage, Text, ToggleThemeButton } from "@components";
@@ -37,6 +37,7 @@ import BubbleView from "./components/bubble-view";
 import ReplyToView from "./components/reply-to-view";
 import EndToEndEncryptedNotifyView from "./components/end-to-end-encrypted-notify-view";
 import ImageAttachesView, { ImageAttaches } from "./components/image-attaches-view";
+import SkeletonView from "./components/skeleton-view";
 
 // hooks
 import { RouteProp, useTheme } from "@react-navigation/native";
@@ -54,7 +55,6 @@ import { ErrorHandler, ErrorMessage, onLaunchCameraAsync, onLaunchImageLibraryAs
 
 // constants
 import { UserStatus } from "@constants/user-status";
-import imageAttachesView from "./components/image-attaches-view";
 
 type ChatScreenProps = {
     navigation: StackNavigationProp<StackNavigatorParams, "ChatScreen">;
@@ -78,6 +78,8 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
     >(undefined);
 
     const [tempImageUris, setTempImageUris] = useState<Array<ImageAttaches>>([]);
+
+    const chatListRef = useRef<FlatList>(null);
 
     const chatData =
         (route.params?.chatId && chats.chatsData[route.params.chatId]) || route.params?.newChatData;
@@ -190,6 +192,18 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
         [chatMessages]
     ) as (id: string, text?: string) => void;
 
+    const onSetTempImageUriWithOptimizedAsync = async (uri: string) => {
+        if (uri) {
+            const optimizedSize = await imageSize.getImageOptimizedSize(uri);
+            setTempImageUris(prevState => {
+                if (prevState.length < 5) {
+                    return [...prevState, { key: randomUUID(), uri, resize: optimizedSize }];
+                }
+                return prevState;
+            });
+        }
+    };
+
     const handlePickImageOnPress = useCallback(async () => {
         try {
             const result = await onLaunchImageLibraryAsync("photo", true, false, true);
@@ -198,18 +212,7 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
             }
 
             const assetUri = result.assets[0].uri;
-            if (assetUri) {
-                const optimizedSize = await imageSize.getImageOptimizedSize(assetUri);
-                setTempImageUris(prevState => {
-                    if (prevState.length < 5) {
-                        return [
-                            ...prevState,
-                            { key: randomUUID(), uri: assetUri, resize: optimizedSize }
-                        ];
-                    }
-                    return prevState;
-                });
-            }
+            await onSetTempImageUriWithOptimizedAsync(assetUri);
         } catch (e) {
             ErrorHandler(e, "handlePickImageOnPress");
         }
@@ -224,18 +227,7 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
             }
 
             const assetUri = result.assets[0].uri;
-            if (assetUri) {
-                const optimizedSize = await imageSize.getImageOptimizedSize(assetUri);
-                setTempImageUris(prevState => {
-                    if (prevState.length < 5) {
-                        return [
-                            ...prevState,
-                            { key: randomUUID(), uri: assetUri, resize: optimizedSize }
-                        ];
-                    }
-                    return prevState;
-                });
-            }
+            await onSetTempImageUriWithOptimizedAsync(assetUri);
         } catch (e) {
             ErrorHandler(e, "handleOpenCameraOnPress");
         }
@@ -244,6 +236,14 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
     const handleRemoveAttacheOnPress = (key: string) => {
         setTempImageUris(prevState => prevState.filter(value => value.key !== key));
     };
+
+    const isSendValid = messageText.trim().length > 0 || tempImageUris.length > 0;
+
+    const onScrollToEnd = useCallback(() => {
+        if (chatListRef.current) {
+            chatListRef.current.scrollToEnd({ animated: false });
+        }
+    }, []) as () => void;
 
     useEffect(() => {
         function getChatUser(): { name: string; picture: string; status: UserStatus } {
@@ -312,117 +312,133 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
         return () => {};
     }, [theme.dark]);
 
-    const isSendValid = messageText.trim().length > 0 || tempImageUris.length > 0;
-
     return (
-        <SafeAreaView edges={["left", "right", "bottom"]} style={styles.container}>
-            <KeyboardAvoidingView
-                behavior={Platform.select({ ios: "padding" })}
-                keyboardVerticalOffset={140}
-                style={globalStyles["flex-1"]}
-            >
-                {/*<ImageBackground source={images.droplet} style={globalStyles["flex-1"]}>*/}
-                <EndToEndEncryptedNotifyView />
-                <View style={[globalStyles["flex-1"]]}>
-                    <FlatList
-                        data={chatMessages}
-                        renderItem={({ item, index }) => {
-                            const isOwnMessage = item.sentBy === auth.userData.userId;
-                            const type = isOwnMessage ? "owner" : "their";
-                            return (
-                                <BubbleView
-                                    index={index}
-                                    id={item.key}
-                                    text={item.text}
-                                    type={type}
-                                    time={item.sentAt}
-                                    animatedScrollY={animatedScrollY}
-                                    startActionOnPress={handleStartActionOnPress}
-                                    replyActionOnPress={handleReplyActionOnPress}
-                                    isStarred={item.isStarred}
-                                    replying={item.replying}
-                                    images={item.imageUrls || []}
-                                />
-                            );
-                        }}
-                        onScroll={onScroll}
-                        keyExtractor={(item, index) => item.key || index.toString()}
-                        ListHeaderComponent={<View style={styles.separatorChatList} />}
-                        ItemSeparatorComponent={(<View style={styles.separatorChatList} />) as any}
-                        showsVerticalScrollIndicator={false}
-                    />
-                </View>
+        <SkeletonView>
+            <SafeAreaView edges={["left", "right", "bottom"]} style={styles.container}>
+                <KeyboardAvoidingView
+                    behavior={Platform.select({ ios: "padding" })}
+                    keyboardVerticalOffset={140}
+                    style={globalStyles["flex-1"]}
+                >
+                    {/*<ImageBackground source={images.droplet} style={globalStyles["flex-1"]}>*/}
+                    <EndToEndEncryptedNotifyView />
+                    <View style={[globalStyles["flex-1"]]}>
+                        <FlatList
+                            ref={chatListRef}
+                            onContentSizeChange={(w, h) => {
+                                onScrollToEnd();
+                            }}
+                            onLayout={event => {
+                                onScrollToEnd();
+                            }}
+                            data={chatMessages}
+                            renderItem={({ item, index }) => {
+                                const isOwnMessage = item.sentBy === auth.userData.userId;
+                                const type = isOwnMessage ? "owner" : "their";
+                                return (
+                                    <BubbleView
+                                        index={index}
+                                        id={item.key}
+                                        text={item.text}
+                                        type={type}
+                                        time={item.sentAt}
+                                        animatedScrollY={animatedScrollY}
+                                        startActionOnPress={handleStartActionOnPress}
+                                        replyActionOnPress={handleReplyActionOnPress}
+                                        isStarred={item.isStarred}
+                                        replying={item.replying}
+                                        images={item.imageUrls || []}
+                                    />
+                                );
+                            }}
+                            onScroll={onScroll}
+                            keyExtractor={(item, index) => item.key || index.toString()}
+                            ListHeaderComponent={<View style={styles.separatorChatList} />}
+                            ItemSeparatorComponent={
+                                (<View style={styles.separatorChatList} />) as any
+                            }
+                            showsVerticalScrollIndicator={false}
+                        />
+                    </View>
 
-                <ImageAttachesView
-                    images={tempImageUris}
-                    removeOnPress={handleRemoveAttacheOnPress}
-                />
-
-                {replyingTo !== null && replyingTo !== undefined && (
-                    <ReplyToView
-                        text={replyingTo.text}
-                        time={replyingTo.sentAt}
-                        user={user.storedUsers?.[replyingTo.sentBy]}
-                        onCancel={setReplyingTo}
-                    />
-                )}
-
-                {/*</ImageBackground>*/}
-                <View style={[styles.inputContainer, { backgroundColor: theme.colors.border }]}>
-                    <TouchableOpacity style={styles.mediaButton} onPress={handlePickImageOnPress}>
-                        <Feather name="plus" size={24} color={theme.colors.primary} />
-                    </TouchableOpacity>
-
-                    <TextInput
-                        style={[
-                            styles.textBox,
-                            { color: theme.colors.text, borderColor: theme.colors.border }
-                        ]}
-                        value={messageText}
-                        onChangeText={setMessageText}
-                        onSubmitEditing={sendMessageOnPress}
-                        autoCapitalize="none"
-                        multiline
-                        placeholder={i18n._(msg`Type your message...`)}
-                        placeholderTextColor={theme.colors.text}
-                        maxLength={1000}
-                        autoFocus={false}
+                    <ImageAttachesView
+                        images={tempImageUris}
+                        removeOnPress={handleRemoveAttacheOnPress}
                     />
 
-                    {!isSendValid && (
-                        <Animated.View
-                            entering={ZoomIn}
-                            exiting={ZoomOut}
+                    {replyingTo !== null && replyingTo !== undefined && (
+                        <ReplyToView
+                            text={replyingTo.text}
+                            time={replyingTo.sentAt}
+                            user={user.storedUsers?.[replyingTo.sentBy]}
+                            onCancel={setReplyingTo}
+                        />
+                    )}
+
+                    {/*</ImageBackground>*/}
+                    <View style={[styles.inputContainer, { backgroundColor: theme.colors.border }]}>
+                        <TouchableOpacity
                             style={styles.mediaButton}
+                            onPress={handlePickImageOnPress}
                         >
-                            <TouchableOpacity
+                            <Feather name="plus" size={24} color={theme.colors.primary} />
+                        </TouchableOpacity>
+
+                        <TextInput
+                            style={[
+                                styles.textBox,
+                                { color: theme.colors.text, borderColor: theme.colors.border }
+                            ]}
+                            value={messageText}
+                            onChangeText={setMessageText}
+                            onSubmitEditing={sendMessageOnPress}
+                            autoCapitalize="none"
+                            multiline
+                            placeholder={i18n._(msg`Type your message...`)}
+                            placeholderTextColor={theme.colors.text}
+                            maxLength={1000}
+                            autoFocus={false}
+                        />
+
+                        {!isSendValid && (
+                            <Animated.View
+                                entering={ZoomIn}
+                                exiting={ZoomOut}
+                                style={styles.mediaButton}
+                            >
+                                <TouchableOpacity
+                                    style={globalStyles["flex-center"]}
+                                    onPress={handleOpenCameraOnPress}
+                                >
+                                    <Feather name="camera" size={24} color={theme.colors.primary} />
+                                </TouchableOpacity>
+                            </Animated.View>
+                        )}
+                        {isSendValid && (
+                            <Animated.View
+                                entering={ZoomIn}
+                                exiting={ZoomOut}
                                 style={globalStyles["flex-center"]}
-                                onPress={handleOpenCameraOnPress}
                             >
-                                <Feather name="camera" size={24} color={theme.colors.primary} />
-                            </TouchableOpacity>
-                        </Animated.View>
-                    )}
-                    {isSendValid && (
-                        <Animated.View
-                            entering={ZoomIn}
-                            exiting={ZoomOut}
-                            style={globalStyles["flex-center"]}
-                        >
-                            <TouchableOpacity
-                                onPress={sendMessageOnPress}
-                                style={[
-                                    { backgroundColor: theme.colors.primary },
-                                    styles.sendButton
-                                ]}
-                            >
-                                <Feather name="send" size={15} color={theme.colors.background} />
-                            </TouchableOpacity>
-                        </Animated.View>
-                    )}
-                </View>
-            </KeyboardAvoidingView>
-        </SafeAreaView>
+                                <TouchableOpacity
+                                    onPress={sendMessageOnPress}
+                                    style={[
+                                        { backgroundColor: theme.colors.primary },
+                                        styles.sendButton
+                                    ]}
+                                >
+                                    <Feather
+                                        name="send"
+                                        size={15}
+                                        color={theme.colors.background}
+                                    />
+                                </TouchableOpacity>
+                            </Animated.View>
+                        )}
+                    </View>
+                </KeyboardAvoidingView>
+            </SafeAreaView>
+        </SkeletonView>
     );
 };
 
