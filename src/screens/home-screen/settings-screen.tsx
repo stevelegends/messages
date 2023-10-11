@@ -12,7 +12,7 @@ import styles from "./home-screen.styles";
 import { globalStyles } from "@theme/theme";
 
 // components
-import { Text } from "@components";
+import { Text } from "@atoms";
 
 // navigation
 import { StackNavigatorParams } from "@navigation/main-navigator";

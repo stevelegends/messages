@@ -1,7 +1,7 @@
 import React, { FC, useCallback } from "react";
 
 // modules
-import { Pressable, StyleSheet, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
+import { Pressable, StyleSheet, TextStyle, View, ViewStyle } from "react-native";
 import Animated, { SlideInRight, SlideOutLeft } from "react-native-reanimated";
 
 // component

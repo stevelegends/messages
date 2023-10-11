@@ -9,6 +9,11 @@ module.exports = function (api) {
                     alias: {
                         "@screens": "./src/screens",
                         "@components": "./src/components",
+                        "@atoms": "./src/components/atoms",
+                        "@molecules": "./src/components/molecules",
+                        "@organisms": "./src/components/organisms",
+                        "@page": "./src/components/page",
+                        "@templates": "./src/components/templates",
                         "@utils": "./src/utils",
                         "@contexts": "./src/contexts",
                         "@config": "./src/config",

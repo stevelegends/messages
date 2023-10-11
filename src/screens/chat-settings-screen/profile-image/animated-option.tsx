@@ -6,7 +6,7 @@ import { StyleSheet, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 // components
-import { Text } from "@components";
+import { Text } from "@atoms";
 
 // hooks
 import { useTheme } from "@react-navigation/native";

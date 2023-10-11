@@ -7,6 +7,11 @@
         "paths": {
             "@screens": ["src/screens"],
             "@components": ["src/components"],
+            "@atoms": ["src/components/atoms"],
+            "@molecules": ["src/components/molecules"],
+            "@organisms": ["src/components/organisms"],
+            "@pages": ["src/components/pages"],
+            "@templates": ["src/components/templates"],
             "@utils": ["src/utils"],
             "@contexts/*": ["src/contexts/*"],
             "@config/*": ["src/config/*"],

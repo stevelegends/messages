@@ -17,7 +17,7 @@ import Animated, {
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
 // components
-import Text from "../text";
+import Text from "../atoms/text";
 
 // contexts
 import { useThemeProvider } from "@contexts/theme-context";

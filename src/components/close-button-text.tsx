@@ -5,7 +5,7 @@ import { TouchableOpacity, TouchableOpacityProps } from "react-native";
 import { Trans } from "@lingui/macro";
 
 // components
-import Text from "./text";
+import Text from "./atoms/text";
 
 // hooks
 import { useTheme } from "@react-navigation/native";

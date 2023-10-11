@@ -4,12 +4,10 @@ import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from "re
 // modules
 import {
     FlatList,
-    Image,
     KeyboardAvoidingView,
     NativeScrollEvent,
     NativeSyntheticEvent,
     Platform,
-    ScrollView,
     TextInput,
     TouchableOpacity,
     View
@@ -221,7 +219,6 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
     const handleOpenCameraOnPress = useCallback(async () => {
         try {
             const result = await onLaunchCameraAsync("photo");
-            console.log("result", result);
             if (!result || result?.canceled) {
                 return;
             }

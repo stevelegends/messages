@@ -11,7 +11,7 @@ import Animated, {
 import { EvilIcons } from "@expo/vector-icons";
 
 // components
-import Text from "./text";
+import Text from "./atoms/text";
 
 // theme
 import { globalSize, globalStyles } from "@theme/theme";

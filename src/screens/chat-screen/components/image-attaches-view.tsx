@@ -5,7 +5,8 @@ import { Image, ScrollView, StyleSheet, View, ViewStyle } from "react-native";
 import Animated, { SlideInRight, ZoomIn, ZoomOut } from "react-native-reanimated";
 
 // components
-import { CloseButtonBorder, ImageAuto, Text } from "@components";
+import { CloseButtonBorder, ImageAuto } from "@components";
+import { Text } from "@atoms";
 
 // theme
 import { globalColor, globalSize } from "@theme/theme";

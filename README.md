@@ -217,3 +217,17 @@ decryptedMessage += decipher.final("utf8");
 console.log("Encrypted Message:", encryptedMessage); // Sent over the insecure channel
 console.log("Decrypted Message:", decryptedMessage); // Decrypted by the receiver
 ```
+
+# Atomic Design
+
+![img_2.png](img_2.png)
+
+1. Atoms: Atoms are the basic building blocks of a UI, such as buttons, input fields, and labels. In React Native, these could be individual components that represent the smallest UI elements.
+
+2. Molecules: Molecules are groups of atoms that work together as a unit. For example, a search bar composed of an input field (atom) and a search button (atom) can be considered a molecule. In React Native, molecules are components made up of atom components.
+
+3. Organisms: Organisms are larger components that combine molecules and/or atoms to form more complex UI elements. For instance, a form with input fields, buttons, and validation messages can be considered an organism. In React Native, organisms are components made up of molecules and atoms.
+
+4. Templates: Templates are specific arrangements of organisms and molecules to create entire sections of a user interface, such as a login form or a navigation menu. Templates define the overall layout and structure of a particular section of the app.
+
+5. Pages: Pages represent complete screens or views in the application. They are built using templates and contain all the necessary elements to represent a full user interface for a specific section of the app.

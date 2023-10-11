@@ -31,6 +31,7 @@ import { useNotificationProvider } from "@contexts/notification-context";
 
 // constants
 import { UserStatus } from "@constants/user-status";
+import { globalStyles } from "@theme/theme";
 
 type ChatListScreenProps = {
     navigation: StackNavigationProp<BottomTabStackNavigatorParams, "ChatListScreen">;
@@ -78,7 +79,12 @@ const ChatListScreen: FC<ChatListScreenProps> = ({ navigation, route }) => {
 
     useEffect(() => {
         navigation.setOptions({
-            headerRight: () => <CreateButton onPress={() => navigate("NewChatScreen")} />
+            headerRight: () => (
+                <View style={globalStyles["flex-row"]}>
+                    <CreateButton onPress={() => navigate("NewChatScreen")} />
+                    <CreateButton onPress={() => navigate("NewChatScreen")} />
+                </View>
+            )
         });
     }, []);
 
