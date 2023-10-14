@@ -1,7 +1,7 @@
 import React, { FC, Fragment, useCallback, useMemo } from "react";
 
 // modules
-import { Image, StyleSheet, TextStyle, View, ViewStyle } from "react-native";
+import { StyleSheet, TextStyle, View, ViewStyle } from "react-native";
 import Animated, {
     BounceIn,
     BounceOut,
@@ -18,7 +18,8 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { AntDesign } from "@expo/vector-icons";
 
 // components
-import { Text, OptionButton, ImageAuto } from "@components";
+import { OptionButton, ImageAuto } from "@components";
+import { Text } from "@atoms";
 import CloseButton from "./close-button";
 import CopyButton from "./copy-button";
 import ReplyButton from "./reply-button";

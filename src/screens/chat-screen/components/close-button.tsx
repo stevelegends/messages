@@ -3,7 +3,6 @@ import React, { FC } from "react";
 // modules
 import { StyleSheet, Text, TouchableOpacity, ViewStyle } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import { Trans } from "@lingui/macro";
 
 type Props = {
     buttonSize?: number;

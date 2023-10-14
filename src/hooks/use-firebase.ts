@@ -234,7 +234,7 @@ const useFirebase = () => {
             ErrorHandler(error, "getUserDataByText");
         }
         return {};
-    }, []) as (payload: { queryText: string }) => Promise<string>;
+    }, []) as (payload: { queryText: string }) => Promise<any>;
 
     const onUpdateSignedInUserData = useCallback(async (payload, onLoading, onAuthResult) => {
         onLoading(true);

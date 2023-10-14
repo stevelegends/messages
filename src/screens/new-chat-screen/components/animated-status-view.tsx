@@ -5,7 +5,7 @@ import Animated, { FadeIn, FadeOut, ZoomIn, ZoomOut } from "react-native-reanima
 import { StyleSheet, View } from "react-native";
 
 // components
-import { Text } from "@components";
+import { Text } from "@atoms";
 
 type Props = {
     icon?: ReactNode;

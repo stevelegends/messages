@@ -33,7 +33,9 @@ export type StackNavigatorParams = {
     ReviewImageModal: {
         url: string;
     };
-    NewChatScreen: undefined;
+    NewChatScreen?: {
+        isGroupChat?: boolean;
+    };
 };
 
 const Stack = createNativeStackNavigator<StackNavigatorParams>();

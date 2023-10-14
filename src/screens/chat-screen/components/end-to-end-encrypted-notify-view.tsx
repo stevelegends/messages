@@ -6,7 +6,8 @@ import { Platform, Pressable, StyleSheet, View } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 
 // components
-import { CloseButton, Text } from "@components";
+import { CloseButton } from "@components";
+import { Text } from "@atoms";
 
 // hooks
 import { useTheme } from "@react-navigation/native";

@@ -5,7 +5,8 @@ import { Pressable, StyleSheet, TextStyle, View, ViewStyle } from "react-native"
 import Animated, { SlideInRight, SlideOutLeft } from "react-native-reanimated";
 
 // component
-import { CloseButtonBorder, Text } from "@components";
+import { CloseButtonBorder } from "@components";
+import { Text } from "@atoms";
 
 // hooks
 import { Theme, useTheme } from "@react-navigation/native";

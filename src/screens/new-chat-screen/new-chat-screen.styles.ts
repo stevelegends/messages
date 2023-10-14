@@ -13,6 +13,11 @@ const styles = StyleSheet.create({
     },
     noResultIcon: {
         marginBottom: 8
+    },
+    checkbox: {
+        marginLeft: 10,
+        width: 30,
+        height: 30
     }
 });
 

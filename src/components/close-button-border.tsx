@@ -1,23 +1,28 @@
 import React, { FC } from "react";
 
 // modules
-import { TouchableOpacity, TouchableOpacityProps } from "react-native";
+import { TouchableOpacity, ViewProps } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 
 // hooks
 import { useTheme } from "@react-navigation/native";
 
 type BackButtonProps = {
-    onPress: () => void;
+    id?: string;
+    onPress: (id?: string) => void;
     size?: number;
     color?: string;
-} & TouchableOpacityProps;
+} & ViewProps;
 
 const CloseButtonBorder: FC<BackButtonProps> = props => {
     const theme = useTheme();
 
+    const handleOnPress = () => {
+        props.onPress && props.onPress(props.id);
+    };
+
     return (
-        <TouchableOpacity {...props} onPress={props.onPress}>
+        <TouchableOpacity {...props} onPress={handleOnPress}>
             <AntDesign
                 name="closecircleo"
                 size={props.size}

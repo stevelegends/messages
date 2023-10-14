@@ -25,6 +25,12 @@ export const globalStyles = StyleSheet.create({
     "flex-jc-center": {
         justifyContent: "center"
     },
+    "flex-jc-end": {
+        justifyContent: "flex-end"
+    },
+    "flex-ali-end": {
+        alignItems: "flex-end"
+    },
     "align-self-center": {
         alignSelf: "center"
     },
@@ -160,6 +166,8 @@ export const globalSize = {
     windowWidth: DimensionsWindow.width,
     headerTitle: 25,
     button: 50,
+    "button-40": 40,
+    "button-30": 30,
     paddingButton: 15,
     box: 30,
     box40: 40,

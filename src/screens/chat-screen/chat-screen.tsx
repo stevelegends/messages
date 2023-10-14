@@ -30,7 +30,8 @@ import styles from "./chat-screen.styles";
 import { globalStyles } from "@theme/theme";
 
 // components
-import { BackButton, CircleImage, Text, ToggleThemeButton } from "@components";
+import { BackButton, CircleImage, ToggleThemeButton } from "@components";
+import { Text } from "@atoms";
 import BubbleView from "./components/bubble-view";
 import ReplyToView from "./components/reply-to-view";
 import EndToEndEncryptedNotifyView from "./components/end-to-end-encrypted-notify-view";

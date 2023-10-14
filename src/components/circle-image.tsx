@@ -32,8 +32,9 @@ import { getRandomDarkColor, getRandomLightColor } from "@utils";
 import { UserStatus } from "@constants/user-status";
 
 type CircleImage = {
+    id?: string;
     size?: number;
-    onPress?: () => void;
+    onPress?: (id?: string) => void;
     loading?: boolean;
     style?: ImageStyle;
     cached?: boolean;
@@ -51,6 +52,10 @@ const CircleImage: FC<CircleImage> = memo(props => {
         return theme.dark ? getRandomDarkColor() : getRandomLightColor();
     }, [theme.dark]);
 
+    const handleOnPress = () => {
+        props.onPress && props.onPress(props.id);
+    };
+
     const imageCachedStyle = useMemo(() => {
         const statusColor =
             props.status && props.status === UserStatus.active
@@ -67,7 +72,7 @@ const CircleImage: FC<CircleImage> = memo(props => {
     }, [props.size, props.style, theme.dark, props.status]) as ImageStyle;
 
     return (
-        <Pressable onPress={props.onPress}>
+        <Pressable onPress={handleOnPress}>
             {props.placeholder !== null && props.placeholder !== undefined && (
                 <View
                     style={[

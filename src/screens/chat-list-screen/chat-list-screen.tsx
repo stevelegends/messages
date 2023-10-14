@@ -15,6 +15,7 @@ import { BottomTabStackNavigatorParams } from "@navigation/bottom-tab-navigator"
 
 // components
 import { CreateButton } from "@components";
+import { NewGroupButtonText } from "@molecules";
 
 // hooks
 import { useNavigation } from "@hooks/index";
@@ -82,7 +83,6 @@ const ChatListScreen: FC<ChatListScreenProps> = ({ navigation, route }) => {
             headerRight: () => (
                 <View style={globalStyles["flex-row"]}>
                     <CreateButton onPress={() => navigate("NewChatScreen")} />
-                    <CreateButton onPress={() => navigate("NewChatScreen")} />
                 </View>
             )
         });
@@ -90,6 +90,11 @@ const ChatListScreen: FC<ChatListScreenProps> = ({ navigation, route }) => {
 
     return (
         <View style={styles.container}>
+            <NewGroupButtonText
+                style={{ marginLeft: 8 }}
+                titleStyle={{ fontSize: 16 }}
+                onPress={() => navigate("NewChatScreen", { isGroupChat: true })}
+            />
             <FlatList
                 data={sortedChatsData}
                 renderItem={({ item, index }) => {

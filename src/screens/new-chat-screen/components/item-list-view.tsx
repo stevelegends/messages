@@ -5,7 +5,8 @@ import { StyleSheet, TouchableWithoutFeedback, View } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 // components
-import { CircleImage, Text } from "@components";
+import { CircleImage } from "@components";
+import { Text } from "@atoms";
 
 // hooks
 import { useTheme } from "@react-navigation/native";
@@ -74,7 +75,8 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         alignItems: "center",
         minHeight: 50,
-        paddingHorizontal: 14
+        paddingHorizontal: 14,
+        flex: 1
     },
     textContainer: {
         marginLeft: 14,
