@@ -46,14 +46,6 @@ const ImageAttachesView: FC<Props> = memo(({ images, attaches, removeOnPress }) 
         removeOnPress && removeOnPress(key);
     };
 
-    useEffect(() => {
-        if (images && images.length > 0) {
-            setTimeout(() => {
-                onScrollToEnd();
-            }, 300);
-        }
-    }, [images?.length]);
-
     return (
         <View style={{ flexDirection: "row" }}>
             <ScrollView
@@ -62,6 +54,7 @@ const ImageAttachesView: FC<Props> = memo(({ images, attaches, removeOnPress }) 
                 }}
                 horizontal
                 showsHorizontalScrollIndicator={false}
+                onContentSizeChange={() => onScrollToEnd()}
             >
                 {images &&
                     images.map((value, index) => {

@@ -8,6 +8,7 @@ import {
     NativeScrollEvent,
     NativeSyntheticEvent,
     Platform,
+    ScrollView,
     TextInput,
     TouchableOpacity,
     View
@@ -138,7 +139,10 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
             }
 
             const message =
-                imagesResults.length > 0 ? messageText || i18n._(msg`Image(s)`) : messageText;
+                imagesResults.length > 0
+                    ? messageText ||
+                      (imagesResults.length === 1 ? i18n._(msg`Image`) : i18n._(msg`Images`))
+                    : messageText;
 
             await firebase.onSendMessageTextAsync({
                 chatId: uniqChatId,
@@ -244,8 +248,37 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
     }, []) as () => void;
 
     useEffect(() => {
-        function getChatUser(): { name: string; picture: string; status: UserStatus } {
+        function getChatUser(): {
+            name: string;
+            picture:
+                | string
+                | Array<{ url: string | undefined; firstLast: string; status: UserStatus }>;
+            status: UserStatus | Array<UserStatus>;
+        } {
             const chatUsers = chatData?.users;
+            const isGroupChat = chatData?.isGroupChat;
+
+            if (isGroupChat) {
+                const chatName = chatData?.chatName;
+                const otherUserIds = (chatUsers as Array<any>).filter(
+                    uid => uid !== auth.userData.userId
+                );
+                const pictures = otherUserIds.map(uid => {
+                    return (
+                        user.storedUsers &&
+                        user.storedUsers[uid] && {
+                            url: user.storedUsers[uid]?.profilePicture,
+                            firstLast: user.storedUsers[uid].firstLast[0].toUpperCase()
+                        }
+                    );
+                });
+                return {
+                    name: chatName,
+                    picture: pictures,
+                    status: [] // TODO
+                };
+            }
+
             if (Array.isArray(chatUsers)) {
                 const otherUserId = chatUsers.find(uid => uid !== auth.userData.userId);
                 if (otherUserId) {
@@ -289,13 +322,35 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
                                     globalStyles["paddingV-10"]
                                 ]}
                             >
-                                <CircleImage
-                                    cached
-                                    size={50}
-                                    source={{ uri: picture }}
-                                    status={status}
-                                    placeholder={name[0].toUpperCase()}
-                                />
+                                {!Array.isArray(picture) && !Array.isArray(status) && (
+                                    <CircleImage
+                                        cached
+                                        size={50}
+                                        source={{ uri: picture }}
+                                        status={status}
+                                        placeholder={name[0].toUpperCase()}
+                                    />
+                                )}
+                                {Array.isArray(picture) && (
+                                    <View style={{ flexDirection: "row", marginLeft: -25 }}>
+                                        {picture.map(({ url, status, firstLast }, index) => {
+                                            return (
+                                                <View
+                                                    key={url}
+                                                    style={{ zIndex: -index, marginRight: -30 }}
+                                                >
+                                                    <CircleImage
+                                                        cached
+                                                        size={50}
+                                                        source={{ uri: url }}
+                                                        status={status}
+                                                        placeholder={firstLast[0].toUpperCase()}
+                                                    />
+                                                </View>
+                                            );
+                                        })}
+                                    </View>
+                                )}
                                 <Text style={{ fontSize: 12 }}>{name}</Text>
                             </View>
 

@@ -269,21 +269,35 @@ const BubbleView: FC<Props> = props => {
                                         // TODO
                                         flexDirection: "row",
                                         flexWrap: "wrap",
-                                        backgroundColor: globalColor["black-0.7"],
                                         marginHorizontal: 8,
-                                        marginBottom: 4,
-                                        borderRadius: 5,
-                                        overflow: "hidden"
+                                        marginBottom: 4
                                     }}
                                 >
-                                    {attaches.imageUrl.map((url, index) => (
-                                        <View key={index.toString()}>
-                                            <ImageAuto resizeMode="center" source={{ uri: url }} />
-                                            {/*<Text style={{color: theme.colors.primary}}>*/}
-                                            {/*    {url}*/}
-                                            {/*</Text>*/}
-                                        </View>
-                                    ))}
+                                    {attaches.imageUrl.map((url, index) => {
+                                        const isFirst = index === 0;
+                                        const isLast = index === attaches.imageUrl.length - 1;
+                                        const radius = 5;
+                                        return (
+                                            <View
+                                                key={index.toString()}
+                                                style={{
+                                                    borderTopLeftRadius: isFirst ? radius : 0,
+                                                    borderBottomLeftRadius: isFirst ? radius : 0,
+                                                    borderTopRightRadius: isLast ? radius : 0,
+                                                    borderBottomRightRadius: isLast ? radius : 0,
+                                                    overflow: "hidden"
+                                                }}
+                                            >
+                                                <ImageAuto
+                                                    resizeMode="center"
+                                                    source={{ uri: url }}
+                                                />
+                                                {/*<Text style={{color: theme.colors.primary}}>*/}
+                                                {/*    {url}*/}
+                                                {/*</Text>*/}
+                                            </View>
+                                        );
+                                    })}
                                 </View>
                             )}
                             <ImageAttachesView attaches={props.images} removeOnPress={() => {}} />

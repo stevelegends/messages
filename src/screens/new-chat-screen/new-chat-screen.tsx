@@ -3,10 +3,9 @@ import React, { FC, Fragment, useCallback, useEffect, useState } from "react";
 
 // modules
 import { StackNavigationProp } from "@react-navigation/stack";
-import { FlatList, TextInput, View } from "react-native";
+import { FlatList, View } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { t, Trans } from "@lingui/macro";
-import Animated, { ZoomIn, ZoomOut } from "react-native-reanimated";
 
 // styles
 import styles from "./new-chat-screen.styles";
@@ -20,12 +19,13 @@ import { RouteProp, useTheme } from "@react-navigation/native";
 import { useLingui } from "@lingui/react";
 
 //components
-import { CircleImage, CloseButtonBorder, CloseButtonText } from "@components";
+import { CloseButtonText } from "@components";
 import AnimatedIndicator from "./components/animated-indicator";
 import AnimatedStatusView from "./components/animated-status-view";
 import SearchInputView from "./components/search-input-view";
 import ItemListView from "./components/item-list-view";
-import { AnimatedCheckboxButton, CreateButtonText } from "@molecules";
+import { AnimatedCheckboxButton, CreateButtonText, RegularInputView } from "@molecules";
+import { AnimatedCircleImagesWrapView } from "@organisms";
 
 // theme
 import { globalStyles } from "@theme/theme";
@@ -33,7 +33,6 @@ import { globalStyles } from "@theme/theme";
 // store
 import useAuth from "@store/features/auth/use-auth";
 import useUser from "@store/features/user/use-user";
-import { Text } from "@atoms";
 
 type Props = {
     navigation: StackNavigationProp<StackNavigatorParams, "NewChatScreen">;
@@ -134,7 +133,10 @@ const NewChatScreen: FC<Props> = ({ navigation, route }) => {
                     <CreateButtonText
                         disabled={isGroupChatDisabled}
                         onPress={() => {
-                            console.log(chatName);
+                            tabNavigation.navigate("ChatListScreen", {
+                                selectedUsers,
+                                chatName
+                            });
                         }}
                     />
                 ) : null
@@ -174,64 +176,24 @@ const NewChatScreen: FC<Props> = ({ navigation, route }) => {
             <View style={[globalStyles["marginH-14"], globalStyles["marginV-8"]]}>
                 {isGroupChat && (
                     <Fragment>
-                        <View
-                            style={{
-                                backgroundColor: theme.colors.card,
-                                paddingVertical: 15,
-                                paddingHorizontal: 10,
-                                borderRadius: 5,
-                                marginVertical: 10
-                            }}
-                        >
-                            <TextInput
-                                value={chatName}
-                                onChangeText={setChatName}
-                                placeholderTextColor={theme.colors.border}
-                                placeholder={t(i18n)`Enter a name for your chat`}
-                                autoCorrect={false}
-                                autoComplete={undefined}
-                                style={{
-                                    fontFamily: "Roboto-Regular",
-                                    letterSpacing: 0.3,
-                                    color: theme.colors.text
-                                }}
-                            />
-                        </View>
-                        <View style={{ flexDirection: "row", flexWrap: "wrap", marginBottom: 10 }}>
-                            {selectedUsers.map(id => {
+                        <RegularInputView
+                            value={chatName}
+                            onChangeText={setChatName}
+                            onClearText={setChatName}
+                            placeholder={t(i18n)`Enter a name for your chat`}
+                        />
+                        <AnimatedCircleImagesWrapView
+                            data={selectedUsers.map(id => {
                                 const selectedUser = user.storedUsers[id];
-                                return (
-                                    <Animated.View
-                                        key={id}
-                                        entering={ZoomIn}
-                                        exiting={ZoomOut}
-                                        style={[globalStyles["flex-center"], { marginRight: 10 }]}
-                                    >
-                                        <CircleImage
-                                            id={id}
-                                            size={40}
-                                            source={{ uri: selectedUser.profilePicture }}
-                                            placeholder={selectedUser.firstLast?.[0]?.toUpperCase()}
-                                        />
-                                        <Text style={{ fontFamily: "Roboto-Light", fontSize: 12 }}>
-                                            {selectedUser.firstLast}
-                                        </Text>
-                                        <CloseButtonBorder
-                                            id={id}
-                                            onPress={handleRemoveSelectedUserOnPress}
-                                            style={{
-                                                position: "absolute",
-                                                top: 0,
-                                                right: 10,
-                                                backgroundColor: "white",
-                                                borderRadius: 10
-                                            }}
-                                            size={15}
-                                        />
-                                    </Animated.View>
-                                );
+                                return {
+                                    id,
+                                    imageUrl: selectedUser.profilePicture,
+                                    placeholder: selectedUser.firstLast?.[0]?.toUpperCase(),
+                                    title: selectedUser.firstLast
+                                };
                             })}
-                        </View>
+                            removeOnPress={handleRemoveSelectedUserOnPress}
+                        />
                     </Fragment>
                 )}
 

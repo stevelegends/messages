@@ -66,8 +66,17 @@ const ChatListScreen: FC<ChatListScreenProps> = ({ navigation, route }) => {
     useEffect(() => {
         function handleSelectedUserFromNewChatScreen() {
             if (!route.params?.selectedUserId || !auth.userData?.userId) return;
-
             navigation.setParams({ selectedUserId: undefined });
+
+            const existingChatUser = sortedChatsData.find(value => {
+                return !value.isGroupChat && value.users.includes(route.params.selectedUserId);
+            });
+            const existingChatId = existingChatUser && existingChatUser.key;
+
+            if (existingChatId) {
+                navigate("ChatScreen", { chatId: existingChatId });
+                return;
+            }
 
             navigate("ChatScreen", {
                 newChatData: {
@@ -76,7 +85,31 @@ const ChatListScreen: FC<ChatListScreenProps> = ({ navigation, route }) => {
             });
         }
         handleSelectedUserFromNewChatScreen();
-    }, [route.params?.selectedUserId]);
+    }, [route.params?.selectedUserId, sortedChatsData]);
+
+    useEffect(() => {
+        function handleSelectedUsersGroupFromNewChatScreen() {
+            if (!route.params?.selectedUsers || !route.params?.chatName || !auth.userData?.userId)
+                return;
+            navigation.setParams({ selectedUsers: undefined, chatName: undefined });
+
+            const selectedUsers = route.params.selectedUsers;
+            const userId = auth.userData.userId;
+
+            if (!selectedUsers.includes(userId)) {
+                selectedUsers.push(userId);
+            }
+
+            navigate("ChatScreen", {
+                newChatData: {
+                    users: selectedUsers,
+                    isGroupChat: true,
+                    chatName: route.params.chatName
+                }
+            });
+        }
+        handleSelectedUsersGroupFromNewChatScreen();
+    }, [route.params?.selectedUsers]);
 
     useEffect(() => {
         navigation.setOptions({

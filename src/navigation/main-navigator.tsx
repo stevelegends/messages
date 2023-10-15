@@ -27,7 +27,7 @@ export type StackNavigatorParams = {
     BottomTab: undefined;
     SettingsScreen: undefined;
     ChatScreen: {
-        newChatData?: { users: string[] };
+        newChatData?: { users: string[]; isGroupChat?: boolean; chatName?: string };
         chatId?: string;
     };
     ReviewImageModal: {

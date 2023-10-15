@@ -25,7 +25,11 @@ import { useTheme } from "@react-navigation/native";
 import { globalSize } from "@theme/theme";
 
 export type BottomTabStackNavigatorParams = {
-    ChatListScreen: { selectedUserId?: string };
+    ChatListScreen: {
+        selectedUserId?: string;
+        selectedUsers?: Array<string>;
+        chatName?: string;
+    };
     ChatSettingsScreen: undefined;
 };
 
