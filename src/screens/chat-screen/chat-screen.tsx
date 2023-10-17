@@ -336,7 +336,7 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
                                         {picture.map(({ url, status, firstLast }, index) => {
                                             return (
                                                 <View
-                                                    key={url}
+                                                    key={index.toString()}
                                                     style={{ zIndex: -index, marginRight: -30 }}
                                                 >
                                                     <CircleImage
@@ -388,11 +388,17 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
                             renderItem={({ item, index }) => {
                                 const isOwnMessage = item.sentBy === auth.userData.userId;
                                 const type = isOwnMessage ? "owner" : "their";
+                                const isGroupChat = chatData?.isGroupChat;
+
+                                const sender = item.sentBy && user.storedUsers[item.sentBy];
+                                const name = sender && `${sender.firstName} ${sender.lastName}`;
+
                                 return (
                                     <BubbleView
                                         index={index}
                                         id={item.key}
                                         text={item.text}
+                                        textHeader={!isGroupChat || isOwnMessage ? undefined : name}
                                         type={type}
                                         time={item.sentAt}
                                         animatedScrollY={animatedScrollY}

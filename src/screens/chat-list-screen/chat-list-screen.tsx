@@ -132,6 +132,7 @@ const ChatListScreen: FC<ChatListScreenProps> = ({ navigation, route }) => {
                 data={sortedChatsData}
                 renderItem={({ item, index }) => {
                     const chatId = item.key;
+                    const isGroupChat = item.isGroupChat;
 
                     const otherUserId = (item.users as string[]).find(
                         uid => uid !== auth.userData?.userId
@@ -147,11 +148,15 @@ const ChatListScreen: FC<ChatListScreenProps> = ({ navigation, route }) => {
                         <ItemListView
                             id={chatId}
                             index={index}
-                            title={otherUser.firstName + " " + otherUser.lastName}
+                            title={
+                                isGroupChat
+                                    ? item.chatName
+                                    : otherUser.firstName + " " + otherUser.lastName
+                            }
                             subTitle={item.latestMessageText || t(i18n)`New chat`}
-                            image={otherUser.profilePicture}
+                            image={isGroupChat ? null : otherUser.profilePicture}
                             onPress={handleItemOnPress}
-                            status={status}
+                            status={isGroupChat ? UserStatus.inactive : status}
                         />
                     );
                 }}

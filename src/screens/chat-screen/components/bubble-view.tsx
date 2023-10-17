@@ -42,6 +42,7 @@ type Props = {
     id: string;
     index: number;
     text?: string;
+    textHeader?: string;
     type?: MessageType;
     time?: string;
     images?: Array<string>;
@@ -255,6 +256,12 @@ const BubbleView: FC<Props> = props => {
                     <View style={containerStyle(props.type)}>
                         {props.type === "owner" && <View style={globalStyles["flex-1"]} />}
                         <View style={bubbleStyle(theme, props.type)}>
+                            {props.textHeader !== undefined && (
+                                <Text style={textStyle2(theme, props.type) as any}>
+                                    {props.textHeader}
+                                </Text>
+                            )}
+
                             {props.replying.to && (
                                 <ReplyToView
                                     time={props.replying.to.sentAt}
@@ -422,6 +429,22 @@ const wrapStatusViewStyle = (type?: MessageType): ViewStyle => ({
 const textStyle = (theme: Theme, type?: MessageType): TextStyle => ({
     letterSpacing: 0.3,
     fontSize: 16,
+    color:
+        type === "their"
+            ? theme.dark
+                ? globalColor.white
+                : theme.colors.primary
+            : theme.dark
+            ? globalColor.white
+            : globalColor.white
+});
+
+const textStyle2 = (theme: Theme, type?: MessageType): TextStyle => ({
+    letterSpacing: 0.3,
+    fontSize: 14,
+    fontFamily: "Roboto-Bold",
+    marginHorizontal: 8,
+    marginBottom: 8,
     color:
         type === "their"
             ? theme.dark
