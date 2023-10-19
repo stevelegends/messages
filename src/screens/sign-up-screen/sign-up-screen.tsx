@@ -18,7 +18,7 @@ import { AuthStackNavigatorParams } from "@navigation/auth-navigator";
 import styles from "./sign-up-screen.styles";
 
 // theme
-import { globalStyles } from "@theme/theme";
+import { AppStyle } from "@theme/theme";
 
 // components
 import { AppLogoImage, Input, PageContainer, SubmitButton, ToggleEyeButton } from "@components";
@@ -119,13 +119,11 @@ const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
         <PageContainer>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <KeyboardAvoidingView
-                    style={[globalStyles["flex-1"], globalStyles["flex-jc-center"]]}
+                    style={[AppStyle["flex-1"], AppStyle["flex-jc-center"]]}
                     behavior={Platform.select({ ios: "height" })}
                     keyboardVerticalOffset={100}
                 >
-                    <Animated.View
-                        style={[globalStyles["flex-center"], globalStyles["paddingV-20"]]}
-                    >
+                    <Animated.View style={[AppStyle["flex-center"], AppStyle["paddingV-20"]]}>
                         <AppLogoImage type="primary" />
                     </Animated.View>
                     <Input
@@ -173,7 +171,7 @@ const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
                         }
                     />
                     <SubmitButton
-                        style={globalStyles["marginT-20"]}
+                        style={AppStyle["marginT-20"]}
                         title={<Trans>Sign up</Trans>}
                         onPress={handleSubmit(onSubmit)}
                         loading={isLoading}

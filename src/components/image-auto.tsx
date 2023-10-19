@@ -10,7 +10,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 // theme
-import { globalSize } from "@theme/theme";
+import { AppSize } from "@theme/theme";
 
 type Props = {
     wrapStyle?: ViewStyle;
@@ -33,7 +33,7 @@ const ImageAuto: FC<Props> = props => {
     const getImageSize = async () => {
         const size = await getImageSizeAsync();
         const ratio = size.width / size.height;
-        const height = globalSize.screenWidth / 3;
+        const height = AppSize.screenWidth / 3;
         const width = height * ratio;
         animatedWidth.value = withTiming(width);
         animatedHeight.value = withTiming(height);

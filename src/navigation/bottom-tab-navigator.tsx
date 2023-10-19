@@ -22,7 +22,7 @@ import { useLingui } from "@lingui/react";
 import { useTheme } from "@react-navigation/native";
 
 // theme
-import { globalSize } from "@theme/theme";
+import { AppSize } from "@theme/theme";
 
 export type BottomTabStackNavigatorParams = {
     ChatListScreen: {
@@ -50,7 +50,7 @@ const BottomTabNavigator: FC<BottomTabNavigationProps> = () => {
                 headerTitleAlign: "left",
                 headerTitleStyle: {
                     fontFamily: "Roboto-Bold",
-                    fontSize: globalSize.headerTitle
+                    fontSize: AppSize.headerTitle
                 },
                 headerShadowVisible: false,
                 headerBackground: () => (

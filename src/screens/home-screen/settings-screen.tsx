@@ -9,7 +9,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import styles from "./home-screen.styles";
 
 // theme
-import { globalStyles } from "@theme/theme";
+import { AppStyle } from "@theme/theme";
 
 // components
 import { Text } from "@atoms";
@@ -23,7 +23,7 @@ type SettingsScreenProps = {
 
 const SettingsScreen: FC<SettingsScreenProps> = () => {
     return (
-        <View style={[styles.container, globalStyles["flex-center"]]}>
+        <View style={[styles.container, AppStyle["flex-center"]]}>
             <Text>Home</Text>
         </View>
     );

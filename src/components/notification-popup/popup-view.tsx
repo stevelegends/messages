@@ -21,34 +21,34 @@ import Text from "../atoms/text";
 
 // contexts
 import { useThemeProvider } from "@contexts/theme-context";
-import { globalColor } from "@theme/theme";
+import { AppColor } from "@theme/theme";
 
 export type StatusType = "success" | "error" | "warning" | "info";
 
 const color = (dark: boolean) => ({
     success: {
-        primary: globalColor["green-active"],
-        background: dark ? globalColor["black-2"] : globalColor["white-2"],
-        text: dark ? globalColor["white-1.0"] : globalColor["black-2"],
-        icon: globalColor["white-1.0"]
+        primary: AppColor["green-active"],
+        background: dark ? AppColor["black-2"] : AppColor["white-2"],
+        text: dark ? AppColor["white-1.0"] : AppColor["black-2"],
+        icon: AppColor["white-1.0"]
     },
     error: {
-        primary: globalColor["red-error"],
-        background: dark ? globalColor["black-2"] : globalColor["light-grey-1"],
-        text: dark ? globalColor["white-1.0"] : globalColor["black-2"],
-        icon: globalColor["white-1.0"]
+        primary: AppColor["red-error"],
+        background: dark ? AppColor["black-2"] : AppColor["light-grey-1"],
+        text: dark ? AppColor["white-1.0"] : AppColor["black-2"],
+        icon: AppColor["white-1.0"]
     },
     warning: {
-        primary: globalColor["yellow-warn"],
-        background: dark ? globalColor["black-2"] : globalColor.white3,
-        text: dark ? globalColor["white-1.0"] : globalColor["black-2"],
-        icon: globalColor["white-1.0"]
+        primary: AppColor["yellow-warn"],
+        background: dark ? AppColor["black-2"] : AppColor.white3,
+        text: dark ? AppColor["white-1.0"] : AppColor["black-2"],
+        icon: AppColor["white-1.0"]
     },
     info: {
-        primary: globalColor["blue-info"],
-        background: dark ? globalColor["black-2"] : globalColor["white-3e"],
-        text: dark ? globalColor["white-1.0"] : globalColor["black-2"],
-        icon: globalColor["white-1.0"]
+        primary: AppColor["blue-info"],
+        background: dark ? AppColor["black-2"] : AppColor["white-3e"],
+        text: dark ? AppColor["white-1.0"] : AppColor["black-2"],
+        icon: AppColor["white-1.0"]
     }
 });
 

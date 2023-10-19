@@ -14,7 +14,7 @@ import { CircleImage, Text } from "@components";
 import AnimatedOption from "./animated-option";
 
 // theme
-import { globalSize, globalStyles } from "@theme/theme";
+import { AppSize, AppStyle } from "@theme/theme";
 
 // hooks
 import { useTheme } from "@react-navigation/native";
@@ -31,7 +31,7 @@ import useAuth from "@store/features/auth/use-auth";
 
 type ProfileImageProps = {};
 
-const ImageSize = globalSize.screenWidth / 4;
+const ImageSize = AppSize.screenWidth / 4;
 
 const ProfileImage: FC<ProfileImageProps> = () => {
     const navigation = useNavigation();
@@ -104,9 +104,7 @@ const ProfileImage: FC<ProfileImageProps> = () => {
 
     return (
         <Fragment>
-            <View
-                style={[styles.container, globalStyles["paddingH-20"], globalStyles["marginT-50"]]}
-            >
+            <View style={[styles.container, AppStyle["paddingH-20"], AppStyle["marginT-50"]]}>
                 <View>
                     <CircleImage
                         size={ImageSize}

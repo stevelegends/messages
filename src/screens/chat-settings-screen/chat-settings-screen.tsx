@@ -26,7 +26,7 @@ import { Input, SubmitButton, ToggleEyeButton, NotificationView } from "@compone
 import ProfileImage from "./profile-image/profile-image";
 
 // theme
-import { globalStyles } from "@theme/theme";
+import { AppStyle } from "@theme/theme";
 
 // store
 import useAuth from "@store/features/auth/use-auth";
@@ -151,7 +151,7 @@ const ChatSettingsScreen: FC<ChatSettingsScreenProps> = () => {
                         i18n
                     )`An error occurred when syncing the First name and Last name to our system. Please update your own.`}
                 />
-                <View style={globalStyles["paddingH-20"]}>
+                <View style={AppStyle["paddingH-20"]}>
                     <ProfileImage />
                     <Input
                         label={isHideEmail ? <Trans>Email (Hashed)</Trans> : <Trans>Email</Trans>}
@@ -203,7 +203,7 @@ const ChatSettingsScreen: FC<ChatSettingsScreenProps> = () => {
                         errorText={errors.about?.message}
                     />
                     <SubmitButton
-                        style={globalStyles["marginT-30"]}
+                        style={AppStyle["marginT-30"]}
                         title={<Trans>Save</Trans>}
                         onPress={handleSubmit(onSubmit)}
                         loading={isLoading}
@@ -212,7 +212,7 @@ const ChatSettingsScreen: FC<ChatSettingsScreenProps> = () => {
 
                     <SubmitButton
                         style={{
-                            ...globalStyles["marginT-5"],
+                            ...AppStyle["marginT-5"],
                             backgroundColor: theme.colors.background
                         }}
                         titleStyle={{ color: theme.colors.notification }}

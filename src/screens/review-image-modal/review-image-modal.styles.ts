@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 
 // theme
-import { globalSize } from "@theme/theme";
+import { AppSize } from "@theme/theme";
 
 const styles = StyleSheet.create({
     container: {
@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     buttonWrap: {
         position: "absolute",
         right: 0,
-        padding: globalSize.paddingButton
+        padding: AppSize.paddingButton
     },
     imageView: {
         width: "100%",

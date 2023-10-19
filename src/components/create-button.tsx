@@ -7,7 +7,7 @@ import Animated, { ZoomIn, ZoomOut } from "react-native-reanimated";
 import { Ionicons } from "@expo/vector-icons";
 
 // theme
-import { globalSize, globalStyles } from "@theme/theme";
+import { AppSize, AppStyle } from "@theme/theme";
 
 // hooks
 import { useTheme } from "@react-navigation/native";
@@ -20,7 +20,7 @@ const CreateButton: FC<Props> = props => {
     const theme = useTheme();
 
     return (
-        <View style={[globalStyles["flex-jc-center"], styles.container]}>
+        <View style={[AppStyle["flex-jc-center"], styles.container]}>
             <TouchableOpacity onPress={props.onPress}>
                 <Animated.View entering={ZoomIn} exiting={ZoomOut}>
                     <Ionicons name="create-outline" size={24} color={theme.colors.primary} />
@@ -36,7 +36,7 @@ CreateButton.defaultProps = {
 
 const styles = StyleSheet.create({
     container: {
-        paddingHorizontal: globalSize.paddingButton
+        paddingHorizontal: AppSize.paddingButton
     }
 });
 

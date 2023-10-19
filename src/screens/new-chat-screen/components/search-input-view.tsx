@@ -10,7 +10,7 @@ import { useTheme } from "@react-navigation/native";
 import { useLingui } from "@lingui/react";
 
 // theme
-import { globalSize, globalStyles } from "@theme/theme";
+import { AppSize, AppStyle } from "@theme/theme";
 
 type Props = {
     onChangeText: (text: string) => void;
@@ -40,7 +40,7 @@ SearchInputView.defaultProps = {
 
 const styles = StyleSheet.create({
     searchContainer: {
-        height: globalSize.box40,
+        height: AppSize.box40,
         paddingHorizontal: 8,
         borderRadius: 5,
         flexDirection: "row",

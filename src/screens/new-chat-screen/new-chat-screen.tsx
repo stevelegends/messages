@@ -28,7 +28,7 @@ import { AnimatedCheckboxButton, CreateButtonText, RegularInputView } from "@mol
 import { AnimatedCircleImagesWrapView } from "@organisms";
 
 // theme
-import { globalStyles } from "@theme/theme";
+import { AppStyle } from "@theme/theme";
 
 // store
 import useAuth from "@store/features/auth/use-auth";
@@ -173,7 +173,7 @@ const NewChatScreen: FC<Props> = ({ navigation, route }) => {
                 />
             </View>
 
-            <View style={[globalStyles["marginH-14"], globalStyles["marginV-8"]]}>
+            <View style={[AppStyle["marginH-14"], AppStyle["marginV-8"]]}>
                 {isGroupChat && (
                     <Fragment>
                         <RegularInputView
@@ -209,9 +209,9 @@ const NewChatScreen: FC<Props> = ({ navigation, route }) => {
                         return (
                             <View
                                 style={[
-                                    globalStyles["flex-row"],
-                                    globalStyles["horizontal-center"],
-                                    globalStyles["flex-1"]
+                                    AppStyle["flex-row"],
+                                    AppStyle["horizontal-center"],
+                                    AppStyle["flex-1"]
                                 ]}
                             >
                                 {isGroupChat && (

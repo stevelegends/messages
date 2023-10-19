@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import { Image } from "react-native";
 
 // theme
-import { globalSize } from "@theme/theme";
+import { AppSize } from "@theme/theme";
 
 type AppLogoImage = {
     size?: number;
@@ -26,7 +26,7 @@ const AppLogoImage: FC<AppLogoImage> = props => {
 };
 
 AppLogoImage.defaultProps = {
-    size: globalSize.screenWidth / 4,
+    size: AppSize.screenWidth / 4,
     type: "primary"
 };
 

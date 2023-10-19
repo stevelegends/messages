@@ -15,7 +15,7 @@ import { StackNavigatorParams } from "@navigation/main-navigator";
 import styles from "./review-image-modal.styles";
 
 // theme
-import { globalColor, globalSize } from "@theme/theme";
+import { AppColor, AppSize } from "@theme/theme";
 
 // components
 import { CloseButton, CachedImageV2 } from "@components";
@@ -35,12 +35,10 @@ const ReviewImageModal: FC<ReviewImageModalProps> = props => {
     };
 
     return (
-        <View style={[styles.container, { backgroundColor: globalColor["black-0.9"] }]}>
+        <View style={[styles.container, { backgroundColor: AppColor["black-0.9"] }]}>
             <ScrollView contentContainerStyle={styles.container}>
-                <Animated.View
-                    style={{ height: globalSize.screenHeight, width: globalSize.screenWidth }}
-                >
-                    <ActivityIndicator color={globalColor.white} style={StyleSheet.absoluteFill} />
+                <Animated.View style={{ height: AppSize.screenHeight, width: AppSize.screenWidth }}>
+                    <ActivityIndicator color={AppColor.white} style={StyleSheet.absoluteFill} />
                     <CachedImageV2 source={{ uri }} style={styles.imageView} resizeMode="contain" />
                 </Animated.View>
             </ScrollView>

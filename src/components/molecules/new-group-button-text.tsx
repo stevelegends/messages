@@ -11,7 +11,7 @@ import Text from "../atoms/text";
 import { useTheme } from "@react-navigation/native";
 
 // theme
-import { globalSize } from "@theme/theme";
+import { AppSize } from "@theme/theme";
 
 type Props = {
     onPress?: () => void;
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
         letterSpacing: 0.3
     },
     button: {
-        height: globalSize["button-30"],
+        height: AppSize["button-30"],
         alignSelf: "flex-start",
         justifyContent: "center",
         alignItems: "center",

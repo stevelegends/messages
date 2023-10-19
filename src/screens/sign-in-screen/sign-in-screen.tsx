@@ -21,7 +21,7 @@ import styles from "./sign-in-screen.styles";
 import { AppLogoImage, Input, PageContainer, SubmitButton, ToggleEyeButton } from "@components";
 
 // theme
-import { globalStyles } from "@theme/theme";
+import { AppStyle } from "@theme/theme";
 
 // hooks
 import { useTheme } from "@react-navigation/native";
@@ -105,13 +105,11 @@ const SignInScreen: FC<SignInScreenProps> = ({ navigation }) => {
         <PageContainer>
             <ScrollView>
                 <KeyboardAvoidingView
-                    style={[globalStyles["flex-1"], globalStyles["flex-jc-center"]]}
+                    style={[AppStyle["flex-1"], AppStyle["flex-jc-center"]]}
                     behavior={Platform.select({ ios: "height" })}
                     keyboardVerticalOffset={100}
                 >
-                    <Animated.View
-                        style={[globalStyles["flex-center"], globalStyles["paddingV-20"]]}
-                    >
+                    <Animated.View style={[AppStyle["flex-center"], AppStyle["paddingV-20"]]}>
                         <AppLogoImage type="primary" />
                     </Animated.View>
                     <Input
@@ -140,14 +138,14 @@ const SignInScreen: FC<SignInScreenProps> = ({ navigation }) => {
                         }
                     />
                     <SubmitButton
-                        style={globalStyles["marginT-20"]}
+                        style={AppStyle["marginT-20"]}
                         title={<Trans>Sign in</Trans>}
                         onPress={handleSubmit(onSubmit)}
                         loading={isLoading}
                     />
                     <SubmitButton
                         style={{
-                            ...globalStyles["marginT-5"],
+                            ...AppStyle["marginT-5"],
                             backgroundColor: theme.colors.background
                         }}
                         titleStyle={{ color: theme.colors.primary }}

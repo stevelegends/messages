@@ -14,7 +14,7 @@ import { EvilIcons } from "@expo/vector-icons";
 import Text from "./atoms/text";
 
 // theme
-import { globalSize, globalStyles } from "@theme/theme";
+import { AppSize, AppStyle } from "@theme/theme";
 
 // hook
 import { useTheme } from "@react-navigation/native";
@@ -59,7 +59,7 @@ const NotificationView: FC<Props> = props => {
             ]}
         >
             <View style={styles.view}>
-                <View style={[globalStyles["flex-1"]]}>
+                <View style={[AppStyle["flex-1"]]}>
                     <Text
                         style={{
                             color: theme.dark ? "#FCF8E3" : "#8E6C40",
@@ -102,8 +102,8 @@ const styles = StyleSheet.create({
         overflow: "scroll"
     },
     button: {
-        width: globalSize.box,
-        height: globalSize.box,
+        width: AppSize.box,
+        height: AppSize.box,
         justifyContent: "center",
         alignItems: "center"
     }

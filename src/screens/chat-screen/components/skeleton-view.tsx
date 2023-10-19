@@ -15,7 +15,7 @@ import { Dimensions, StyleSheet, View } from "react-native";
 import { useTheme } from "@react-navigation/native";
 
 // theme
-import { globalColor, globalStyles } from "@theme/theme";
+import { AppColor, AppStyle } from "@theme/theme";
 
 const WIDTH = Dimensions.get("screen").width / 2;
 const HEIGHT = Dimensions.get("screen").height;
@@ -35,7 +35,7 @@ const SkeletonView: FC<Props> = ({ children }) => {
         return {
             width: 25,
             height: ITEM_HEIGHT,
-            backgroundColor: theme.dark ? theme.colors.border : globalColor.white,
+            backgroundColor: theme.dark ? theme.colors.border : AppColor.white,
             opacity: interpolate(animatedX.value, [0, WIDTH / 2, WIDTH], [0.1, 0.5, 0.1]),
             transform: [{ translateX: animatedX.value }]
         };
@@ -61,7 +61,7 @@ const SkeletonView: FC<Props> = ({ children }) => {
     }
 
     return (
-        <View style={globalStyles["flex-1"]}>
+        <View style={AppStyle["flex-1"]}>
             {Array.from({ length: Math.floor(HEIGHT / ITEM_HEIGHT) }, (_, index) => {
                 const isRight = index % 2;
                 return (
@@ -88,7 +88,7 @@ const SkeletonView: FC<Props> = ({ children }) => {
                             <Animated.View
                                 style={[
                                     {
-                                        backgroundColor: globalColor.white,
+                                        backgroundColor: AppColor.white,
                                         opacity: theme.dark ? 0.2 : 0.5,
                                         alignSelf: isRight ? "flex-start" : "flex-end"
                                     },
@@ -98,7 +98,7 @@ const SkeletonView: FC<Props> = ({ children }) => {
                             <Animated.View
                                 style={[
                                     {
-                                        backgroundColor: globalColor.white,
+                                        backgroundColor: AppColor.white,
                                         opacity: theme.dark ? 0.2 : 0.5,
                                         alignSelf: isRight ? "flex-start" : "flex-end"
                                     },

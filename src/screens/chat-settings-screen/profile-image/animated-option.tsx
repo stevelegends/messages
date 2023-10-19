@@ -12,7 +12,7 @@ import { Text } from "@atoms";
 import { useTheme } from "@react-navigation/native";
 
 // theme
-import { globalSize } from "@theme/theme";
+import { AppSize } from "@theme/theme";
 import { useLingui } from "@lingui/react";
 import { t } from "@lingui/macro";
 
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         width: 150,
         borderRadius: 5,
-        left: globalSize.screenWidth / 4 - 30,
+        left: AppSize.screenWidth / 4 - 30,
         zIndex: 1,
 
         shadowColor: "#000",

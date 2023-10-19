@@ -20,7 +20,7 @@ import { useTheme } from "@react-navigation/native";
 import { useRenderTracker } from "@hooks/index";
 
 // theme
-import { globalColor, globalSize, globalStyles } from "@theme/theme";
+import { AppColor, AppSize, AppStyle } from "@theme/theme";
 
 // components
 import CachedImageV2 from "./cached-image-v2";
@@ -59,8 +59,8 @@ const CircleImage: FC<CircleImage> = memo(props => {
     const imageCachedStyle = useMemo(() => {
         const statusColor =
             props.status && props.status === UserStatus.active
-                ? globalColor["green-active"]
-                : globalColor["red-error"];
+                ? AppColor["green-active"]
+                : AppColor["red-error"];
         return {
             borderColor: props.status ? statusColor : theme.colors.text,
             borderWidth: 1,
@@ -77,7 +77,7 @@ const CircleImage: FC<CircleImage> = memo(props => {
                 <View
                     style={[
                         StyleSheet.absoluteFill,
-                        globalStyles["flex-center"],
+                        AppStyle["flex-center"],
                         {
                             width: props.size,
                             aspectRatio: 1,
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
 CircleImage.defaultProps = {
     onPress: () => undefined,
     loading: false,
-    size: globalSize.screenWidth
+    size: AppSize.screenWidth
 };
 
 export default CircleImage;

@@ -13,7 +13,7 @@ import { Text } from "@atoms";
 import { useTheme } from "@react-navigation/native";
 
 // theme
-import { globalSize, globalStyles } from "@theme/theme";
+import { AppSize, AppStyle } from "@theme/theme";
 
 const HEIGHT = Platform.select({ ios: 80, android: 110 });
 
@@ -36,7 +36,7 @@ const EndToEndEncryptedNotifyView = memo(() => {
         <Animated.View
             style={[styles.container, { backgroundColor: theme.colors.border }, animatedViewStyle]}
         >
-            <View style={globalStyles["flex-1"]}>
+            <View style={AppStyle["flex-1"]}>
                 <Text style={styles.text1 as any}>
                     <Trans>End-to-end encrypted</Trans>
                 </Text>
@@ -79,8 +79,8 @@ const styles = StyleSheet.create({
         letterSpacing: 0.3
     },
     button: {
-        width: globalSize.box40,
-        height: globalSize.box40,
+        width: AppSize.box40,
+        height: AppSize.box40,
         justifyContent: "center",
         alignItems: "center"
     }

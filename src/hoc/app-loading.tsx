@@ -13,7 +13,7 @@ import useLogin from "@hooks/use-login";
 import { useThemeProvider } from "@contexts/theme-context";
 
 // theme
-import { globalStyles } from "@theme/theme";
+import { AppStyle } from "@theme/theme";
 
 // utils
 import { ErrorHandler, isRootedExperimentalAsync, splashScreenHideAsync } from "@utils";
@@ -54,7 +54,7 @@ const AppLoading: FC<AppLoginProps> = ({ children }) => {
                 <Animated.View
                     style={[
                         StyleSheet.absoluteFill,
-                        globalStyles["flex-center"],
+                        AppStyle["flex-center"],
                         {
                             backgroundColor: isDark
                                 ? DarkTheme.colors.background

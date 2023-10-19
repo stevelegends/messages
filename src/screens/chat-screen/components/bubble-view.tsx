@@ -30,7 +30,7 @@ import ReplyToView from "./reply-to-view";
 import { DarkTheme, Theme, useTheme } from "@react-navigation/native";
 
 // theme
-import { globalColor, globalSize, globalStyles } from "@theme/theme";
+import { AppColor, AppSize, AppStyle } from "@theme/theme";
 
 // utils
 import { categorizeLinks, onCopyToClipboardAsync, onFormatDateTimeString } from "@utils";
@@ -58,7 +58,7 @@ type Props = {
 
 const CLAMP = 20;
 const BUTTON_SIZE = 35;
-const CALC_WIDTH = (size: number) => BUTTON_SIZE * size + globalSize["space-8"] * size;
+const CALC_WIDTH = (size: number) => BUTTON_SIZE * size + AppSize["space-8"] * size;
 const ACTIVE_OFFSET_X = [-10, 10];
 
 const BubbleView: FC<Props> = props => {
@@ -92,7 +92,7 @@ const BubbleView: FC<Props> = props => {
                 size={15}
                 onPress={handleCloseOptionButtonOnPress}
             />,
-            <View style={{ width: globalSize["space-8"] }} />,
+            <View style={{ width: AppSize["space-8"] }} />,
             <ReplyButton
                 color={theme.colors.primary}
                 backgroundColor={theme.colors.card}
@@ -100,7 +100,7 @@ const BubbleView: FC<Props> = props => {
                 size={15}
                 onPress={handleReplyOptionButtonOnPress}
             />,
-            <View style={{ width: globalSize["space-8"] }} />,
+            <View style={{ width: AppSize["space-8"] }} />,
             <CopyButton
                 color={theme.colors.primary}
                 backgroundColor={theme.colors.card}
@@ -108,9 +108,9 @@ const BubbleView: FC<Props> = props => {
                 size={15}
                 onPress={handleCopyOptionButtonOnPress}
             />,
-            <View style={{ width: globalSize["space-8"] }} />,
+            <View style={{ width: AppSize["space-8"] }} />,
             <StarButton
-                color={props.isStarred ? globalColor["yellow-warn"] : theme.colors.primary}
+                color={props.isStarred ? AppColor["yellow-warn"] : theme.colors.primary}
                 backgroundColor={theme.colors.card}
                 buttonSize={BUTTON_SIZE}
                 size={15}
@@ -245,7 +245,7 @@ const BubbleView: FC<Props> = props => {
     return (
         <Fragment>
             <View style={[StyleSheet.absoluteFill, actionStyle(props.type)]}>
-                <Animated.View style={[globalStyles["flex-row"], animatedButtonsStyle]}>
+                <Animated.View style={[AppStyle["flex-row"], animatedButtonsStyle]}>
                     {RenderButtons.map((button, index) => (
                         <Fragment key={index.toString()}>{button}</Fragment>
                     ))}
@@ -254,7 +254,7 @@ const BubbleView: FC<Props> = props => {
             <GestureDetector gesture={panGesture}>
                 <Animated.View style={[translateX, { flex: 1 }]}>
                     <View style={containerStyle(props.type)}>
-                        {props.type === "owner" && <View style={globalStyles["flex-1"]} />}
+                        {props.type === "owner" && <View style={AppStyle["flex-1"]} />}
                         <View style={bubbleStyle(theme, props.type)}>
                             {props.textHeader !== undefined && (
                                 <Text style={textStyle2(theme, props.type) as any}>
@@ -317,7 +317,7 @@ const BubbleView: FC<Props> = props => {
                                 {props.type === "owner" && RenderOptionButton}
                             </View>
                         </View>
-                        {props.type === "their" && <View style={globalStyles["flex-1"]} />}
+                        {props.type === "their" && <View style={AppStyle["flex-1"]} />}
                     </View>
 
                     <View style={wrapStatusViewStyle(props.type)}>
@@ -326,8 +326,8 @@ const BubbleView: FC<Props> = props => {
                                 <AntDesign
                                     name="star"
                                     size={10}
-                                    color={globalColor["yellow-warn"]}
-                                    style={globalStyles["marginH-5"]}
+                                    color={AppColor["yellow-warn"]}
+                                    style={AppStyle["marginH-5"]}
                                 />
                             </Animated.View>
                         )}
@@ -403,16 +403,16 @@ const bubbleStyle = (theme: Theme, type?: MessageType): ViewStyle => ({
     backgroundColor:
         type === "their"
             ? theme.dark
-                ? globalColor["dark-grey"]
-                : globalColor.white
+                ? AppColor["dark-grey"]
+                : AppColor.white
             : theme.dark
             ? DarkTheme.colors.primary
             : theme.colors.primary,
     borderColor:
         type === "their"
             ? theme.dark
-                ? globalColor["dark-grey"]
-                : globalColor.white
+                ? AppColor["dark-grey"]
+                : AppColor.white
             : theme.dark
             ? DarkTheme.colors.primary
             : theme.colors.primary
@@ -432,11 +432,11 @@ const textStyle = (theme: Theme, type?: MessageType): TextStyle => ({
     color:
         type === "their"
             ? theme.dark
-                ? globalColor.white
+                ? AppColor.white
                 : theme.colors.primary
             : theme.dark
-            ? globalColor.white
-            : globalColor.white
+            ? AppColor.white
+            : AppColor.white
 });
 
 const textStyle2 = (theme: Theme, type?: MessageType): TextStyle => ({
@@ -448,11 +448,11 @@ const textStyle2 = (theme: Theme, type?: MessageType): TextStyle => ({
     color:
         type === "their"
             ? theme.dark
-                ? globalColor.white
+                ? AppColor.white
                 : theme.colors.primary
             : theme.dark
-            ? globalColor.white
-            : globalColor.white
+            ? AppColor.white
+            : AppColor.white
 });
 
 const optionButtonStyle = (theme: Theme, type?: MessageType): TextStyle => ({

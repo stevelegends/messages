@@ -5,7 +5,7 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import Animated, { SlideInLeft, SlideOutLeft, ZoomIn, ZoomOut } from "react-native-reanimated";
 
 // theme
-import { globalColor, globalSize, globalStyles } from "@theme/theme";
+import { AppColor, AppSize, AppStyle } from "@theme/theme";
 
 // components
 import { CircleImage, CloseButtonBorder } from "@components";
@@ -54,7 +54,7 @@ const AnimatedCircleImagesWrapView: FC<Props> = ({ data, onPress, removeOnPress 
                 showsHorizontalScrollIndicator={false}
                 onContentSizeChange={(w, h) => {
                     onScrollToEnd();
-                    setIsMore(w > globalSize.screenWidth);
+                    setIsMore(w > AppSize.screenWidth);
                 }}
             >
                 {data.map(({ id, imageUrl, placeholder, title }) => {
@@ -63,7 +63,7 @@ const AnimatedCircleImagesWrapView: FC<Props> = ({ data, onPress, removeOnPress 
                             key={id}
                             entering={ZoomIn}
                             exiting={ZoomOut}
-                            style={[globalStyles["flex-center"], { marginRight: 10 }]}
+                            style={[AppStyle["flex-center"], { marginRight: 10 }]}
                         >
                             <CircleImage
                                 onPress={typeof onPress === "function" ? onPress : () => undefined}
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
         position: "absolute",
         top: 0,
         right: 10,
-        backgroundColor: globalColor.white,
+        backgroundColor: AppColor.white,
         borderRadius: 10
     },
     wrapButton: {

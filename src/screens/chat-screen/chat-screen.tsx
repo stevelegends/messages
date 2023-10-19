@@ -28,7 +28,7 @@ import { StackNavigatorParams } from "@navigation/main-navigator";
 import styles from "./chat-screen.styles";
 
 // theme
-import { globalStyles } from "@theme/theme";
+import { AppStyle } from "@theme/theme";
 
 // components
 import { BackButton, CircleImage, ToggleThemeButton } from "@components";
@@ -38,6 +38,7 @@ import ReplyToView from "./components/reply-to-view";
 import EndToEndEncryptedNotifyView from "./components/end-to-end-encrypted-notify-view";
 import ImageAttachesView, { ImageAttaches } from "./components/image-attaches-view";
 import SkeletonView from "./components/skeleton-view";
+import { SettingButton } from "@molecules";
 
 // hooks
 import { RouteProp, useTheme } from "@react-navigation/native";
@@ -309,17 +310,19 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
                     >
                         <View
                             style={[
-                                globalStyles["flex-row"],
-                                globalStyles["flex-center"],
-                                globalStyles["space-between"]
+                                AppStyle["flex-row"],
+                                AppStyle["flex-center"],
+                                AppStyle["space-between"]
                             ]}
                         >
-                            <BackButton onPress={props.navigation.goBack} />
+                            <View style={[AppStyle["flex-ali-start"], { width: 70 }]}>
+                                <BackButton onPress={props.navigation.goBack} />
+                            </View>
                             <View
                                 style={[
-                                    globalStyles["flex-1"],
-                                    globalStyles["flex-center"],
-                                    globalStyles["paddingV-10"]
+                                    AppStyle["flex-1"],
+                                    AppStyle["flex-center"],
+                                    AppStyle["paddingV-10"]
                                 ]}
                             >
                                 {!Array.isArray(picture) && !Array.isArray(status) && (
@@ -353,8 +356,16 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
                                 )}
                                 <Text style={{ fontSize: 12 }}>{name}</Text>
                             </View>
-
-                            <ToggleThemeButton />
+                            <View
+                                style={[
+                                    AppStyle["flex-row"],
+                                    AppStyle["space-between"],
+                                    { width: 70 }
+                                ]}
+                            >
+                                <SettingButton size={24} onPress={() => {}} />
+                                <ToggleThemeButton />
+                            </View>
                         </View>
                     </SafeAreaView>
                 )
@@ -371,11 +382,11 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
                 <KeyboardAvoidingView
                     behavior={Platform.select({ ios: "padding" })}
                     keyboardVerticalOffset={140}
-                    style={globalStyles["flex-1"]}
+                    style={AppStyle["flex-1"]}
                 >
                     {/*<ImageBackground source={images.droplet} style={globalStyles["flex-1"]}>*/}
                     <EndToEndEncryptedNotifyView />
-                    <View style={[globalStyles["flex-1"]]}>
+                    <View style={[AppStyle["flex-1"]]}>
                         <FlatList
                             ref={chatListRef}
                             onContentSizeChange={(w, h) => {
@@ -466,7 +477,7 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
                                 style={styles.mediaButton}
                             >
                                 <TouchableOpacity
-                                    style={globalStyles["flex-center"]}
+                                    style={AppStyle["flex-center"]}
                                     onPress={handleOpenCameraOnPress}
                                 >
                                     <Feather name="camera" size={24} color={theme.colors.primary} />
@@ -477,7 +488,7 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
                             <Animated.View
                                 entering={ZoomIn}
                                 exiting={ZoomOut}
-                                style={globalStyles["flex-center"]}
+                                style={AppStyle["flex-center"]}
                             >
                                 <TouchableOpacity
                                     onPress={sendMessageOnPress}

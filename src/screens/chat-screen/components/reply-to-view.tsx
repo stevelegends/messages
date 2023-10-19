@@ -12,7 +12,7 @@ import { Text } from "@atoms";
 import { Theme, useTheme } from "@react-navigation/native";
 
 // theme
-import { globalColor } from "@theme/theme";
+import { AppColor } from "@theme/theme";
 
 // utils
 import { onFormatDateTimeString } from "@utils";
@@ -82,20 +82,20 @@ const containerStyle = (isCancel: boolean, theme: Theme, type: MessageType): Vie
     backgroundColor: isCancel
         ? theme.colors.card
         : {
-              their: theme.dark ? globalColor["dark-grey"] : globalColor.white,
+              their: theme.dark ? AppColor["dark-grey"] : AppColor.white,
               owner: theme.colors.primary
           }[type],
     borderColor: isCancel
         ? theme.colors.border
         : {
-              their: theme.dark ? globalColor["dark-grey"] : globalColor.white,
+              their: theme.dark ? AppColor["dark-grey"] : AppColor.white,
               owner: theme.colors.primary
           }[type],
     borderLeftColor: isCancel
         ? theme.colors.primary
         : {
-              their: theme.dark ? globalColor.white : theme.colors.primary,
-              owner: globalColor.white
+              their: theme.dark ? AppColor.white : theme.colors.primary,
+              owner: AppColor.white
           }[type]
 });
 
@@ -106,8 +106,8 @@ const timeStyle = (isCancel: boolean, theme: Theme, type: MessageType): TextStyl
     color: isCancel
         ? theme.colors.text
         : {
-              their: theme.dark ? globalColor.white : theme.colors.primary,
-              owner: globalColor.white
+              their: theme.dark ? AppColor.white : theme.colors.primary,
+              owner: AppColor.white
           }[type]
 });
 
@@ -117,8 +117,8 @@ const nameStyle = (isCancel: boolean, theme: Theme, type: MessageType): TextStyl
     color: isCancel
         ? theme.colors.primary
         : {
-              their: theme.dark ? globalColor.white : theme.colors.primary,
-              owner: globalColor.white
+              their: theme.dark ? AppColor.white : theme.colors.primary,
+              owner: AppColor.white
           }[type],
     fontSize: isCancel ? 14 : 12
 });
@@ -127,8 +127,8 @@ const textStyle = (isCancel: boolean, theme: Theme, type: MessageType): TextStyl
     color: isCancel
         ? theme.colors.text
         : {
-              their: theme.dark ? globalColor.white : theme.colors.primary,
-              owner: globalColor.white
+              their: theme.dark ? AppColor.white : theme.colors.primary,
+              owner: AppColor.white
           }[type],
     fontSize: isCancel ? 14 : 12
 });

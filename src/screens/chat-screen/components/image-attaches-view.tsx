@@ -9,7 +9,7 @@ import { CloseButtonBorder, ImageAuto } from "@components";
 import { Text } from "@atoms";
 
 // theme
-import { globalColor, globalSize } from "@theme/theme";
+import { AppColor, AppSize } from "@theme/theme";
 
 // hooks
 import { Theme, useTheme } from "@react-navigation/native";
@@ -59,7 +59,7 @@ const ImageAttachesView: FC<Props> = memo(({ images, attaches, removeOnPress }) 
                 {images &&
                     images.map((value, index) => {
                         const ratio = value.resize.origin.width / value.resize.origin.height;
-                        const height = globalSize.screenWidth / 3;
+                        const height = AppSize.screenWidth / 3;
                         const width = height * ratio;
                         return (
                             <Animated.View
@@ -72,7 +72,7 @@ const ImageAttachesView: FC<Props> = memo(({ images, attaches, removeOnPress }) 
                                 <CloseButtonBorder
                                     style={styles.button}
                                     size={20}
-                                    color={globalColor.white}
+                                    color={AppColor.white}
                                     onPress={() => handleRemoveOnPress(value.key)}
                                 />
                             </Animated.View>
@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
         position: "absolute",
         right: 8,
         top: 8,
-        backgroundColor: globalColor["black-0.2"],
+        backgroundColor: AppColor["black-0.2"],
         borderRadius: 10
     }
 });
@@ -111,7 +111,7 @@ const wrapCountStyle = (theme: Theme): ViewStyle => {
         position: "absolute",
         left: 8,
         alignSelf: "center",
-        backgroundColor: theme.dark ? globalColor["black-0.5"] : globalColor["white-0.5"],
+        backgroundColor: theme.dark ? AppColor["black-0.5"] : AppColor["white-0.5"],
         padding: 4,
         borderRadius: 4
     };

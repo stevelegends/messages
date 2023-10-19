@@ -14,7 +14,7 @@ import Navigation from "./src/navigation/navigation";
 import AppLoader from "@hoc/app-loader";
 
 // theme
-import { globalStyles } from "@theme/theme";
+import { AppStyle } from "@theme/theme";
 
 // contexts
 import { ThemeProvider } from "@contexts/theme-context";
@@ -27,7 +27,7 @@ splashScreenPreventAutoHideAsync();
 
 const App = () => {
     return (
-        <AppLoader style={globalStyles["flex-1"]}>
+        <AppLoader style={AppStyle["flex-1"]}>
             <ThemeProvider>
                 <NotificationProvider>
                     <Navigation />

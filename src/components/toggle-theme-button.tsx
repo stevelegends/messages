@@ -10,7 +10,7 @@ import Animated, { RotateInUpLeft, RotateOutUpLeft } from "react-native-reanimat
 import { useThemeProvider } from "@contexts/theme-context";
 
 // theme
-import { globalStyles } from "@theme/theme";
+import { AppStyle } from "@theme/theme";
 
 // hooks
 import { useTheme } from "@react-navigation/native";
@@ -20,7 +20,7 @@ const ToggleThemeButton = () => {
     const theme = useTheme();
 
     return (
-        <View style={[globalStyles["paddingR-10"], globalStyles["horizontal-center"]]}>
+        <View style={[AppStyle["paddingR-10"], AppStyle["horizontal-center"]]}>
             <Pressable onPress={() => setToggleScheme()}>
                 {isDark && (
                     <Animated.View entering={RotateInUpLeft} exiting={RotateOutUpLeft}>

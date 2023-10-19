@@ -3,7 +3,7 @@ import { Dimensions, StyleSheet } from "react-native";
 const DimensionScreen = Dimensions.get("screen");
 const DimensionsWindow = Dimensions.get("window");
 
-export const globalStyles = StyleSheet.create({
+export const AppStyle = StyleSheet.create({
     "flex-1": {
         flex: 1
     },
@@ -28,8 +28,14 @@ export const globalStyles = StyleSheet.create({
     "flex-jc-end": {
         justifyContent: "flex-end"
     },
+    "flex-jc-start": {
+        justifyContent: "flex-start"
+    },
     "flex-ali-end": {
         alignItems: "flex-end"
+    },
+    "flex-ali-start": {
+        alignItems: "flex-start"
     },
     "align-self-center": {
         alignSelf: "center"
@@ -159,7 +165,7 @@ export const globalStyles = StyleSheet.create({
     // TODO add more
 });
 
-export const globalSize = {
+export const AppSize = {
     screenWidth: DimensionScreen.width,
     screenHeight: DimensionScreen.height,
     windowHeight: DimensionsWindow.height,
@@ -174,7 +180,7 @@ export const globalSize = {
     "space-8": 8
 };
 
-export const globalColor = {
+export const AppColor = {
     "black-0.9": "rgba(1,1,1, 0.9)",
     "black-0.7": "rgba(1,1,1, 0.7)",
     "black-0.2": "rgba(1,1,1, 0.2)",
