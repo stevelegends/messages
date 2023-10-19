@@ -214,6 +214,17 @@ const useFirebase = () => {
         }
     }, []) as (payload: { userId: string }) => Promise<any>;
 
+    const getUserChatsDataAsync = useCallback(async payload => {
+        try {
+            const dbRef = ref(getDatabase());
+            const userRef = child(dbRef, `userChats/${payload.userId}`);
+            const snapshot = await get(userRef);
+            return snapshot.val();
+        } catch (error) {
+            ErrorHandler(error, "getUserChatsDataAsync");
+        }
+    }, []) as (payload: { userId: string }) => Promise<any>;
+
     const getUserDataByText = useCallback(async payload => {
         try {
             const searchTerm = payload.queryText.toLowerCase();
@@ -568,6 +579,7 @@ const useFirebase = () => {
         onSignUp,
         onSignIn,
         getUserDataAsync,
+        getUserChatsDataAsync,
         onUpdateSignedInUserData,
         onUploadImageAsync,
         onUpdateSignedInUserAvatarData,

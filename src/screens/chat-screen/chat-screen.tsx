@@ -42,7 +42,7 @@ import { SettingButton } from "@molecules";
 
 // hooks
 import { RouteProp, useTheme } from "@react-navigation/native";
-import { useFirebase, useImageSize } from "@hooks/index";
+import { useFirebase, useImageSize, useNavigation } from "@hooks/index";
 import { useNotificationProvider } from "@contexts/notification-context";
 
 // store
@@ -63,6 +63,7 @@ type ChatScreenProps = {
 };
 
 const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
+    const { navigate } = useNavigation();
     const theme = useTheme();
     const firebase = useFirebase();
     const auth = useAuth();
@@ -243,8 +244,12 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
     const isSendValid = messageText.trim().length > 0 || tempImageUris.length > 0;
 
     const onScrollToEnd = useCallback(() => {
+        // const time = setTimeout(() => {
+        //
+        //     clearTimeout(time)
+        // }, 0)
         if (chatListRef.current) {
-            chatListRef.current.scrollToEnd({ animated: false });
+            chatListRef.current.scrollToEnd({ animated: true });
         }
     }, []) as () => void;
 
@@ -363,7 +368,19 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
                                     { width: 70 }
                                 ]}
                             >
-                                <SettingButton size={24} onPress={() => {}} />
+                                <SettingButton
+                                    size={24}
+                                    onPress={() => {
+                                        if (chatData?.isGroupChat) {
+                                        } else {
+                                            const chatUsers = chatData?.users as Array<string>;
+                                            const otherUserId = chatUsers.find(
+                                                uid => uid !== auth.userData?.userId
+                                            );
+                                            navigate("ContactScreen", { uid: otherUserId });
+                                        }
+                                    }}
+                                />
                                 <ToggleThemeButton />
                             </View>
                         </View>
@@ -374,7 +391,7 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
 
         onHandleSetNavigationOptions();
         return () => {};
-    }, [theme.dark]);
+    }, [theme.dark, chats.chatsData, chatData, auth.userData?.userId]);
 
     return (
         <SkeletonView>

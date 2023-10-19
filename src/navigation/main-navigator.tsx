@@ -8,7 +8,13 @@ import { t } from "@lingui/macro";
 import BottomTabNavigator from "@navigation/bottom-tab-navigator";
 
 // screens
-import { ChatScreen, NewChatScreen, ReviewImageModal, SettingsScreen } from "@screens";
+import {
+    ChatScreen,
+    ContactScreen,
+    NewChatScreen,
+    ReviewImageModal,
+    SettingsScreen
+} from "@screens";
 
 // hooks
 import { useLingui } from "@lingui/react";
@@ -36,6 +42,7 @@ export type StackNavigatorParams = {
     NewChatScreen?: {
         isGroupChat?: boolean;
     };
+    ContactScreen?: { uid?: string };
 };
 
 const Stack = createNativeStackNavigator<StackNavigatorParams>();
@@ -75,6 +82,15 @@ const StackNavigator = () => {
                     }}
                     name="SettingsScreen"
                     component={SettingsScreen}
+                />
+
+                <Stack.Screen
+                    options={{
+                        title: t(i18n)`Contact info`,
+                        headerBackTitle: t(i18n)`Back`
+                    }}
+                    name="ContactScreen"
+                    component={ContactScreen}
                 />
             </Stack.Group>
 
