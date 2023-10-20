@@ -5,12 +5,18 @@ const styles = StyleSheet.create({
         // Add your styles here
     },
     text: {
-        fontSize: 25,
-        fontFamily: "Roboto-Black"
+        fontSize: 20,
+        fontFamily: "Roboto-Black",
+        marginTop: 8
     },
     text2: {
-        fontSize: 16,
+        fontSize: 15,
         fontFamily: "Roboto-Bold",
+        letterSpacing: 0.3
+    },
+    text3: {
+        fontSize: 15,
+        fontFamily: "Roboto-Regular",
         letterSpacing: 0.3
     }
 });

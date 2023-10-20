@@ -51,7 +51,7 @@ export const onLaunchCameraAsync = async (
         return res;
     } catch (e) {
         if (!askPermAndRetry) {
-            ErrorHandler(e, "onLaunchCameraAsync");
+            ErrorHandler(e, "onLaunchCameraAsync", true);
             return null;
         }
         try {

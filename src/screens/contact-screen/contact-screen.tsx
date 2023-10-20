@@ -2,10 +2,11 @@
 import React, { FC, useEffect, useMemo, useState } from "react";
 
 // modules
-import { TextStyle, View } from "react-native";
+import { ScrollView, TextStyle, View } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RouteProp } from "@react-navigation/native";
-import Animated, { ZoomIn, ZoomOut } from "react-native-reanimated";
+import { RouteProp, useTheme } from "@react-navigation/native";
+import Animated, { SlideInLeft, ZoomIn, ZoomOut } from "react-native-reanimated";
+import { Trans } from "@lingui/macro";
 
 // navigation
 import { StackNavigatorParams } from "@navigation/main-navigator";
@@ -18,7 +19,9 @@ import { AppColor, AppSize, AppStyle } from "@theme/theme";
 
 // components
 import { Text } from "@atoms";
-import { CircleImage } from "@components";
+import { CircleImage, ToggleThemeButton } from "@components";
+import { ChevronRightButton } from "@molecules";
+import ItemListView from "../new-chat-screen/components/item-list-view";
 
 // store
 import useUser from "@store/features/user/use-user";
@@ -35,6 +38,7 @@ type ContactScreenProps = {
 const ImageSize = AppSize.screenWidth / 4;
 
 const ContactScreen: FC<ContactScreenProps> = ({ navigation, route }) => {
+    const theme = useTheme();
     const uid = route.params?.uid;
     const user = useUser();
     const chats = useChats();
@@ -60,37 +64,85 @@ const ContactScreen: FC<ContactScreenProps> = ({ navigation, route }) => {
         setCommonChats(getCommonChats);
     }
 
-    console.log("commonChats", commonChats);
     useEffect(() => {
         getUserChats();
+        navigation.setOptions({
+            headerRight: props => <ToggleThemeButton />
+        });
     }, []);
 
     return (
-        <View style={[styles.container, AppStyle["flex-center"]]}>
-            <Animated.View
-                entering={ZoomIn.delay(100)}
-                exiting={ZoomOut}
-                style={AppStyle["marginT-20"]}
-            >
-                <CircleImage
-                    size={ImageSize}
-                    source={{ uri: currentUser.profilePicture }}
-                    loading={false}
-                    cached
-                    placeholder={currentUser.firstName?.[0]?.toUpperCase()}
-                    placeholderStyle={placeholderStyle}
-                    onPress={() => {}}
-                />
-            </Animated.View>
-            <Text style={styles.text as any}>
-                {currentUser.firstName} {currentUser.lastName}
-            </Text>
-            <Text
-                numberOfLines={2}
-                style={{ ...(styles.text2 as any), color: AppColor["dark-grey"] }}
-            >
-                {currentUser.about}
-            </Text>
+        <View style={[styles.container]}>
+            <View style={AppStyle["flex-center"]}>
+                <Animated.View
+                    entering={ZoomIn.delay(100)}
+                    exiting={ZoomOut}
+                    style={AppStyle["marginT-20"]}
+                >
+                    <CircleImage
+                        size={ImageSize}
+                        source={{ uri: currentUser.profilePicture }}
+                        loading={false}
+                        cached
+                        placeholder={currentUser.firstName?.[0]?.toUpperCase()}
+                        placeholderStyle={placeholderStyle}
+                        onPress={() => {}}
+                    />
+                </Animated.View>
+                <Text style={{ ...(styles.text as any) }}>
+                    {currentUser.firstName} {currentUser.lastName}
+                </Text>
+                <Text
+                    numberOfLines={2}
+                    style={{ ...(styles.text2 as any), color: AppColor["dark-grey"] }}
+                >
+                    {currentUser.about}
+                </Text>
+            </View>
+
+            {commonChats.length > 0 && (
+                <View style={{ marginHorizontal: 12 }}>
+                    <Text numberOfLines={2} style={styles.text3 as any}>
+                        {commonChats.length}{" "}
+                        {commonChats.length === 1 ? (
+                            <Trans>Group in Common</Trans>
+                        ) : (
+                            <Trans>Groups in Common</Trans>
+                        )}
+                    </Text>
+
+                    <ScrollView>
+                        {commonChats.map((value, index) => {
+                            const chatId = value;
+                            const chatData = chats.chatsData[chatId];
+                            return (
+                                <Animated.View
+                                    key={chatId}
+                                    entering={SlideInLeft.delay(index * 300)}
+                                    style={[AppStyle["flex-row"], AppStyle["flex-center"]]}
+                                >
+                                    <ItemListView
+                                        id={chatId}
+                                        index={index}
+                                        title={chatData.chatName}
+                                        subTitle={chatData.latestMessageText}
+                                        onPress={() => {
+                                            navigation.push("ChatScreen", { chatId });
+                                        }}
+                                    />
+                                    <ChevronRightButton
+                                        color={AppColor["dark-grey"]}
+                                        size={30}
+                                        onPress={() => {
+                                            navigation.push("ChatScreen", { chatId });
+                                        }}
+                                    />
+                                </Animated.View>
+                            );
+                        })}
+                    </ScrollView>
+                </View>
+            )}
         </View>
     );
 };

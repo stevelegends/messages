@@ -19,7 +19,7 @@ type Props = {
     id: string;
     title: string;
     subTitle: string;
-    image: string;
+    image?: string;
     onPress: (id: string) => void;
     status?: UserStatus;
 };
