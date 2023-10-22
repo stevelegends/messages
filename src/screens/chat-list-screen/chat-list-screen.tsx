@@ -154,7 +154,7 @@ const ChatListScreen: FC<ChatListScreenProps> = ({ navigation, route }) => {
                                     : otherUser.firstName + " " + otherUser.lastName
                             }
                             subTitle={item.latestMessageText || t(i18n)`New chat`}
-                            image={isGroupChat ? null : otherUser.profilePicture}
+                            image={isGroupChat ? item.chatImage : otherUser.profilePicture}
                             onPress={handleItemOnPress}
                             status={isGroupChat ? UserStatus.inactive : status}
                         />

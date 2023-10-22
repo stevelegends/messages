@@ -84,7 +84,7 @@ const ChatSettingsScreen: FC<ChatSettingsScreenProps> = () => {
         watch,
         setValue
     } = useForm<UserFormData>({
-        resolver: yupResolver(schema),
+        resolver: yupResolver<UserFormData>(schema),
         defaultValues: {
             firstName: userData.firstName,
             lastName: userData.lastName,

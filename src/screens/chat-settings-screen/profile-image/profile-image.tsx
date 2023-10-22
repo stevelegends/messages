@@ -80,7 +80,7 @@ const ProfileImage: FC<ProfileImageProps> = () => {
                 return;
             }
         } catch (e) {
-            ErrorHandler(e, "handlePickImageOnPress");
+            ErrorHandler(e, "handlePickImageOnPress", true);
         }
 
         setIsLoading(false);

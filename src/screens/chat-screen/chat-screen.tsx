@@ -8,7 +8,6 @@ import {
     NativeScrollEvent,
     NativeSyntheticEvent,
     Platform,
-    ScrollView,
     TextInput,
     TouchableOpacity,
     View
@@ -219,7 +218,7 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
             const assetUri = result.assets[0].uri;
             await onSetTempImageUriWithOptimizedAsync(assetUri);
         } catch (e) {
-            ErrorHandler(e, "handlePickImageOnPress");
+            ErrorHandler(e, "handlePickImageOnPress", true);
         }
     }, []) as () => Promise<void>;
 
@@ -233,7 +232,7 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
             const assetUri = result.assets[0].uri;
             await onSetTempImageUriWithOptimizedAsync(assetUri);
         } catch (e) {
-            ErrorHandler(e, "handleOpenCameraOnPress");
+            ErrorHandler(e, "handleOpenCameraOnPress", true);
         }
     }, []) as () => Promise<void>;
 
@@ -371,12 +370,16 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
                                 <SettingButton
                                     size={24}
                                     onPress={() => {
+                                        const chatUsers = chatData?.users as Array<string>;
+                                        const otherUserId = chatUsers.find(
+                                            uid => uid !== auth.userData?.userId
+                                        );
                                         if (chatData?.isGroupChat) {
+                                            navigate("SettingsScreen", {
+                                                chatId,
+                                                userId: auth.userData?.userId
+                                            });
                                         } else {
-                                            const chatUsers = chatData?.users as Array<string>;
-                                            const otherUserId = chatUsers.find(
-                                                uid => uid !== auth.userData?.userId
-                                            );
                                             navigate("ContactScreen", { uid: otherUserId });
                                         }
                                     }}
@@ -391,7 +394,7 @@ const ChatScreen: FC<ChatScreenProps> = ({ navigation, route }) => {
 
         onHandleSetNavigationOptions();
         return () => {};
-    }, [theme.dark, chats.chatsData, chatData, auth.userData?.userId]);
+    }, [theme.dark, chats.chatsData, chatData, auth.userData?.userId, chatId]);
 
     return (
         <SkeletonView>

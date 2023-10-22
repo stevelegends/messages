@@ -31,7 +31,7 @@ import { UserStatus } from "@constants/user-status";
 
 export type StackNavigatorParams = {
     BottomTab: undefined;
-    SettingsScreen: undefined;
+    SettingsScreen?: { chatId?: string; userId?: string };
     ChatScreen: {
         newChatData?: { users: string[]; isGroupChat?: boolean; chatName?: string };
         chatId?: string;

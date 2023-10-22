@@ -199,7 +199,7 @@ const useFirebase = () => {
             await set(childRef, userData);
             return userData;
         } catch (error) {
-            ErrorHandler(error, "createUser");
+            ErrorHandler(error, "createUser", true);
         }
     }, []) as ({ firstName, lastName, email, userId }: CreateUser) => Promise<any>;
 
@@ -210,7 +210,7 @@ const useFirebase = () => {
             const snapshot = await get(userRef);
             return snapshot.val();
         } catch (error) {
-            ErrorHandler(error, "getUserDataAsync");
+            ErrorHandler(error, "getUserDataAsync", true);
         }
     }, []) as (payload: { userId: string }) => Promise<any>;
 
@@ -221,7 +221,7 @@ const useFirebase = () => {
             const snapshot = await get(userRef);
             return snapshot.val();
         } catch (error) {
-            ErrorHandler(error, "getUserChatsDataAsync");
+            ErrorHandler(error, "getUserChatsDataAsync", true);
         }
     }, []) as (payload: { userId: string }) => Promise<any>;
 
@@ -242,7 +242,7 @@ const useFirebase = () => {
                 return snapshot.val();
             }
         } catch (error) {
-            ErrorHandler(error, "getUserDataByText");
+            ErrorHandler(error, "getUserDataByText", true);
         }
         return {};
     }, []) as (payload: { queryText: string }) => Promise<any>;
@@ -272,7 +272,7 @@ const useFirebase = () => {
                 updateDate
             });
         } catch (e: any) {
-            ErrorHandler(e, "onUpdateSignedInUserData");
+            ErrorHandler(e, "onUpdateSignedInUserData", true);
         }
         onLoading(false);
     }, []) as (
@@ -303,7 +303,7 @@ const useFirebase = () => {
 
             onAuthResult && onAuthResult({ profilePicture, updateDate });
         } catch (e: any) {
-            ErrorHandler(e, "onUpdateSignedInUserAvatarData");
+            ErrorHandler(e, "onUpdateSignedInUserAvatarData", true);
         }
         onLoading && onLoading(false);
     }, []) as (
@@ -372,7 +372,7 @@ const useFirebase = () => {
             });
         } catch (e) {
             onLoading(false);
-            ErrorHandler(e, "onUploadImageAsync - blob");
+            ErrorHandler(e, "onUploadImageAsync - blob", true);
             return;
         }
 
@@ -384,7 +384,7 @@ const useFirebase = () => {
             blob.close();
         } catch (e) {
             onLoading(false);
-            ErrorHandler(e, "onUploadImageAsync - uploadBytesResumable");
+            ErrorHandler(e, "onUploadImageAsync - uploadBytesResumable", true);
             return;
         }
 
@@ -397,7 +397,7 @@ const useFirebase = () => {
             }
         } catch (e) {
             onLoading(false);
-            ErrorHandler(e, "onUploadImageAsync - getDownloadURL");
+            ErrorHandler(e, "onUploadImageAsync - getDownloadURL", true);
             return;
         }
 
@@ -430,7 +430,7 @@ const useFirebase = () => {
 
             return newChat.key || "";
         } catch (e) {
-            ErrorHandler(e, "onCreateChatAsync");
+            ErrorHandler(e, "onCreateChatAsync", true);
         }
         return "";
     }, []) as (loggedInUserId: string, chatData: any) => Promise<string>;
@@ -447,7 +447,7 @@ const useFirebase = () => {
                 listener(chatIds);
             },
             error => {
-                ErrorHandler(error, "onUserChatsListener");
+                ErrorHandler(error, "onUserChatsListener", true);
             }
         );
 
@@ -465,7 +465,7 @@ const useFirebase = () => {
                 listener(dataSnapshot);
             },
             error => {
-                ErrorHandler(error, "onUserChatsListener");
+                ErrorHandler(error, "onUserChatsListener", true);
             }
         );
 
@@ -506,7 +506,7 @@ const useFirebase = () => {
                     latestMessageText: messageText
                 });
             } catch (error) {
-                ErrorHandler(error, "onSendMessageTextAsync");
+                ErrorHandler(error, "onSendMessageTextAsync", true);
             }
         },
         []
@@ -528,7 +528,7 @@ const useFirebase = () => {
                 listener(dataSnapshot);
             },
             error => {
-                ErrorHandler(error, "onUserChatsListener");
+                ErrorHandler(error, "onUserChatsListener", true);
             }
         );
 
@@ -554,7 +554,7 @@ const useFirebase = () => {
                 await set(childRef, starredMessageData);
             }
         } catch (error) {
-            ErrorHandler(error, "onStarMessageAsync");
+            ErrorHandler(error, "onStarMessageAsync", true);
         }
     }, []) as (userId: string, chatId: string, messageId: string) => Promise<void>;
 
@@ -568,12 +568,26 @@ const useFirebase = () => {
                 listener(dataSnapshot);
             },
             error => {
-                ErrorHandler(error, "onUserChatsListener");
+                ErrorHandler(error, "onUserChatsListener", true);
             }
         );
 
         return userStarredMessagesRef;
     }, []) as (userId: string, listener: (dataSnapshot: DataSnapshot) => void) => DatabaseReference;
+
+    const onUpdateChatDataAsync = useCallback(async ({ chatId, userId, chatData }) => {
+        try {
+            const dbRef = ref(getDatabase());
+            const chatRef = child(dbRef, `chats/${chatId}`);
+            await update(chatRef, {
+                ...chatData,
+                updatedAt: new Date().toISOString(),
+                updatedBy: userId
+            });
+        } catch (error) {
+            ErrorHandler(error, "onUpdateChatDataAsync", true);
+        }
+    }, []) as (payload: { chatId: string; userId: string; chatData: any }) => Promise<void>;
 
     return {
         onSignUp,
@@ -592,7 +606,8 @@ const useFirebase = () => {
         onSendMessageTextAsync,
         onMessagesListener,
         onStarMessageAsync,
-        onUserStarredMessagesListener
+        onUserStarredMessagesListener,
+        onUpdateChatDataAsync
     };
 };
 

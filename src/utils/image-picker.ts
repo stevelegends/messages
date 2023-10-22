@@ -69,7 +69,7 @@ export const onLaunchImageLibraryAsyncUri = async (_: string): Promise<Array<str
         const result = await onLaunchImageLibraryAsync("photo");
         return result.canceled ? [] : result.assets?.map(a => parseUri(a)) ?? [];
     } catch (e) {
-        ErrorHandler(e, "onLaunchImageLibraryAsyncUri");
+        ErrorHandler(e, "onLaunchImageLibraryAsyncUri", true);
     }
     return [];
 };

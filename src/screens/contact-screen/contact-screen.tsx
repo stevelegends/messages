@@ -129,6 +129,7 @@ const ContactScreen: FC<ContactScreenProps> = ({ navigation, route }) => {
                                         onPress={() => {
                                             navigation.push("ChatScreen", { chatId });
                                         }}
+                                        image={chatData.chatImage}
                                     />
                                     <ChevronRightButton
                                         color={AppColor["dark-grey"]}
