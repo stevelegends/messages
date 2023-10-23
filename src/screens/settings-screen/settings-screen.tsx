@@ -18,7 +18,7 @@ import styles from "./settings-screen.styles";
 import { AppSize, AppStyle } from "@theme/theme";
 
 // components
-import { Text } from "@atoms";
+import { PencilIcon, Text } from "@atoms";
 import { CircleImage, Input } from "@components";
 import { SaveButtonText } from "@molecules";
 
@@ -191,7 +191,7 @@ const SettingsScreen: FC<SettingsScreenProps> = ({ navigation, route }) => {
                     ]}
                     onPress={handleImageOnPress}
                 >
-                    <FontAwesome name="pencil" size={15} color={theme.colors.text} />
+                    <PencilIcon size={15} color={theme.colors.text} />
                 </Pressable>
             </View>
             <Input

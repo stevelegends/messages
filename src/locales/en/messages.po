@@ -13,48 +13,232 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/hooks/use-firebase.ts
-#: src/hooks/use-firebase.ts
-#: src/hooks/use-login.ts
-msgid "An error occurred"
-msgstr "An error occurred"
+#: src/components/close-button-text.tsx
+msgid "Close"
+msgstr "Close"
 
-#: src/hooks/use-firebase.ts
-#: src/hooks/use-firebase.ts
-#: src/hooks/use-login.ts
-#: src/hooks/use-login.ts
-msgid "Ok"
-msgstr "Ok"
+#: src/components/molecules/create-button-text.tsx
+msgid "Create"
+msgstr "Create"
 
-#: src/hooks/use-login.ts
-msgid "Session Expired"
-msgstr "Session Expired"
+#: src/components/molecules/new-group-button-text.tsx
+msgid "New Group"
+msgstr "New Group"
 
-#: src/hooks/use-login.ts
-msgid "Please sign in again."
-msgstr "Please sign in again."
+#: src/components/molecules/save-button-text.tsx
+#: src/screens/chat-settings-screen/chat-settings-screen.tsx
+msgid "Save"
+msgstr "Save"
 
-#: src/navigation/auth-navigation.tsx
+#: src/navigation/auth-navigator.tsx
 msgid "Sign Up"
 msgstr "Sign Up"
 
-#: src/navigation/auth-navigation.tsx
+#: src/navigation/auth-navigator.tsx
 #: src/screens/sign-in-screen/sign-in-screen.tsx
 msgid "Sign in"
 msgstr "Sign in"
 
-#: src/navigation/bottom-tab-navigation.tsx
+#: src/navigation/bottom-tab-navigator.tsx
 msgid "Chats"
 msgstr "Chats"
 
-#: src/navigation/bottom-tab-navigation.tsx
-#: src/navigation/main-navigation.tsx
+#: src/navigation/bottom-tab-navigator.tsx
+#: src/navigation/main-navigator.tsx
 msgid "Settings"
 msgstr "Settings"
 
-#: src/navigation/main-navigation.tsx
+#: src/navigation/main-navigator.tsx
 msgid "Chat"
 msgstr "Chat"
+
+#: src/navigation/main-navigator.tsx
+#: src/navigation/main-navigator.tsx
+#: src/navigation/main-navigator.tsx
+msgid "Back"
+msgstr "Back"
+
+#: src/navigation/main-navigator.tsx
+msgid "Contact info"
+msgstr "Contact info"
+
+#: src/navigation/main-navigator.tsx
+msgid "New Chat"
+msgstr "New Chat"
+
+#: src/screens/chat-list-screen/chat-list-screen.tsx
+#: src/screens/new-chat-screen/new-chat-screen.tsx
+msgid "New chat"
+msgstr "New chat"
+
+#: src/screens/chat-screen/chat-screen.tsx
+msgid "Image"
+msgstr "Image"
+
+#: src/screens/chat-screen/chat-screen.tsx
+msgid "Images"
+msgstr "Images"
+
+#: src/screens/chat-screen/chat-screen.tsx
+msgid "Type your message..."
+msgstr "Type your message..."
+
+#: src/screens/chat-screen/components/copy-button.tsx
+msgid "Copy"
+msgstr "Copy"
+
+#: src/screens/chat-screen/components/end-to-end-encrypted-notify-view.tsx
+msgid "End-to-end encrypted"
+msgstr "End-to-end encrypted"
+
+#: src/screens/chat-screen/components/end-to-end-encrypted-notify-view.tsx
+msgid "Messages and others are secured with end-to-end encryption."
+msgstr "Messages and others are secured with end-to-end encryption."
+
+#: src/screens/chat-screen/components/end-to-end-encrypted-notify-view.tsx
+msgid "Learn more"
+msgstr "Learn more"
+
+#: src/screens/chat-screen/components/reply-button.tsx
+msgid "Reply"
+msgstr "Reply"
+
+#: src/screens/chat-screen/components/star-button.tsx
+msgid "Star"
+msgstr "Star"
+
+#: src/screens/chat-settings-screen/chat-settings-screen.tsx
+#: src/screens/sign-up-screen/sign-up-screen.tsx
+msgid "Please enter valid first name"
+msgstr "Please enter valid first name"
+
+#: src/screens/chat-settings-screen/chat-settings-screen.tsx
+#: src/screens/sign-up-screen/sign-up-screen.tsx
+msgid "First name must be at most 40 characters"
+msgstr "First name must be at most 40 characters"
+
+#: src/screens/chat-settings-screen/chat-settings-screen.tsx
+#: src/screens/sign-up-screen/sign-up-screen.tsx
+msgid "First name is a required"
+msgstr "First name is a required"
+
+#: src/screens/chat-settings-screen/chat-settings-screen.tsx
+#: src/screens/sign-up-screen/sign-up-screen.tsx
+msgid "Please enter valid last name"
+msgstr "Please enter valid last name"
+
+#: src/screens/chat-settings-screen/chat-settings-screen.tsx
+#: src/screens/sign-up-screen/sign-up-screen.tsx
+msgid "Last name must be at most 40 characters"
+msgstr "Last name must be at most 40 characters"
+
+#: src/screens/chat-settings-screen/chat-settings-screen.tsx
+#: src/screens/sign-up-screen/sign-up-screen.tsx
+msgid "Last name is a required"
+msgstr "Last name is a required"
+
+#: src/screens/chat-settings-screen/chat-settings-screen.tsx
+msgid "About is too long (maximum is 150 characters)"
+msgstr "About is too long (maximum is 150 characters)"
+
+#: src/screens/chat-settings-screen/chat-settings-screen.tsx
+#: src/screens/chat-settings-screen/chat-settings-screen.tsx
+#: src/screens/chat-settings-screen/chat-settings-screen.tsx
+msgid "Sign Out"
+msgstr "Sign Out"
+
+#: src/screens/chat-settings-screen/chat-settings-screen.tsx
+msgid "Are you sure you want to sign out?"
+msgstr "Are you sure you want to sign out?"
+
+#: src/screens/chat-settings-screen/chat-settings-screen.tsx
+#: src/screens/chat-settings-screen/profile-image/animated-option.tsx
+msgid "Cancel"
+msgstr "Cancel"
+
+#: src/screens/chat-settings-screen/chat-settings-screen.tsx
+msgid "Update!"
+msgstr "Update!"
+
+#: src/screens/chat-settings-screen/chat-settings-screen.tsx
+msgid "An error occurred when syncing the First name and Last name to our system. Please update your own."
+msgstr "An error occurred when syncing the First name and Last name to our system. Please update your own."
+
+#: src/screens/chat-settings-screen/chat-settings-screen.tsx
+msgid "Email (Hashed)"
+msgstr "Email (Hashed)"
+
+#: src/screens/chat-settings-screen/chat-settings-screen.tsx
+#: src/screens/sign-in-screen/sign-in-screen.tsx
+#: src/screens/sign-up-screen/sign-up-screen.tsx
+msgid "Email"
+msgstr "Email"
+
+#: src/screens/chat-settings-screen/chat-settings-screen.tsx
+#: src/screens/sign-up-screen/sign-up-screen.tsx
+msgid "First name"
+msgstr "First name"
+
+#: src/screens/chat-settings-screen/chat-settings-screen.tsx
+#: src/screens/sign-up-screen/sign-up-screen.tsx
+msgid "Last name"
+msgstr "Last name"
+
+#: src/screens/chat-settings-screen/chat-settings-screen.tsx
+msgid "About"
+msgstr "About"
+
+#: src/screens/chat-settings-screen/profile-image/profile-image.tsx
+msgid "Upload picture"
+msgstr "Upload picture"
+
+#: src/screens/chat-settings-screen/profile-image/profile-image.tsx
+msgid "View picture"
+msgstr "View picture"
+
+#: src/screens/contact-screen/contact-screen.tsx
+msgid "Group in Common"
+msgstr "Group in Common"
+
+#: src/screens/contact-screen/contact-screen.tsx
+msgid "Groups in Common"
+msgstr "Groups in Common"
+
+#: src/screens/new-chat-screen/components/search-input-view.tsx
+msgid "Search"
+msgstr "Search"
+
+#: src/screens/new-chat-screen/new-chat-screen.tsx
+msgid "Add participants"
+msgstr "Add participants"
+
+#: src/screens/new-chat-screen/new-chat-screen.tsx
+msgid "No users found!"
+msgstr "No users found!"
+
+#: src/screens/new-chat-screen/new-chat-screen.tsx
+msgid "Enter a name to search for a user!"
+msgstr "Enter a name to search for a user!"
+
+#: src/screens/new-chat-screen/new-chat-screen.tsx
+msgid "Enter a name for your chat"
+msgstr "Enter a name for your chat"
+
+#: src/screens/settings-screen/settings-screen.tsx
+msgid "Please enter valid chat name"
+msgstr "Please enter valid chat name"
+
+#: src/screens/settings-screen/settings-screen.tsx
+msgid "Chat name must be at most 40 characters"
+msgstr "Chat name must be at most 40 characters"
+
+#: src/screens/settings-screen/settings-screen.tsx
+msgid "Chat name is a required"
+msgstr "Chat name is a required"
+
+#: src/screens/settings-screen/settings-screen.tsx
+msgid "Group name"
+msgstr "Group name"
 
 #: src/screens/sign-in-screen/sign-in-screen.tsx
 #: src/screens/sign-up-screen/sign-up-screen.tsx
@@ -77,11 +261,6 @@ msgstr "Password must Contain 6 Characters, One Uppercase, One Lowercase, One Nu
 
 #: src/screens/sign-in-screen/sign-in-screen.tsx
 #: src/screens/sign-up-screen/sign-up-screen.tsx
-msgid "Email"
-msgstr "Email"
-
-#: src/screens/sign-in-screen/sign-in-screen.tsx
-#: src/screens/sign-up-screen/sign-up-screen.tsx
 msgid "Password"
 msgstr "Password"
 
@@ -90,40 +269,37 @@ msgid "Switch to sign up"
 msgstr "Switch to sign up"
 
 #: src/screens/sign-up-screen/sign-up-screen.tsx
-msgid "Please enter valid first name"
-msgstr "Please enter valid first name"
-
-#: src/screens/sign-up-screen/sign-up-screen.tsx
-msgid "First name must be at most 40 characters"
-msgstr "First name must be at most 40 characters"
-
-#: src/screens/sign-up-screen/sign-up-screen.tsx
-msgid "First name is a required"
-msgstr "First name is a required"
-
-#: src/screens/sign-up-screen/sign-up-screen.tsx
-msgid "Please enter valid last name"
-msgstr "Please enter valid last name"
-
-#: src/screens/sign-up-screen/sign-up-screen.tsx
-msgid "Last name must be at most 40 characters"
-msgstr "Last name must be at most 40 characters"
-
-#: src/screens/sign-up-screen/sign-up-screen.tsx
-msgid "Last name is a required"
-msgstr "Last name is a required"
-
-#: src/screens/sign-up-screen/sign-up-screen.tsx
 msgid "Email must be a vali email"
 msgstr "Email must be a vali email"
 
 #: src/screens/sign-up-screen/sign-up-screen.tsx
-msgid "First name"
-msgstr "First name"
+msgid "Sign up"
+msgstr "Sign up"
 
-#: src/screens/sign-up-screen/sign-up-screen.tsx
-msgid "Last name"
-msgstr "Last name"
+#: src/utils/async-storage.ts
+#: src/utils/async-storage.ts
+#: src/utils/async-storage.ts
+#: src/utils/async-storage.ts
+#: src/utils/async-storage.ts
+#: src/utils/error-handler.ts
+#: src/utils/error-handler.ts
+msgid "An error occurred"
+msgstr "An error occurred"
+
+#: src/utils/error-handler.ts
+#: src/utils/error-handler.ts
+msgid "Session Expired"
+msgstr "Session Expired"
+
+#: src/utils/error-handler.ts
+#: src/utils/error-handler.ts
+msgid "Please sign in again."
+msgstr "Please sign in again."
+
+#: src/utils/error-handler.ts
+#: src/utils/error-handler.ts
+msgid "Ok"
+msgstr "Ok"
 
 #: src/utils/error-message.ts
 msgid "This email already in use"
@@ -138,5 +314,47 @@ msgid "Access to this account has been temporarily disabled due to many failed l
 msgstr "Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later."
 
 #: src/utils/error-message.ts
+#: src/utils/error-message.ts
+msgid "The username or password was incorrect"
+msgstr "The username or password was incorrect"
+
+#: src/utils/error-message.ts
+#: src/utils/error-message.ts
+msgid "Network request failed"
+msgstr "Network request failed"
+
+#: src/utils/error-message.ts
+msgid "Could not upload image"
+msgstr "Could not upload image"
+
+#: src/utils/error-message.ts
+msgid "Your account has been logged into another device."
+msgstr "Your account has been logged into another device."
+
+#: src/utils/error-message.ts
+msgid "Your device is rooted/jailbroken, for security reason we have stopped the app on rooted/jailbroken device."
+msgstr "Your device is rooted/jailbroken, for security reason we have stopped the app on rooted/jailbroken device."
+
+#: src/utils/error-message.ts
+msgid "This account is not active. Please contact an administrator if you believe this is an error."
+msgstr "This account is not active. Please contact an administrator if you believe this is an error."
+
+#: src/utils/error-message.ts
+msgid "File does not exist"
+msgstr "File does not exist"
+
+#: src/utils/error-message.ts
+msgid "Your connection has encountered an issue. Please try signing in again."
+msgstr "Your connection has encountered an issue. Please try signing in again."
+
+#: src/utils/error-message.ts
+msgid "Message failed to send"
+msgstr "Message failed to send"
+
+#: src/utils/error-message.ts
 msgid "Something went wrong."
 msgstr "Something went wrong."
+
+#: src/utils/time.ts
+msgid "Today"
+msgstr "Today"
